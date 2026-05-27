@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML to Squarespace — Kalana H.</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d0d0d; color: #fff; }
+
+/* HERO */
+.hero { padding: 80px 40px 60px; text-align: center; background: #0d0d0d; border-bottom: 1px solid #1e1e1e; }
+.hero-eyebrow { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #00D692; background: rgba(0,214,146,0.1); border: 1px solid rgba(0,214,146,0.25); border-radius: 20px; padding: 6px 16px; margin-bottom: 28px; }
+.hero h1 { font-size: clamp(32px, 5vw, 56px); font-weight: 800; line-height: 1.15; margin-bottom: 24px; }
+.hero h1 span { color: #00D692; }
+.hero-desc { font-size: clamp(15px, 2vw, 18px); color: #888; max-width: 620px; margin: 0 auto 40px; line-height: 1.7; }
+
+.use-cases { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
+.use-case { display: flex; align-items: center; gap-8px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; padding: 12px 20px; font-size: 14px; color: #ccc; gap: 10px; }
+.use-case-icon { font-size: 20px; }
+
+.hero-cta { display: inline-block; background: #00D692; color: #111; font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: 8px; text-decoration: none; transition: all 0.2s; }
+.hero-cta:hover { background: #00c082; transform: translateY(-2px); }
+
+/* HOW IT WORKS */
+.how-section { padding: 64px 40px; background: #111; border-bottom: 1px solid #1e1e1e; }
+.section-label { text-align: center; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #00D692; margin-bottom: 16px; }
+.section-title { text-align: center; font-size: clamp(22px, 3vw, 32px); font-weight: 700; margin-bottom: 48px; }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; max-width: 900px; margin: 0 auto; }
+.step { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 28px 24px; }
+.step-num { font-size: 12px; font-weight: 700; color: #00D692; letter-spacing: 0.08em; margin-bottom: 12px; }
+.step-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.step-desc { font-size: 14px; color: #888; line-height: 1.6; }
+
+/* PROJECTS */
+.projects-section { padding: 64px 40px; max-width: 1100px; margin: 0 auto; }
+.projects-label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #00D692; margin-bottom: 16px; }
+.projects-title { font-size: clamp(22px, 3vw, 32px); font-weight: 700; margin-bottom: 12px; }
+.projects-subtitle { font-size: 15px; color: #888; margin-bottom: 56px; line-height: 1.6; }
+
+.project-block { margin-bottom: 72px; }
+.project-block:last-child { margin-bottom: 0; }
+
+.project-intro { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
+.project-intro-left {}
+.project-number { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #555; text-transform: uppercase; margin-bottom: 6px; }
+.project-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.project-desc { font-size: 14px; color: #888; line-height: 1.6; max-width: 500px; }
+.project-type-badge { font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 20px; white-space: nowrap; align-self: flex-start; margin-top: 4px; }
+.badge-html { color: #6a9fff; background: rgba(106,159,255,0.1); border: 1px solid rgba(106,159,255,0.25); }
+.badge-image { color: #c97fff; background: rgba(201,127,255,0.1); border: 1px solid rgba(201,127,255,0.25); }
+
+/* Project viewer card */
+.project-card { border: 1px solid #2a2a2a; border-radius: 16px; overflow: hidden; background: #111; }
+.browser-bar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #2a2a2a; }
+.browser-dots { display: flex; gap: 6px; flex-shrink: 0; }
+.dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.dot.red { background: #ff5f57; }
+.dot.yellow { background: #febc2e; }
+.dot.green { background: #28c840; }
+.browser-address { flex: 1; min-width: 0; background: #3a3a3a; color: #ccc; font-family: monospace; font-size: 13px; padding: 5px 12px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.browser-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #6a9fff; white-space: nowrap; flex-shrink: 0; }
+.browser-tag.image-tag { color: #c97fff; }
+
+.page-tabs-wrap { background: #1e1e1e; padding: 12px 16px; border-bottom: 1px solid #333; }
+.tabs-hint { display: block; font-size: 11px; color: #555; margin-bottom: 8px; letter-spacing: 0.03em; }
+.page-tabs { display: flex; overflow-x: auto; gap: 6px; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+.page-tabs::-webkit-scrollbar { display: none; }
+.page-tab { flex-shrink: 0; padding: 7px 14px; background: #2e2e2e; border: 1px solid #444; border-radius: 6px; color: #aaa; font-size: 12px; font-family: monospace; cursor: pointer; white-space: nowrap; transition: background 0.15s, border-color 0.15s, color 0.15s; }
+.page-tab::before { content: '📄'; font-size: 11px; display: inline-block; width: 18px; text-align: center; margin-right: 4px; }
+.page-tab.active::before { content: '✦'; }
+.page-tab:hover { background: #3a3a3a; border-color: #00D692; color: #fff; }
+.page-tab.active { background: #00D692; border-color: #00D692; color: #111; font-weight: 700; }
+
+.page-dropdown-wrap { display: none; align-items: center; gap: 10px; padding: 10px 16px; background: #1e1e1e; border-bottom: 1px solid #333; }
+.dropdown-label { font-size: 12px; color: #888; white-space: nowrap; font-family: monospace; }
+.page-dropdown { flex: 1; background: #2a2a2a; color: #fff; border: 1px solid #444; border-radius: 6px; padding: 8px 10px; font-size: 13px; font-family: monospace; cursor: pointer; }
+
+@media (max-width: 680px) {
+  .page-tabs-wrap { display: none; }
+  .page-dropdown-wrap { display: flex; }
+}
+
+.iframe-wrapper { width: 100%; overflow: hidden; background: #fff; }
+.iframe-wrapper iframe { display: block; border: none; width: 100%; height: 720px; }
+
+.image-label { padding: 8px 16px; background: #2a2a2a; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #c97fff; }
+.mockup-image-wrap { background: #f5f5f5; max-height: 720px; overflow-y: auto; }
+.mockup-image { width: 100%; display: block; }
+
+.story-bar { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 12px 22px; background: #161616; border-bottom: 1px solid #2a2a2a; flex-wrap: wrap; }
+.story-step { display: flex; align-items: center; gap: 8px; }
+.story-icon { font-size: 16px; }
+.story-text { font-size: 13px; color: #888; }
+.story-text strong { color: #fff; }
+.story-arrow { font-size: 18px; color: #00D692; font-weight: 700; }
+
+.card-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px 20px; background: #161616; border-top: 1px solid #2a2a2a; }
+.footer-note { font-size: 13px; color: #555; }
+.live-btn { display: inline-block; background: #00D692; color: #111; font-weight: 700; font-size: 14px; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: all 0.2s; white-space: nowrap; }
+.live-btn:hover { background: #00c082; }
+
+/* FOOTER */
+.page-footer { text-align: center; padding: 48px 40px; background: #0d0d0d; border-top: 1px solid #1e1e1e; }
+.page-footer p { font-size: 14px; color: #555; margin-bottom: 16px; }
+.footer-link { color: #00D692; text-decoration: none; font-weight: 600; }
+.footer-link:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .hero { padding: 60px 24px 48px; }
+  .how-section { padding: 48px 24px; }
+  .projects-section { padding: 48px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">HTML & Mockup → Squarespace</div>
+  <h1>Your design,<br>built in <span>Squarespace</span></h1>
+  <p class="hero-desc">
+    Already have a design? Whether your developer handed you HTML files or your designer gave you image mockups — I take exactly what you have and build it into a fully functional Squarespace website you can manage yourself.
+  </p>
+  <div class="use-cases">
+    <div class="use-case">
+      <span class="use-case-icon">📄</span>
+      <span>You have <strong>HTML files</strong> from a developer</span>
+    </div>
+    <div class="use-case">
+      <span class="use-case-icon">🖼</span>
+      <span>You have <strong>design mockups</strong> or Figma screens</span>
+    </div>
+    <div class="use-case">
+      <span class="use-case-icon">✦</span>
+      <span>You want to <strong>manage it yourself</strong> in Squarespace</span>
+    </div>
+  </div>
+  <a href="#projects" class="hero-cta">See Real Projects Below ↓</a>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how-section">
+  <div class="section-label">The Process</div>
+  <div class="section-title">How it works</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">You share your files</div>
+      <div class="step-desc">HTML files, image mockups, Figma links — send me whatever you have. No need for anything extra.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">I build it in Squarespace</div>
+      <div class="step-desc">I recreate your design pixel-perfect in Squarespace, including pages your designer never made.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">You get full control</div>
+      <div class="step-desc">Your site is live on Squarespace. Edit text, swap images, add pages — no developer needed.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">Revisions included</div>
+      <div class="step-desc">Need tweaks after reviewing? Revisions are part of the process until you're happy.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div class="projects-section" id="projects">
+  <div class="projects-label">Proof of Work</div>
+  <div class="projects-title">Real client projects</div>
+  <p class="projects-subtitle">Below are actual files clients sent me — browse each page of their original mockup, then visit the live Squarespace site I built from it.</p>
+
+  <!-- PROJECT 1 — Premier Medicare Planning -->
+  <div class="project-block">
+    <div class="project-intro">
+      <div class="project-intro-left">
+        <div class="project-number">Project 01</div>
+        <div class="project-title">Premier Medicare Planning</div>
+        <div class="project-desc">Client provided 7 HTML files — one per page. I rebuilt the full site in Squarespace matching their design exactly, then refined details based on their feedback.</div>
+      </div>
+      <span class="project-type-badge badge-html">📄 HTML Files</span>
+    </div>
+    <div class="project-card">
+      <div class="browser-bar">
+        <div class="browser-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+        <div class="browser-address" id="p1-address">home.html</div>
+        <div class="browser-tag">HTML MOCKUP</div>
+      </div>
+      <div class="page-tabs-wrap">
+        <span class="tabs-hint">🗂 Click a page to preview:</span>
+        <div class="page-tabs">
+          <button class="page-tab active" onclick="switchPage('p1','https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/home.html','home.html',this)">home.html</button>
+          <button class="page-tab" onclick="switchPage('p1','https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Contact.html','Contact.html',this)">Contact.html</button>
+          <button class="page-tab" onclick="switchPage('p1','https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Medicare-Advantage.html','Medicare-Advantage.html',this)">Medicare-Advantage.html</button>
+          <button class="page-tab" onclick="switchPage('p1','https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Medicare-Supplement-Plans.html','Medicare-Supplement-Plans.html',this)">Medicare-Supplement-Plans.html</button>
+          <button class="page-tab" onclick="switchPage('p1','https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Part-D-Drug-Plans.html','Part-D-Drug-Plans.html',this)">Part-D-Drug-Plans.html</button>
+          <button class="page-tab" onclick="switchPage('p1','https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Turning-65.html','Turning-65.html',this)">Turning-65.html</button>
+          <button class="page-tab" onclick="switchPage('p1','https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Why-Us.html','Why-Us.html',this)">Why-Us.html</button>
+        </div>
+      </div>
+      <div class="page-dropdown-wrap">
+        <span class="dropdown-label">📄 Page:</span>
+        <select class="page-dropdown" onchange="switchPageMobile('p1',this)">
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/home.html" data-name="home.html">home.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Contact.html" data-name="Contact.html">Contact.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Medicare-Advantage.html" data-name="Medicare-Advantage.html">Medicare-Advantage.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Medicare-Supplement-Plans.html" data-name="Medicare-Supplement-Plans.html">Medicare-Supplement-Plans.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Part-D-Drug-Plans.html" data-name="Part-D-Drug-Plans.html">Part-D-Drug-Plans.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Turning-65.html" data-name="Turning-65.html">Turning-65.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/Why-Us.html" data-name="Why-Us.html">Why-Us.html</option>
+        </select>
+      </div>
+      <div class="iframe-wrapper">
+        <iframe id="p1-iframe" src="https://kalanaheshanwa.github.io/client-mockups-projects/Premier%20Medicare%20Planning/home.html"></iframe>
+      </div>
+      <div class="card-footer">
+        <span class="footer-note">📄 Original HTML files provided by client</span>
+        <a href="https://www.premiermedicareplanning.com/" target="_blank" class="live-btn">View Live Website →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 2 — Muse MSC -->
+  <div class="project-block">
+    <div class="project-intro">
+      <div class="project-intro-left">
+        <div class="project-number">Project 02</div>
+        <div class="project-title">Muse MSC</div>
+        <div class="project-desc">Client provided 7 HTML files covering their full site structure. Rebuilt in Squarespace with all pages, interactions and content intact.</div>
+      </div>
+      <span class="project-type-badge badge-html">📄 HTML Files</span>
+    </div>
+    <div class="project-card">
+      <div class="browser-bar">
+        <div class="browser-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+        <div class="browser-address" id="p2-address">home.html</div>
+        <div class="browser-tag">HTML MOCKUP</div>
+      </div>
+      <div class="page-tabs-wrap">
+        <span class="tabs-hint">🗂 Click a page to preview:</span>
+        <div class="page-tabs">
+          <button class="page-tab active" onclick="switchPage('p2','https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/home.html','home.html',this)">home.html</button>
+          <button class="page-tab" onclick="switchPage('p2','https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/Clinical-Evidence.html','Clinical-Evidence.html',this)">Clinical-Evidence.html</button>
+          <button class="page-tab" onclick="switchPage('p2','https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/Contact-Us.html','Contact-Us.html',this)">Contact-Us.html</button>
+          <button class="page-tab" onclick="switchPage('p2','https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/Mechanism-of-Action.html','Mechanism-of-Action.html',this)">Mechanism-of-Action.html</button>
+          <button class="page-tab" onclick="switchPage('p2','https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/Publications-Overview.html','Publications-Overview.html',this)">Publications-Overview.html</button>
+          <button class="page-tab" onclick="switchPage('p2','https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/The-Science.html','The-Science.html',this)">The-Science.html</button>
+          <button class="page-tab" onclick="switchPage('p2','https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/Webinar-Registration.html','Webinar-Registration.html',this)">Webinar-Registration.html</button>
+        </div>
+      </div>
+      <div class="page-dropdown-wrap">
+        <span class="dropdown-label">📄 Page:</span>
+        <select class="page-dropdown" onchange="switchPageMobile('p2',this)">
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/home.html" data-name="home.html">home.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/Clinical-Evidence.html" data-name="Clinical-Evidence.html">Clinical-Evidence.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/Contact-Us.html" data-name="Contact-Us.html">Contact-Us.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/Mechanism-of-Action.html" data-name="Mechanism-of-Action.html">Mechanism-of-Action.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/Publications-Overview.html" data-name="Publications-Overview.html">Publications-Overview.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/The-Science.html" data-name="The-Science.html">The-Science.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/Webinar-Registration.html" data-name="Webinar-Registration.html">Webinar-Registration.html</option>
+        </select>
+      </div>
+      <div class="iframe-wrapper">
+        <iframe id="p2-iframe" src="https://kalanaheshanwa.github.io/client-mockups-projects/muse-msc/home.html"></iframe>
+      </div>
+      <div class="card-footer">
+        <span class="footer-note">📄 Original HTML files provided by client</span>
+        <a href="https://www.musemsc.com/" target="_blank" class="live-btn">View Live Website →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 3 — Resurface Co. -->
+  <div class="project-block">
+    <div class="project-intro">
+      <div class="project-intro-left">
+        <div class="project-number">Project 03</div>
+        <div class="project-title">Resurface Co.</div>
+        <div class="project-desc">Client had only one homepage image — no other pages designed. I matched the style across the full site, creating every additional page from scratch in Squarespace.</div>
+      </div>
+      <span class="project-type-badge badge-image">🖼 Image Mockup</span>
+    </div>
+    <div class="project-card">
+      <div class="story-bar">
+        <div class="story-step"><span class="story-icon">🖼</span><span class="story-text">Client provided <strong>one homepage image</strong></span></div>
+        <div class="story-arrow">→</div>
+        <div class="story-step"><span class="story-icon">✦</span><span class="story-text">I built the <strong>full multi-page site</strong> in the same style</span></div>
+      </div>
+      <div class="image-label">CLIENT'S ORIGINAL DESIGN</div>
+      <div class="mockup-image-wrap">
+        <img src="https://images.squarespace-cdn.com/content/69cdfa4b7e96fb29aceec739/e06f30f3-fedc-451b-9bf3-d351a575e046/6A217C59-1281-4789-A815-4B62E92EE6F5.png?content-type=image%2Fpng" alt="Resurface Co. client mockup" class="mockup-image" />
+      </div>
+      <div class="card-footer">
+        <span class="footer-note">🖼 Single image provided by client — full site built in Squarespace</span>
+        <a href="https://www.resurface.co/" target="_blank" class="live-btn">View Live Website →</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PAGE FOOTER -->
+<div class="page-footer">
+  <p>Built and maintained by Kalana H. — Squarespace Expert & Marketplace Partner</p>
+  <a href="https://kalanasquare.space" target="_blank" class="footer-link">Visit kalanasquare.space →</a>
+</div>
+
+<script>
+function switchPage(projId, url, filename, btn) {
+  document.getElementById(projId + '-iframe').src = url;
+  document.getElementById(projId + '-address').textContent = filename;
+  btn.closest('.page-tabs').querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function switchPageMobile(projId, select) {
+  const url = select.value;
+  const filename = select.options[select.selectedIndex].getAttribute('data-name');
+  document.getElementById(projId + '-iframe').src = url;
+  document.getElementById(projId + '-address').textContent = filename;
+}
+</script>
+</body>
+</html>
