@@ -14,35 +14,35 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .hero h1 { font-size: clamp(32px, 5vw, 56px); font-weight: 800; line-height: 1.15; margin-bottom: 24px; }
 .hero h1 span { color: #00D692; }
 .hero-desc { font-size: clamp(15px, 2vw, 18px); color: #888; max-width: 620px; margin: 0 auto 40px; line-height: 1.7; }
-
 .use-cases { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
-.use-case { display: flex; align-items: center; gap-8px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; padding: 12px 20px; font-size: 14px; color: #ccc; gap: 10px; }
+.use-case { display: flex; align-items: center; gap: 10px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; padding: 12px 20px; font-size: 14px; color: #ccc; }
 .use-case-icon { font-size: 20px; }
-
 .hero-cta { display: inline-block; background: #00D692; color: #111; font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: 8px; text-decoration: none; transition: all 0.2s; }
 .hero-cta:hover { background: #00c082; transform: translateY(-2px); }
 
 /* HOW IT WORKS */
 .how-section { padding: 64px 40px; background: #111; border-bottom: 1px solid #1e1e1e; }
 .section-label { text-align: center; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #00D692; margin-bottom: 16px; }
-.section-title { text-align: center; font-size: clamp(22px, 3vw, 32px); font-weight: 700; margin-bottom: 48px; }
-.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; max-width: 900px; margin: 0 auto; }
-.step { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 28px 24px; }
+.section-title { text-align: center; font-size: clamp(22px, 3vw, 32px); font-weight: 700; margin-bottom: 40px; }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1000px; margin: 0 auto 32px; }
+@media (max-width: 800px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .steps { grid-template-columns: 1fr; } }
+.step { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px 20px; }
 .step-num { font-size: 12px; font-weight: 700; color: #00D692; letter-spacing: 0.08em; margin-bottom: 12px; }
-.step-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-.step-desc { font-size: 14px; color: #888; line-height: 1.6; }
+.step-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.step-desc { font-size: 13px; color: #888; line-height: 1.6; }
+.changes-note { display: flex; align-items: flex-start; gap: 14px; max-width: 1000px; margin: 0 auto; background: rgba(0,214,146,0.06); border: 1px solid rgba(0,214,146,0.2); border-radius: 10px; padding: 18px 22px; font-size: 14px; color: #aaa; line-height: 1.6; }
+.changes-note-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.changes-note strong { color: #fff; }
 
 /* PROJECTS */
 .projects-section { padding: 64px 40px; max-width: 1100px; margin: 0 auto; }
 .projects-label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #00D692; margin-bottom: 16px; }
 .projects-title { font-size: clamp(22px, 3vw, 32px); font-weight: 700; margin-bottom: 12px; }
 .projects-subtitle { font-size: 15px; color: #888; margin-bottom: 56px; line-height: 1.6; }
-
 .project-block { margin-bottom: 72px; }
 .project-block:last-child { margin-bottom: 0; }
-
 .project-intro { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
-.project-intro-left {}
 .project-number { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #555; text-transform: uppercase; margin-bottom: 6px; }
 .project-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
 .project-desc { font-size: 14px; color: #888; line-height: 1.6; max-width: 500px; }
@@ -50,7 +50,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .badge-html { color: #6a9fff; background: rgba(106,159,255,0.1); border: 1px solid rgba(106,159,255,0.25); }
 .badge-image { color: #c97fff; background: rgba(201,127,255,0.1); border: 1px solid rgba(201,127,255,0.25); }
 
-/* Project viewer card */
+/* Project card */
 .project-card { border: 1px solid #2a2a2a; border-radius: 16px; overflow: hidden; background: #111; }
 .browser-bar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #2a2a2a; }
 .browser-dots { display: flex; gap: 6px; flex-shrink: 0; }
@@ -60,8 +60,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .dot.green { background: #28c840; }
 .browser-address { flex: 1; min-width: 0; background: #3a3a3a; color: #ccc; font-family: monospace; font-size: 13px; padding: 5px 12px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .browser-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #6a9fff; white-space: nowrap; flex-shrink: 0; }
-.browser-tag.image-tag { color: #c97fff; }
-
 .page-tabs-wrap { background: #1e1e1e; padding: 12px 16px; border-bottom: 1px solid #333; }
 .tabs-hint { display: block; font-size: 11px; color: #555; margin-bottom: 8px; letter-spacing: 0.03em; }
 .page-tabs { display: flex; overflow-x: auto; gap: 6px; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
@@ -71,45 +69,48 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .page-tab.active::before { content: '✦'; }
 .page-tab:hover { background: #3a3a3a; border-color: #00D692; color: #fff; }
 .page-tab.active { background: #00D692; border-color: #00D692; color: #111; font-weight: 700; }
-
 .page-dropdown-wrap { display: none; align-items: center; gap: 10px; padding: 10px 16px; background: #1e1e1e; border-bottom: 1px solid #333; }
 .dropdown-label { font-size: 12px; color: #888; white-space: nowrap; font-family: monospace; }
 .page-dropdown { flex: 1; background: #2a2a2a; color: #fff; border: 1px solid #444; border-radius: 6px; padding: 8px 10px; font-size: 13px; font-family: monospace; cursor: pointer; }
-
-@media (max-width: 680px) {
-  .page-tabs-wrap { display: none; }
-  .page-dropdown-wrap { display: flex; }
-}
-
+@media (max-width: 680px) { .page-tabs-wrap { display: none; } .page-dropdown-wrap { display: flex; } }
 .iframe-wrapper { width: 100%; overflow: hidden; background: #fff; }
 .iframe-wrapper iframe { display: block; border: none; width: 100%; height: 720px; }
-
-.image-label { padding: 8px 16px; background: #2a2a2a; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #c97fff; }
-.mockup-image-wrap { background: #f5f5f5; max-height: 720px; overflow-y: auto; }
-.mockup-image { width: 100%; display: block; }
-
 .story-bar { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 12px 22px; background: #161616; border-bottom: 1px solid #2a2a2a; flex-wrap: wrap; }
 .story-step { display: flex; align-items: center; gap: 8px; }
 .story-icon { font-size: 16px; }
 .story-text { font-size: 13px; color: #888; }
 .story-text strong { color: #fff; }
 .story-arrow { font-size: 18px; color: #00D692; font-weight: 700; }
-
+.image-label { padding: 8px 16px; background: #2a2a2a; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #c97fff; }
+.mockup-image-wrap { background: #f5f5f5; max-height: 720px; overflow-y: auto; }
+.mockup-image { width: 100%; display: block; }
 .card-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px 20px; background: #161616; border-top: 1px solid #2a2a2a; }
 .footer-note { font-size: 13px; color: #555; }
 .live-btn { display: inline-block; background: #00D692; color: #111; font-weight: 700; font-size: 14px; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: all 0.2s; white-space: nowrap; }
 .live-btn:hover { background: #00c082; }
 
-/* FOOTER */
-.page-footer { text-align: center; padding: 48px 40px; background: #0d0d0d; border-top: 1px solid #1e1e1e; }
-.page-footer p { font-size: 14px; color: #555; margin-bottom: 16px; }
-.footer-link { color: #00D692; text-decoration: none; font-weight: 600; }
-.footer-link:hover { text-decoration: underline; }
+/* CTA SECTION */
+.cta-section { padding: 80px 40px; text-align: center; background: #111; border-top: 1px solid #1e1e1e; }
+.cta-eyebrow { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #00D692; margin-bottom: 20px; }
+.cta-title { font-size: clamp(26px, 4vw, 42px); font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
+.cta-title span { color: #00D692; }
+.cta-desc { font-size: 16px; color: #888; max-width: 500px; margin: 0 auto 40px; line-height: 1.7; }
+.cta-options { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.cta-card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px 32px; min-width: 200px; }
+.cta-card-icon { font-size: 28px; margin-bottom: 10px; }
+.cta-card-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.cta-card-desc { font-size: 13px; color: #888; line-height: 1.5; }
+
+/* PAGE FOOTER */
+.page-footer { text-align: center; padding: 32px 40px; background: #0d0d0d; border-top: 1px solid #1e1e1e; }
+.page-footer p { font-size: 13px; color: #444; }
+.page-footer strong { color: #666; }
 
 @media (max-width: 600px) {
   .hero { padding: 60px 24px 48px; }
   .how-section { padding: 48px 24px; }
   .projects-section { padding: 48px 24px; }
+  .cta-section { padding: 60px 24px; }
 }
 </style>
 </head>
@@ -119,22 +120,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <div class="hero">
   <div class="hero-eyebrow">HTML & Mockup → Squarespace</div>
   <h1>Your design,<br>built in <span>Squarespace</span></h1>
-  <p class="hero-desc">
-    Already have a design? Whether your developer handed you HTML files or your designer gave you image mockups — I take exactly what you have and build it into a fully functional Squarespace website you can manage yourself.
-  </p>
+  <p class="hero-desc">Already have a design? Whether your developer handed you HTML files or your designer gave you image mockups — I take exactly what you have and build it into a fully functional Squarespace website you can manage yourself.</p>
   <div class="use-cases">
-    <div class="use-case">
-      <span class="use-case-icon">📄</span>
-      <span>You have <strong>HTML files</strong> from a developer</span>
-    </div>
-    <div class="use-case">
-      <span class="use-case-icon">🖼</span>
-      <span>You have <strong>design mockups</strong> or Figma screens</span>
-    </div>
-    <div class="use-case">
-      <span class="use-case-icon">✦</span>
-      <span>You want to <strong>manage it yourself</strong> in Squarespace</span>
-    </div>
+    <div class="use-case"><span class="use-case-icon">📄</span><span>You have <strong>HTML files</strong> from a developer</span></div>
+    <div class="use-case"><span class="use-case-icon">🖼</span><span>You have <strong>design mockups</strong> or Figma screens</span></div>
+    <div class="use-case"><span class="use-case-icon">✦</span><span>You want to <strong>manage it yourself</strong> in Squarespace</span></div>
   </div>
   <a href="#projects" class="hero-cta">See Real Projects Below ↓</a>
 </div>
@@ -165,6 +155,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <div class="step-desc">Need tweaks after reviewing? Revisions are part of the process until you're happy.</div>
     </div>
   </div>
+  <div class="changes-note">
+    <span class="changes-note-icon">💬</span>
+    <div><strong>Note on the projects below:</strong> The live websites may look slightly different from the original mockups. During development, clients reviewed the build and requested refinements — layout adjustments, content updates, color tweaks and more. What you see live reflects those final client-approved changes.</div>
+  </div>
 </div>
 
 <!-- PROJECTS -->
@@ -173,7 +167,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <div class="projects-title">Real client projects</div>
   <p class="projects-subtitle">Below are actual files clients sent me — browse each page of their original mockup, then visit the live Squarespace site I built from it.</p>
 
-  <!-- PROJECT 1 — Premier Medicare Planning -->
+  <!-- PROJECT 1 -->
   <div class="project-block">
     <div class="project-intro">
       <div class="project-intro-left">
@@ -223,7 +217,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     </div>
   </div>
 
-  <!-- PROJECT 2 — Muse MSC -->
+  <!-- PROJECT 2 -->
   <div class="project-block">
     <div class="project-intro">
       <div class="project-intro-left">
@@ -273,7 +267,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     </div>
   </div>
 
-  <!-- PROJECT 3 — Resurface Co. -->
+  <!-- PROJECT 3 -->
   <div class="project-block">
     <div class="project-intro">
       <div class="project-intro-left">
@@ -302,10 +296,33 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
 </div>
 
-<!-- PAGE FOOTER -->
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-eyebrow">Ready to get started?</div>
+  <div class="cta-title">Have a design that needs<br>to be built in <span>Squarespace?</span></div>
+  <p class="cta-desc">Send me your files — HTML, image, or Figma — and I'll turn it into a live Squarespace website your whole team can manage.</p>
+  <div class="cta-options">
+    <div class="cta-card">
+      <div class="cta-card-icon">📄</div>
+      <div class="cta-card-title">HTML Files</div>
+      <div class="cta-card-desc">Share your .html files and I'll rebuild them in Squarespace</div>
+    </div>
+    <div class="cta-card">
+      <div class="cta-card-icon">🖼</div>
+      <div class="cta-card-title">Image Mockups</div>
+      <div class="cta-card-desc">Share your design images or screenshots and I'll match them</div>
+    </div>
+    <div class="cta-card">
+      <div class="cta-card-icon">🎨</div>
+      <div class="cta-card-title">Figma Designs</div>
+      <div class="cta-card-desc">Share your Figma link and I'll build it pixel-perfect</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
 <div class="page-footer">
-  <p>Built and maintained by Kalana H. — Squarespace Expert & Marketplace Partner</p>
-  <a href="https://kalanasquare.space" target="_blank" class="footer-link">Visit kalanasquare.space →</a>
+  <p><strong>Kalana H.</strong> · Squarespace Marketplace Expert · Circle Member</p>
 </div>
 
 <script>
