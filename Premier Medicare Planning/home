@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<!-- saved from url=(0012)about:srcdoc -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.13/html-to-image.min.js" integrity="sha512-iZ2ORl595Wx6miw+GuadDet4WQbdSWS3JLMoNfY8cRGoEFy6oT3G9IbcrBeL6AfkgpA51ETt/faX6yLV+/gFJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      (function() {
+        const originalConsole = window.console;
+        window.console = {
+          log: (...args) => {
+            originalConsole.log(...args);
+            window.parent.postMessage({ type: 'console', message: args.join(' ') }, '*');
+          },
+          error: (...args) => {
+            originalConsole.error(...args);
+            window.parent.postMessage({ type: 'console', message: 'Error: ' + args.join(' ') }, '*');
+          },
+          warn: (...args) => {
+            originalConsole.warn(...args);
+            window.parent.postMessage({ type: 'console', message: 'Warning: ' + args.join(' ') }, '*');
+          }
+        };
+
+        let requestId = 0;
+        let callbacksMap = new Map();
+        let streamControllers = new Map();
+        
+        window.claude = {
+          complete: (prompt) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'claudeComplete', id, prompt }, '*');
+            });
+          }
+        };
+
+        window.storage = {
+          get: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageGet', id, key, shared }, '*');
+            });
+          },
+          set: (key, value, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageSet', id, key, value, shared }, '*');
+            });
+          },
+          delete: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageDelete', id, key, shared }, '*');
+            });
+          },
+          list: (prefix, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageList', id, prefix, shared }, '*');
+            });
+          }
+        };
+
+        let pendingBlobs = new Map();
+        URL.createObjectURL = (blob) => {
+          // Store the blob and create an ID and URL for it
+          const blobId = `blob-${Date.now()}-${Math.random()}`;
+          pendingBlobs.set(blobId, blob);
+          return `blob-request://${blobId}`;
+        };
+
+        URL.revokeObjectURL = (url) => {
+          // Remove the blob from our store
+          const blobId = url.replace("blob-request://", "");
+          pendingBlobs.delete(blobId);
+        };
+
+        const getBlobFromURL = (url) => {
+          const blobId = url.replace("blob-request://", "");
+          return pendingBlobs.get(blobId);
+        };
+
+        // Override global fetch with streaming support
+        window.fetch = (url, init = {}) => {
+          return new Promise((resolve, reject) => {
+            const id = requestId++;
+            const channelId = `fetch-${id}-${Date.now()}`;
+            
+            callbacksMap.set(id, { 
+              resolve: (response) => {
+                // Create a ReadableStream for the response body
+                const stream = new ReadableStream({
+                  start(controller) {
+                    streamControllers.set(channelId, controller);
+                  },
+                  cancel() {
+                    streamControllers.delete(channelId);
+                  }
+                });
+                
+                // Create and return the Response with the stream
+                resolve(new Response(stream, {
+                  status: response.status,
+                  statusText: response.statusText,
+                  headers: response.headers
+                }));
+              },
+              reject,
+              channelId
+            });
+            
+            window.parent.postMessage({
+              type: 'proxyFetch',
+              id,
+              url,
+              init,
+              channelId
+            }, '*');
+          });
+        };
+
+        window.addEventListener('message', async (event) => {
+          if (event.data.type === 'takeScreenshot') {
+            const rootElement = document.getElementById('artifacts-component-root-html');
+            if (!rootElement) {
+              window.parent.postMessage({
+                type: 'screenshotError',
+                error: new Error('Root element not found'),
+              }, '*');
+              return;
+            }
+            // Catch CDN load failures (htmlToImage undefined) and toPng errors
+            // so the parent always gets a response instead of hanging forever.
+            try {
+              const screenshot = await htmlToImage.toPng(rootElement, {
+                imagePlaceholder:
+                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjePDgwX8ACOQDoNsk0PMAAAAASUVORK5CYII=",
+              });
+              window.parent.postMessage({
+                type: 'screenshotData',
+                data: screenshot,
+              }, '*');
+            } catch (err) {
+              window.parent.postMessage({
+                type: 'screenshotError',
+                error: err instanceof Error ? err : new Error(String(err)),
+              }, '*');
+            }
+          } else if (event.data.type === 'claudeComplete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.completion);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'proxyFetchResponse') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+              callbacksMap.delete(event.data.id);
+            } else {
+              // Initial response with headers, status, etc.
+              callback.resolve({
+                status: event.data.status,
+                statusText: event.data.statusText,
+                headers: event.data.headers
+              });
+              // Don't delete the callback yet if streaming
+              if (!event.data.body) {
+                callbacksMap.delete(event.data.id);
+              }
+            }
+          } else if (event.data.type === 'proxyFetchStream') {
+            // Handle streaming data chunks
+            const controller = streamControllers.get(event.data.channelId);
+            if (controller) {
+              if (event.data.error) {
+                controller.error(new Error(event.data.error));
+                streamControllers.delete(event.data.channelId);
+              } else if (event.data.done) {
+                controller.close();
+                streamControllers.delete(event.data.channelId);
+                // Clean up the callback
+                const callback = Array.from(callbacksMap.entries()).find(
+                  ([_, value]) => value.channelId === event.data.channelId
+                );
+                if (callback) {
+                  callbacksMap.delete(callback[0]);
+                }
+              } else if (event.data.chunk) {
+                controller.enqueue(new Uint8Array(event.data.chunk));
+              }
+            }
+          } else if (event.data.type === 'storageGet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageSet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageDelete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageList') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          }
+        });
+
+        window.addEventListener('click', (event) => {
+          const isEl = event.target instanceof HTMLElement;
+          if (!isEl) return;
+    
+          // find ancestor links
+          const linkEl = event.target.closest("a");
+          if (!linkEl || !linkEl.href) return;
+    
+          event.preventDefault();
+          event.stopImmediatePropagation();
+    
+          if (linkEl.href.startsWith("blob-request:")) {
+            const blob = getBlobFromURL(linkEl.href);
+            if (!blob) return;
+            void blob.arrayBuffer().then((data) => {
+              window.parent.postMessage({
+                type: "downloadFile",
+                filename: linkEl.download,
+                data,
+                mimeType: blob.type || "application/octet-stream",
+              });
+            });
+          } else if (linkEl.href.startsWith("data:")) {
+            const [header, base64Data] = linkEl.href.split(",");
+            const mimeMatch = header.match(/data:([^;]+)/);
+            const mimeType = mimeMatch ? mimeMatch[1] : "application/octet-stream";
+            const binaryString = atob(base64Data);
+            const data = Uint8Array.from(binaryString, (c) =>
+              c.charCodeAt(0),
+            ).buffer;
+            window.parent.postMessage({
+              type: "downloadFile",
+              filename: linkEl.download,
+              data,
+              mimeType,
+            });
+          } else {
+            let linkUrl;
+            try {
+              linkUrl = new URL(linkEl.href);
+            } catch (error) {
+              return;
+            }
+    
+            if (linkUrl.hostname === window.location.hostname) return;
+      
+            window.parent.postMessage({
+              type: 'openExternal',
+              href: linkEl.href,
+            }, '*');
+          }
+      });
+
+        const originalOpen = window.open;
+        window.open = function (url) {
+          window.parent.postMessage({
+            type: "openExternal",
+            href: url,
+          }, "*");
+        };
+
+        window.addEventListener('error', (event) => {
+          window.parent.postMessage({ type: 'console', message: 'Uncaught Error: ' + event.message }, '*');
+        });
+      })();
+    </script>
+  
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premier Medicare Planning | Dayton, Ohio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+3:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0e2340;
+    --navy-mid: #163354;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --cream: #f8f5ef;
+    --cream-dark: #ede9e0;
+    --slate: #4a5568;
+    --slate-light: #718096;
+    --white: #ffffff;
+    --rule: rgba(201,168,76,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    overflow-x: hidden;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--navy);
+    color: rgba(255,255,255,0.7);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    padding: 8px 0;
+    text-align: center;
+  }
+  .topbar span { margin: 0 20px; }
+  .topbar a { color: var(--gold-light); text-decoration: none; }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--cream-dark);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(14,35,64,0.08);
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+  }
+  .logo {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .logo-main {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 0.01em;
+  }
+  .logo-sub {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 2px;
+    font-weight: 600;
+  }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+    align-items: center;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--slate);
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--navy); }
+  .nav-cta {
+    background: var(--gold);
+    color: var(--navy) !important;
+    padding: 10px 22px;
+    border-radius: 2px;
+    font-weight: 600 !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--gold-light) !important; color: var(--navy) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--navy);
+    min-height: 88vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 70% 50%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(201,168,76,0.05) 0%, transparent 50%);
+  }
+  .hero-pattern {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    background-image: 
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .hero-left {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px 80px 80px;
+    animation: fadeUp 0.9s ease both;
+  }
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 4vw, 3.4rem);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 24px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .hero-desc {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.75;
+    max-width: 480px;
+    margin-bottom: 40px;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 400;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--navy);
+    padding: 14px 32px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-ghost {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--gold-light); }
+  .hero-right {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 80px 60px 40px;
+    animation: fadeUp 0.9s 0.2s ease both;
+  }
+  .hero-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 4px;
+    padding: 48px;
+    width: 100%;
+    max-width: 420px;
+    backdrop-filter: blur(10px);
+  }
+  .hero-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .hero-card-sub {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .form-row { margin-bottom: 16px; }
+  .form-row input, .form-row select {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--white);
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    border-radius: 2px;
+    outline: none;
+    font-family: 'Source Sans 3', sans-serif;
+    transition: border-color 0.2s;
+  }
+  .form-row input::placeholder { color: rgba(255,255,255,0.4); }
+  .form-row select option { background: var(--navy); }
+  .form-row input:focus, .form-row select:focus { border-color: var(--gold); }
+  .form-submit {
+    width: 100%;
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    padding: 14px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    margin-top: 8px;
+    transition: background 0.2s;
+  }
+  .form-submit:hover { background: var(--gold-light); }
+  .form-note {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.35);
+    text-align: center;
+    margin-top: 12px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── TRUST BAR ── */
+  .trust-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--cream-dark);
+    padding: 20px 40px;
+  }
+  .trust-bar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--slate);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .trust-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--gold);
+  }
+
+  /* ── SECTION BASE ── */
+  section { padding: 90px 40px; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+  .section-desc {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1rem;
+    color: var(--slate);
+    line-height: 1.8;
+    max-width: 580px;
+  }
+  .divider {
+    width: 48px;
+    height: 2px;
+    background: var(--gold);
+    margin: 24px 0;
+  }
+
+  /* ── WHY US ── */
+  .why-us { background: var(--white); }
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    margin-top: 60px;
+  }
+  .why-points { display: flex; flex-direction: column; gap: 32px; }
+  .why-point {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.5s ease;
+  }
+  .why-point.visible { opacity: 1; transform: none; }
+  .why-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    opacity: 0.4;
+    line-height: 1;
+    min-width: 44px;
+  }
+  .why-point-content h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .why-point-content p {
+    font-size: 0.92rem;
+    color: var(--slate);
+    line-height: 1.7;
+  }
+  .why-visual {
+    background: var(--navy);
+    border-radius: 4px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .why-visual::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 50%;
+  }
+  .why-visual::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -60px;
+    width: 280px; height: 280px;
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 50%;
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    position: relative;
+    z-index: 2;
+  }
+  .stat-box {
+    background: rgba(255,255,255,0.04);
+    padding: 28px 24px;
+    border: 1px solid rgba(201,168,76,0.12);
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* ── SERVICES ── */
+  .services { background: var(--cream); }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 56px;
+  }
+  .service-card {
+    background: var(--white);
+    padding: 40px 32px;
+    border-top: 3px solid transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 0;
+    background: var(--navy);
+    transition: height 0.3s ease;
+    z-index: 0;
+  }
+  .service-card:hover::before { height: 100%; }
+  .service-card:hover { border-top-color: var(--gold); }
+  .service-card * { position: relative; z-index: 1; }
+  .service-icon {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 20px;
+    color: var(--gold);
+  }
+  .service-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--navy);
+    margin-bottom: 12px;
+    transition: color 0.3s;
+  }
+  .service-card:hover h3 { color: var(--white); }
+  .service-card p {
+    font-size: 0.88rem;
+    color: var(--slate);
+    line-height: 1.7;
+    transition: color 0.3s;
+  }
+  .service-card:hover p { color: rgba(255,255,255,0.65); }
+  .service-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+  .service-card:hover .service-link { gap: 10px; }
+
+  /* ── TURNING 65 ── */
+  .turning65 {
+    background: var(--navy);
+    position: relative;
+    overflow: hidden;
+  }
+  .turning65::before {
+    content: '65';
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 28rem;
+    font-weight: 700;
+    color: rgba(201,168,76,0.04);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .t65-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .t65-left .section-title { color: var(--white); }
+  .t65-left .section-desc { color: rgba(255,255,255,0.65); }
+  .t65-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .t65-step {
+    display: flex;
+    gap: 20px;
+    padding: 24px 0;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+  .t65-step:last-child { border-bottom: none; }
+  .t65-step-num {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    color: var(--gold);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .t65-step h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .t65-step p {
+    font-size: 0.87rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background: var(--cream-dark); }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 56px;
+  }
+  .testimonial-card {
+    background: var(--white);
+    padding: 36px;
+    border-radius: 2px;
+    position: relative;
+  }
+  .testimonial-card::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    color: var(--gold);
+    opacity: 0.2;
+    position: absolute;
+    top: 12px;
+    left: 24px;
+    line-height: 1;
+  }
+  .testimonial-text {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.92rem;
+    color: var(--slate);
+    line-height: 1.8;
+    margin-bottom: 24px;
+    padding-top: 20px;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid var(--cream-dark);
+    padding-top: 20px;
+  }
+  .author-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--navy);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .author-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .author-location {
+    font-size: 0.78rem;
+    color: var(--slate-light);
+    margin-top: 2px;
+  }
+  .stars { color: var(--gold); font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 4px; }
+
+  /* ── CTA BAND ── */
+  .cta-band {
+    background: var(--gold);
+    padding: 64px 40px;
+  }
+  .cta-band-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .cta-band h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    color: var(--navy);
+    font-weight: 700;
+  }
+  .cta-band p {
+    font-size: 1rem;
+    color: rgba(14,35,64,0.7);
+    margin-top: 8px;
+    font-family: 'Libre Baskerville', serif;
+  }
+  .btn-dark {
+    background: var(--navy);
+    color: var(--white);
+    padding: 16px 36px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s;
+    display: inline-block;
+  }
+  .btn-dark:hover { background: var(--navy-mid); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy);
+    padding: 64px 40px 32px;
+    color: rgba(255,255,255,0.6);
+  }
+  .footer-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand .logo-main { color: var(--white); font-size: 1.2rem; }
+  .footer-brand .logo-sub { margin-bottom: 16px; display: block; }
+  .footer-brand p {
+    font-size: 0.85rem;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.45);
+    max-width: 280px;
+  }
+  .footer-col h5 {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col a {
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    font-size: 0.87rem;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--gold-light); }
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-disclaimer {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.25);
+    line-height: 1.7;
+    max-width: 700px;
+  }
+  .footer-copy {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.3);
+    white-space: nowrap;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ── PHONE STRIP ── */
+  .phone-strip {
+    background: var(--cream-dark);
+    border-top: 1px solid rgba(14,35,64,0.08);
+    border-bottom: 1px solid rgba(14,35,64,0.08);
+    padding: 16px 40px;
+    text-align: center;
+  }
+  .phone-strip a {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--navy);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .phone-strip span {
+    font-size: 0.8rem;
+    color: var(--slate-light);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 12px;
+  }
+</style>
+</head>
+<body id="artifacts-component-root-html" data-new-gr-c-s-check-loaded="14.1296.0" data-gr-ext-installed="">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <span>Serving Dayton &amp; All of Ohio</span>
+  <span>·</span>
+  <span>Independent. Unbiased. On Your Side.</span>
+  <span>·</span>
+  <span>Call Us: <a href="tel:9375550100">(937) 555-0100</a></span>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <span class="logo-main">Premier Medicare Planning</span>
+      <span class="logo-sub">Dayton, Ohio · Independent Agency</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#services">Services</a></li>
+      <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#turning65">Turning 65</a></li>
+      <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#why">Why Us</a></li>
+      <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#contact" class="nav-cta">Free Consultation</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding:0;">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Independent Medicare Advisors · Dayton, Ohio</div>
+    <h1>Medicare Made <em>Simple.</em><br>Coverage Made Right.</h1>
+    <p class="hero-desc">
+      Navigating Medicare shouldn't feel overwhelming. Our independent advisors compare plans across every major carrier — at no cost to you — so you get the right coverage at the right price.
+    </p>
+    <div class="hero-actions">
+      <a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#contact" class="btn-primary">Get Your Free Plan Review</a>
+      <a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#services" class="btn-ghost">
+        Explore Coverage Options
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      </a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-card" id="contact">
+      <div class="hero-card-title">Request a Free Consultation</div>
+      <div class="hero-card-sub">No obligation · No pressure · No cost</div>
+      <div class="form-row">
+        <input type="text" placeholder="Your Full Name">
+      </div>
+      <div class="form-row">
+        <input type="tel" placeholder="Phone Number">
+      </div>
+      <div class="form-row">
+        <input type="email" placeholder="Email Address">
+      </div>
+      <div class="form-row">
+        <select>
+          <option value="" disabled="" selected="">I'm interested in...</option>
+          <option>Medicare Advantage Plans</option>
+          <option>Medicare Supplement (Medigap)</option>
+          <option>Part D Prescription Coverage</option>
+          <option>Turning 65 Planning</option>
+          <option>Annual Plan Review</option>
+        </select>
+      </div>
+      <button class="form-submit">Schedule My Free Review</button>
+      <p class="form-note">Your information is secure and never sold to third parties.</p>
+    </div>
+  </div>
+  <div class="hero-pattern"></div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-bar-inner">
+    <div class="trust-item">
+      <svg class="trust-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+      Licensed &amp; Independent
+    </div>
+    <div class="trust-item">
+      <svg class="trust-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+      Multiple Carrier Access
+    </div>
+    <div class="trust-item">
+      <svg class="trust-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      No Cost to You
+    </div>
+    <div class="trust-item">
+      <svg class="trust-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+      Local Dayton Experts
+    </div>
+    <div class="trust-item">
+      <svg class="trust-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+      Annual Plan Reviews
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-inner">
+    <div class="section-label">What We Offer</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:0;">
+      <div>
+        <h2 class="section-title">Coverage Solutions<br>For Every <em>Situation</em></h2>
+        <div class="divider"></div>
+      </div>
+      <div>
+        <p class="section-desc">As an independent agency, we aren't tied to any single insurance company. We shop the entire market on your behalf to find the plan that fits your health needs and your budget.</p>
+      </div>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <svg class="service-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+        <h3>Medicare Advantage</h3>
+        <p>All-in-one plans (Part C) that bundle your hospital, medical, and often prescription coverage. We compare every plan available in your zip code.</p>
+        <a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#contact" class="service-link">Learn More →</a>
+      </div>
+      <div class="service-card">
+        <svg class="service-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+        <h3>Medicare Supplement</h3>
+        <p>Medigap plans that cover the "gaps" in Original Medicare — giving you predictable costs and the freedom to see any doctor who accepts Medicare nationwide.</p>
+        <a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#contact" class="service-link">Learn More →</a>
+      </div>
+      <div class="service-card">
+        <svg class="service-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+        <h3>Part D Drug Plans</h3>
+        <p>Prescription drug coverage that works with your specific medications. We analyze your drug list against every available plan to minimize your out-of-pocket costs.</p>
+        <a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#contact" class="service-link">Learn More →</a>
+      </div>
+      <div class="service-card">
+        <svg class="service-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        <h3>Turning 65 Planning</h3>
+        <p>Approaching Medicare eligibility? We walk you through every decision — enrollment timing, plan selection, and how Medicare coordinates with any existing coverage.</p>
+        <a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#contact" class="service-link">Learn More →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why-us" id="why">
+  <div class="section-inner">
+    <div class="section-label">Why Premier Medicare Planning</div>
+    <div class="why-grid">
+      <div>
+        <h2 class="section-title">A Different Kind of<br><em>Medicare Agency</em></h2>
+        <div class="divider"></div>
+        <p class="section-desc" style="margin-bottom:48px;">Most Medicare agents represent one company. We represent you. Our background in financial services means we look at your Medicare decisions the way a trusted advisor would — with the full picture in mind.</p>
+        <div class="why-points">
+          <div class="why-point visible">
+            <div class="why-num">01</div>
+            <div class="why-point-content">
+              <h4>Truly Independent</h4>
+              <p>We're appointed with every major carrier in Ohio. Our only allegiance is to finding you the best plan — not hitting a quota for any single company.</p>
+            </div>
+          </div>
+          <div class="why-point visible">
+            <div class="why-num">02</div>
+            <div class="why-point-content">
+              <h4>Financial Services Background</h4>
+              <p>We understand how Medicare decisions connect to your broader retirement picture — Social Security timing, income planning, and long-term costs.</p>
+            </div>
+          </div>
+          <div class="why-point visible">
+            <div class="why-num">03</div>
+            <div class="why-point-content">
+              <h4>Local and Accountable</h4>
+              <p>We're your neighbors in Dayton. When you have a question or a claim issue, you call us — not a national call center.</p>
+            </div>
+          </div>
+          <div class="why-point visible">
+            <div class="why-num">04</div>
+            <div class="why-point-content">
+              <h4>Annual Plan Reviews</h4>
+              <p>Plans change every year. We proactively review your coverage each fall to make sure you're still in the right plan for your needs and budget.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="why-visual">
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-num">$0</div>
+            <div class="stat-label">Cost to You for Our Services</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">15+</div>
+            <div class="stat-label">Carriers Compared</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">100%</div>
+            <div class="stat-label">Independent &amp; Unbiased</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">Local</div>
+            <div class="stat-label">Dayton Ohio Based Team</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TURNING 65 -->
+<section class="turning65" id="turning65">
+  <div class="section-inner">
+    <div class="t65-grid">
+      <div class="t65-left">
+        <div class="section-label" style="color:var(--gold);">Turning 65 Soon?</div>
+        <h2 class="section-title">Your Medicare<br><em>Enrollment Guide</em></h2>
+        <div class="divider"></div>
+        <p class="section-desc">Medicare enrollment has strict deadlines. Missing them can mean permanent premium penalties or gaps in coverage. We guide you through every step — ideally starting 3 to 6 months before your 65th birthday.</p>
+        <a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#contact" class="btn-primary" style="margin-top:32px;display:inline-block;">Start Your Planning Conversation</a>
+      </div>
+      <div class="t65-steps">
+        <div class="t65-step">
+          <div class="t65-step-num">1</div>
+          <div>
+            <h4>Understand Your Enrollment Window</h4>
+            <p>Your Initial Enrollment Period opens 3 months before your 65th birthday. We map out your specific dates and deadlines.</p>
+          </div>
+        </div>
+        <div class="t65-step">
+          <div class="t65-step-num">2</div>
+          <div>
+            <h4>Enroll in Medicare Parts A &amp; B</h4>
+            <p>We walk you through the Social Security enrollment process and explain how Parts A and B work as your foundation.</p>
+          </div>
+        </div>
+        <div class="t65-step">
+          <div class="t65-step-num">3</div>
+          <div>
+            <h4>Choose Your Coverage Path</h4>
+            <p>Medicare Advantage or Medicare Supplement? We compare both options against your doctors, prescriptions, and budget.</p>
+          </div>
+        </div>
+        <div class="t65-step">
+          <div class="t65-step-num">4</div>
+          <div>
+            <h4>Add Prescription Drug Coverage</h4>
+            <p>We analyze your current medications against every Part D plan available to find your lowest total drug cost.</p>
+          </div>
+        </div>
+        <div class="t65-step">
+          <div class="t65-step-num">5</div>
+          <div>
+            <h4>Review Every Year</h4>
+            <p>We contact you each fall before Annual Enrollment to make sure your plan still fits as your needs evolve.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-inner">
+    <div style="text-align:center;">
+      <div class="section-label" style="justify-content:center;">Client Experiences</div>
+      <h2 class="section-title" style="text-align:center;">What Our Clients<br>Are <em>Saying</em></h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">I was completely overwhelmed turning 65. They sat down with me, explained every option clearly, and found me a plan that covers all my doctors and saved me over $180 a month compared to what I thought I'd be paying.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">RK</div>
+          <div>
+            <div class="author-name">Robert K.</div>
+            <div class="author-location">Centerville, Ohio</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">Unlike the 1-800 number agents, these are real local people who actually know the Dayton market. When I had a billing issue, I called them directly and it was resolved the same day. That's the difference.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">ML</div>
+          <div>
+            <div class="author-name">Margaret L.</div>
+            <div class="author-location">Beavercreek, Ohio</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">My financial advisor referred me here and I'm so glad. They understood exactly how my Medicare choices connected to my retirement income plan. A completely different level of conversation than I expected.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">DP</div>
+          <div>
+            <div class="author-name">David P.</div>
+            <div class="author-location">Springboro, Ohio</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <div class="cta-band-inner">
+    <div>
+      <h2>Ready to Find the Right Medicare Plan?</h2>
+      <p>Free consultation. No obligation. Real answers from local experts.</p>
+    </div>
+    <a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#contact" class="btn-dark">Schedule Your Free Review</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">
+        <span class="logo-main">Premier Medicare Planning</span>
+        <span class="logo-sub">Dayton, Ohio · Independent Agency</span>
+      </div>
+      <p>An independent Medicare insurance agency serving Dayton and all of Ohio. We are not affiliated with or endorsed by the federal Medicare program or any government agency.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Services</h5>
+      <ul>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Medicare Advantage</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Medicare Supplement</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Part D Drug Plans</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Turning 65 Planning</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Annual Plan Review</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Resources</h5>
+      <ul>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Medicare Basics</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Enrollment Deadlines</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Plan Comparison Guide</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">FAQ</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="tel:9375550100">(937) 555-0100</a></li>
+        <li><a href="mailto:info@premiermedicareplanning.com">info@premierMedicarePlanning.com</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Dayton, Ohio</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/e898074b-45ea-4f74-9624-fd7ad5c5ccce?domain=&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Schedule a Call</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-disclaimer">Premier Medicare Planning LLC is a licensed independent insurance agency. We are not affiliated with or endorsed by Medicare, the Centers for Medicare &amp; Medicaid Services (CMS), or any government agency. Medicare has neither reviewed nor endorsed this information. Plans vary by region. Not all plans available in all areas. © 2025 Premier Medicare Planning LLC. All rights reserved.</p>
+    <div class="footer-copy">Ohio License #XXXXXXX</div>
+  </div>
+</footer>
+
+<script>
+  // Scroll animation for why points
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 120);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.why-point').forEach(el => observer.observe(el));
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(anchor.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
