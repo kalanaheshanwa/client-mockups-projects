@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    window.FontAwesomeConfig = {
+      autoReplaceSvg: 'nest'
+    };
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publications and Research - Muse Stem Cells</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            navy: '#0A192F',
+            primary: '#009ADE',
+            ice: '#F0F7FF',
+            dark: '#333333',
+            gray: '#555555',
+            light: '#F8FAFC',
+          },
+          backgroundImage: {
+            'hero-glow': 'radial-gradient(circle at 50% 50%, rgba(0, 154, 222, 0.15) 0%, rgba(10, 25, 47, 1) 70%)',
+            'card-glass': 'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0A192F;
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .nav-glass {
+      background: rgba(10, 25, 47, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  </style>
+  <style data-grapesjs-styles="true">
+    #i5lm8 {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+  </style>
+</head>
+
+<body class="antialiased">
+  <!-- Navigation -->
+  <nav id="header" class="fixed top-0 w-full z-50 nav-glass transition-all duration-300">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 h-[80px] flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+          <i class="fa-solid fa-dna text-white text-sm"></i>
+        </div>
+        <span class="font-heading font-bold text-xl tracking-tight text-white">Muse Cells</span>
+      </div>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#science" class="text-sm font-medium text-white/70 hover:text-white transition-colors">The Science</a>
+        <a href="#unique" class="text-sm font-medium text-white/70 hover:text-white transition-colors">Unique Properties</a>
+        <a href="#comparison" class="text-sm font-medium text-white/70 hover:text-white transition-colors">Comparison</a>
+        <a href="#evidence" class="text-sm font-medium text-white/70 hover:text-white transition-colors">Clinical Evidence</a>
+        <a href="#" class="text-sm font-medium text-white border-b-2 border-primary pb-1 transition-colors">Publications</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="hidden lg:block px-5 py-2.5 text-sm font-medium text-white border border-white/20 rounded-full hover:bg-white/5 transition-colors">
+          Physician Portal
+        </button>
+        <button class="px-6 py-2.5 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-[0_0_20px_rgba(0,154,222,0.3)]">
+          Schedule Consultation
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Area with Ice Background -->
+  <main class="bg-ice min-h-screen pt-[80px] text-dark pb-32">
+    
+    <!-- Hero / Header Section -->
+    <section id="publications-hero" class="relative pt-20 pb-16 overflow-hidden">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12 relative z-10">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <span class="text-primary font-semibold tracking-wide uppercase text-sm mb-4 block">Research Repository</span>
+          <h1 class="font-heading text-5xl lg:text-6xl font-bold text-dark mb-6 tracking-tight">
+            Publications &amp; Research
+          </h1>
+          <p class="text-gray text-lg leading-relaxed">
+            Explore our comprehensive library of peer-reviewed clinical studies, whitepapers, and scientific breakthroughs detailing the efficacy of Muse Stem Cells.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Publication -->
+    <section id="featured-publication" class="mb-24">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+        <div class="bg-white rounded-[24px] p-8 lg:p-12 border border-gray/10 shadow-[0_20px_40px_rgba(0,0,0,0.05)] relative overflow-hidden group">
+          <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10 items-center">
+            <div class="lg:col-span-7 flex flex-col gap-6">
+              <div class="flex items-center gap-3">
+                <span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">Featured</span>
+                <span class="text-sm font-medium text-gray">Published: October 2025</span>
+              </div>
+              <h2 class="font-heading text-3xl lg:text-4xl font-bold text-dark leading-tight">
+                Intravenous Administration of Muse Cells for Acute Ischemic Stroke: A Phase 2 Double-Blind Trial
+              </h2>
+              <div class="text-sm font-medium text-primary">
+                Kuroda Y, Dezawa M, et al. | The Lancet Neurology
+              </div>
+              <p class="text-gray text-base leading-relaxed max-w-2xl">
+                This pivotal study demonstrates the profound neurorestorative capabilities of Muse cells when administered intravenously within 24 hours of acute ischemic stroke onset. Patients exhibited significant functional recovery compared to the control group, with robust evidence of cellular homing to the infarcted region and structural integration without tumorigenesis.
+              </p>
+              <div class="pt-4">
+                <button class="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(0,154,222,0.3)] flex items-center gap-2 w-fit">
+                  Read Full Paper on DOI <i class="fa-solid fa-external-link-alt text-sm"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="lg:col-span-5 h-full">
+               <div class="w-full h-64 lg:h-full min-h-[300px] rounded-xl overflow-hidden border border-gray/10 relative">
+                  <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/75f34cef6c-02bf293abeac72d3a7e0.png" alt="Clean, medical, scientific 3D illustration of neurons regenerating, high end biotech visualization, soft lighting, blue and white tones" />
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search and Filter Bar -->
+    <section id="search-filter" class="mb-12 sticky top-[80px] z-40 bg-ice/90 backdrop-blur-md py-4 border-b border-gray/10">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+          
+          <!-- Search Input -->
+          <div class="relative w-full md:w-[400px]">
+            <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray/50"></i>
+            <input type="text" placeholder="Search publications, authors, or DOIs..." 
+              class="w-full pl-12 pr-4 py-3 bg-white border border-gray/20 rounded-full text-sm text-dark placeholder:text-gray/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm">
+          </div>
+
+          <!-- Filter Tags -->
+          <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            <span class="text-sm font-medium text-gray mr-2 hidden lg:block">Filter by:</span>
+            <button class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-full shadow-sm">All Topics</button>
+            <button class="px-4 py-2 bg-white text-gray border border-gray/20 text-sm font-medium rounded-full hover:border-primary hover:text-primary transition-all">Neurology</button>
+            <button class="px-4 py-2 bg-white text-gray border border-gray/20 text-sm font-medium rounded-full hover:border-primary hover:text-primary transition-all">Cardiology</button>
+            <button class="px-4 py-2 bg-white text-gray border border-gray/20 text-sm font-medium rounded-full hover:border-primary hover:text-primary transition-all">Dermatology</button>
+            
+            <div class="h-6 w-px bg-gray/20 mx-2 hidden sm:block"></div>
+            
+            <select class="px-4 py-2 bg-white text-gray border border-gray/20 text-sm font-medium rounded-full hover:border-primary focus:outline-none appearance-none pr-8 relative cursor-pointer">
+              <option value="all">Any Year</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+            </select>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- Publication List -->
+    <section id="publication-list" class="mb-24">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12 flex flex-col gap-6">
+        
+        <!-- List Item 1 -->
+        <div class="bg-white rounded-[16px] p-6 lg:p-8 border border-gray/10 hover:shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all duration-300 flex flex-col lg:flex-row gap-6 lg:items-center justify-between group">
+          <div class="flex-1 flex flex-col gap-3">
+            <div class="flex items-center gap-3">
+              <span class="px-2.5 py-1 bg-gray/5 text-gray text-xs font-semibold rounded-md uppercase tracking-wider">Cardiology</span>
+              <span class="text-sm text-gray/70">August 2025</span>
+            </div>
+            <h3 class="font-heading text-xl font-bold text-dark group-hover:text-primary transition-colors">
+              Myocardial Regeneration via Muse Cell Engraftment Following Acute Myocardial Infarction
+            </h3>
+            <div class="text-sm text-gray">
+              Yamada T, Noda T, et al. | Circulation Research
+            </div>
+          </div>
+          <div class="shrink-0 flex items-center lg:justify-end">
+            <button class="px-5 py-2.5 border border-primary/20 text-primary text-sm font-medium rounded-full hover:bg-primary hover:text-white transition-all flex items-center gap-2">
+              Read on DOI <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- List Item 2 -->
+        <div class="bg-white rounded-[16px] p-6 lg:p-8 border border-gray/10 hover:shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all duration-300 flex flex-col lg:flex-row gap-6 lg:items-center justify-between group">
+          <div class="flex-1 flex flex-col gap-3">
+            <div class="flex items-center gap-3">
+              <span class="px-2.5 py-1 bg-gray/5 text-gray text-xs font-semibold rounded-md uppercase tracking-wider">Hepatology</span>
+              <span class="text-sm text-gray/70">March 2025</span>
+            </div>
+            <h3 class="font-heading text-xl font-bold text-dark group-hover:text-primary transition-colors">
+              Reversal of Liver Fibrosis and Restoration of Hepatic Function using Intravenous Muse Cells
+            </h3>
+            <div class="text-sm text-gray">
+              Sato M, et al. | Journal of Hepatology
+            </div>
+          </div>
+          <div class="shrink-0 flex items-center lg:justify-end">
+            <button class="px-5 py-2.5 border border-primary/20 text-primary text-sm font-medium rounded-full hover:bg-primary hover:text-white transition-all flex items-center gap-2">
+              Read on DOI <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- List Item 3 -->
+        <div class="bg-white rounded-[16px] p-6 lg:p-8 border border-gray/10 hover:shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all duration-300 flex flex-col lg:flex-row gap-6 lg:items-center justify-between group">
+          <div class="flex-1 flex flex-col gap-3">
+            <div class="flex items-center gap-3">
+              <span class="px-2.5 py-1 bg-gray/5 text-gray text-xs font-semibold rounded-md uppercase tracking-wider">Dermatology</span>
+              <span class="text-sm text-gray/70">November 2024</span>
+            </div>
+            <h3 class="font-heading text-xl font-bold text-dark group-hover:text-primary transition-colors">
+              Accelerated Wound Healing and Epidermal Regeneration in Severe Burn Models via S1P-Mediated Homing
+            </h3>
+            <div class="text-sm text-gray">
+              Kinoshita T, et al. | Journal of Investigative Dermatology
+            </div>
+          </div>
+          <div class="shrink-0 flex items-center lg:justify-end">
+            <button class="px-5 py-2.5 border border-primary/20 text-primary text-sm font-medium rounded-full hover:bg-primary hover:text-white transition-all flex items-center gap-2">
+              Read on DOI <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- List Item 4 -->
+        <div class="bg-white rounded-[16px] p-6 lg:p-8 border border-gray/10 hover:shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all duration-300 flex flex-col lg:flex-row gap-6 lg:items-center justify-between group">
+          <div class="flex-1 flex flex-col gap-3">
+            <div class="flex items-center gap-3">
+              <span class="px-2.5 py-1 bg-gray/5 text-gray text-xs font-semibold rounded-md uppercase tracking-wider">Basic Science</span>
+              <span class="text-sm text-gray/70">July 2024</span>
+            </div>
+            <h3 class="font-heading text-xl font-bold text-dark group-hover:text-primary transition-colors">
+              Characterization of Endogenous Pluripotent-Like Muse Cells Residing in Human Bone Marrow
+            </h3>
+            <div class="text-sm text-gray">
+              Dezawa M, Kuroda Y. | Stem Cells Translational Medicine
+            </div>
+          </div>
+          <div class="shrink-0 flex items-center lg:justify-end">
+            <button class="px-5 py-2.5 border border-primary/20 text-primary text-sm font-medium rounded-full hover:bg-primary hover:text-white transition-all flex items-center gap-2">
+              Read on DOI <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex items-center justify-center gap-2 mt-8">
+          <button class="w-10 h-10 rounded-full border border-gray/20 flex items-center justify-center text-gray hover:border-primary hover:text-primary transition-all">
+            <i class="fa-solid fa-chevron-left text-sm"></i>
+          </button>
+          <button class="w-10 h-10 rounded-full bg-primary text-white font-medium flex items-center justify-center shadow-sm">1</button>
+          <button class="w-10 h-10 rounded-full border border-gray/20 flex items-center justify-center text-gray font-medium hover:border-primary hover:text-primary transition-all">2</button>
+          <button class="w-10 h-10 rounded-full border border-gray/20 flex items-center justify-center text-gray font-medium hover:border-primary hover:text-primary transition-all">3</button>
+          <span class="text-gray px-2">...</span>
+          <button class="w-10 h-10 rounded-full border border-gray/20 flex items-center justify-center text-gray font-medium hover:border-primary hover:text-primary transition-all">12</button>
+          <button class="w-10 h-10 rounded-full border border-gray/20 flex items-center justify-center text-gray hover:border-primary hover:text-primary transition-all">
+            <i class="fa-solid fa-chevron-right text-sm"></i>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer id="footer" class="py-16 bg-navy relative border-t border-white/10">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-white/40">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-dna text-primary"></i>
+        <span class="font-heading font-bold text-white">Muse Cells</span>
+      </div>
+      <div>© 2026 Muse Stem Cells Inc. All rights reserved.</div>
+      <div class="flex gap-6">
+        <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+        <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

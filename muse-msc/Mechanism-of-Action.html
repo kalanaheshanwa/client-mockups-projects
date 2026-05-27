@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    window.FontAwesomeConfig = {
+      autoReplaceSvg: 'nest'
+    };
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Muse Stem Cells - Mechanism of Action</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            navy: '#0A192F',
+            primary: '#009ADE',
+            ice: '#F0F7FF',
+            dark: '#333333',
+            gray: '#555555',
+            light: '#F8FAFC',
+          },
+          backgroundImage: {
+            'hero-glow': 'radial-gradient(circle at 50% 50%, rgba(0, 154, 222, 0.15) 0%, rgba(10, 25, 47, 1) 70%)',
+            'card-glass': 'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0A192F;
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .nav-glass {
+      background: rgba(10, 25, 47, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .timeline-line {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(0, 154, 222, 0) 0%, rgba(0, 154, 222, 1) 20%, rgba(0, 154, 222, 1) 80%, rgba(0, 154, 222, 0) 100%);
+      z-index: 0;
+    }
+    .timeline-glow {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(0, 154, 222, 0) 0%, rgba(0, 154, 222, 0.3) 20%, rgba(0, 154, 222, 0.3) 80%, rgba(0, 154, 222, 0) 100%);
+      filter: blur(8px);
+      z-index: 0;
+      animation: pulse-glow 2s infinite alternate;
+    }
+    @keyframes pulse-glow {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Navigation -->
+  <nav id="header" class="fixed top-0 w-full z-50 nav-glass transition-all duration-300">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 h-[80px] flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+          <i class="fa-solid fa-dna text-white text-sm"></i>
+        </div>
+        <span class="font-heading font-bold text-xl tracking-tight text-white">Muse Cells</span>
+      </div>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#hero" class="text-sm font-medium text-white/70 hover:text-white transition-colors">Mechanism of Action</a>
+        <a href="#timeline" class="text-sm font-medium text-white/70 hover:text-white transition-colors">The Journey</a>
+        <a href="#bystander" class="text-sm font-medium text-white/70 hover:text-white transition-colors">Bystander Effects</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="hidden lg:block px-5 py-2.5 text-sm font-medium text-white border border-white/20 rounded-full hover:bg-white/5 transition-colors">
+          Physician Portal
+        </button>
+        <button class="px-6 py-2.5 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-[0_0_20px_rgba(0,154,222,0.3)]">
+          Schedule Consultation
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero" class="relative min-h-[1024px] flex items-center pt-20 overflow-hidden bg-hero-glow">
+    <div class="absolute inset-0 z-0 flex items-center justify-center opacity-40">
+      <img class="w-full h-full object-cover mix-blend-screen" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7cfa8a468c-d3d0bc6631b97aa79a13.png" alt="futuristic abstract glowing 3D cellular biology network structure in dark navy and electric medical blue, high end scientific visualization, depth of field" />
+    </div>
+    <div class="absolute inset-0 z-0" style="background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 40px 40px;"></div>
+    
+    <div class="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="flex flex-col gap-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 w-fit">
+          <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          <span class="text-xs font-medium text-primary uppercase tracking-wider">Cellular Journey</span>
+        </div>
+        <h1 class="font-heading text-6xl lg:text-[84px] leading-[1.05] font-bold text-white tracking-tight">
+          Mechanism of <br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-ice">Action.</span>
+        </h1>
+        <p class="text-lg lg:text-xl text-white/70 max-w-2xl font-light leading-relaxed">
+          Witness the extraordinary journey of Muse Stem Cells from peripheral circulation to targeted tissue regeneration. A precise, naturally occurring biological process.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center gap-4 pt-4">
+          <button class="w-full sm:w-auto px-8 py-4 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-all shadow-[0_0_30px_rgba(0,154,222,0.4)] flex items-center justify-center gap-2">
+            View Timeline
+            <i class="fa-solid fa-arrow-down text-sm"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="relative hidden lg:flex justify-end">
+        <div class="glass-panel rounded-[24px] p-8 w-[480px] shadow-[0_20px_40px_rgba(0,0,0,0.4)] border border-primary/20">
+           <img class="w-full h-auto rounded-xl shadow-lg border border-white/10" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/38ddf2d6b3-20e88997b50bb4b73e43.png" alt="highly detailed 3D render of a stem cell migrating through a blood vessel, medical blue glowing accents, dark navy background, cinematic lighting, macro photography style" />
+           <div class="mt-6 space-y-4">
+             <div class="flex items-center justify-between text-sm">
+               <span class="text-white/70">Cell Type</span>
+               <span class="font-medium text-white">Muse Stem Cell</span>
+             </div>
+             <div class="w-full h-px bg-white/10"></div>
+             <div class="flex items-center justify-between text-sm">
+               <span class="text-white/70">Delivery Method</span>
+               <span class="font-medium text-white">Intravenous (IV)</span>
+             </div>
+             <div class="w-full h-px bg-white/10"></div>
+             <div class="flex items-center justify-between text-sm">
+               <span class="text-white/70">Primary Action</span>
+               <span class="font-medium text-primary">Targeted Homing & Differentiation</span>
+             </div>
+           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vertical Timeline Section -->
+  <section id="timeline" class="py-32 bg-white relative">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 relative">
+      <div class="text-center max-w-3xl mx-auto mb-24">
+        <span class="text-primary font-semibold tracking-wide uppercase text-sm mb-4 block">Step-by-Step Process</span>
+        <h2 class="font-heading text-4xl lg:text-5xl font-bold text-dark mb-6 tracking-tight">
+          The Journey of a Muse Cell
+        </h2>
+        <p class="text-gray text-lg leading-relaxed">
+          From the moment of administration to complete tissue integration, follow the precise mechanism that makes Muse cell therapy revolutionary.
+        </p>
+      </div>
+
+      <div class="relative max-w-5xl mx-auto">
+        <!-- Connecting Line -->
+        <div class="timeline-line hidden md:block"></div>
+        <div class="timeline-glow hidden md:block"></div>
+
+        <div class="space-y-24">
+          <!-- Step 1: Circulation -->
+          <div class="relative flex flex-col md:flex-row items-center justify-between group">
+            <div class="md:w-[45%] mb-8 md:mb-0 text-right pr-8">
+              <span class="text-primary font-bold text-6xl opacity-20 absolute -left-12 top-0 md:relative md:left-auto md:top-auto md:inline-block">01</span>
+              <h3 class="font-heading text-2xl font-bold text-dark mb-4 mt-2">Circulation</h3>
+              <p class="text-gray leading-relaxed">
+                Following simple intravenous injection, Muse cells enter the peripheral blood stream. Due to their uniquely small size (~13μm), they easily bypass the pulmonary trap, circulating freely throughout the body.
+              </p>
+            </div>
+            
+            <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 hidden md:flex">
+              <div class="w-16 h-16 rounded-full bg-white border-4 border-primary flex items-center justify-center shadow-[0_0_20px_rgba(0,154,222,0.3)] group-hover:scale-110 transition-transform duration-300">
+                <i class="fa-solid fa-water text-xl text-primary"></i>
+              </div>
+            </div>
+
+            <div class="md:w-[45%] pl-8">
+              <div class="bg-light rounded-[24px] p-2 border border-gray/10 shadow-lg group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-300">
+                <img class="w-full h-64 object-cover rounded-[20px]" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/fb725b68e4-6f37e98b2c927b0da574.png" alt="3D illustration of small stem cells flowing smoothly through a wide blood vessel, microscopic view, medical blue lighting, clean white background aesthetic" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Detection -->
+          <div class="relative flex flex-col md:flex-row-reverse items-center justify-between group">
+            <div class="md:w-[45%] mb-8 md:mb-0 text-left pl-8">
+              <span class="text-primary font-bold text-6xl opacity-20 absolute -right-12 top-0 md:relative md:right-auto md:top-auto md:inline-block">02</span>
+              <h3 class="font-heading text-2xl font-bold text-dark mb-4 mt-2">Detection & Homing</h3>
+              <p class="text-gray leading-relaxed">
+                Damaged tissues emit Sphingosine-1-Phosphate (S1P) distress signals. Muse cells possess specialized receptors that detect this gradient, allowing them to actively migrate directly to the site of injury.
+              </p>
+            </div>
+            
+            <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 hidden md:flex">
+              <div class="w-16 h-16 rounded-full bg-white border-4 border-primary flex items-center justify-center shadow-[0_0_20px_rgba(0,154,222,0.3)] group-hover:scale-110 transition-transform duration-300">
+                <i class="fa-solid fa-satellite-dish text-xl text-primary"></i>
+              </div>
+            </div>
+
+            <div class="md:w-[45%] pr-8">
+              <div class="bg-light rounded-[24px] p-2 border border-gray/10 shadow-lg group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-300">
+                <img class="w-full h-64 object-cover rounded-[20px]" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/ee3402b1c5-5e8bc4aff4276c357d83.png" alt="abstract visualization of a cell detecting glowing chemical signals (S1P) emitted from a damaged tissue area, radar or homing concept, medical blue and white palette" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Phagocytosis -->
+          <div class="relative flex flex-col md:flex-row items-center justify-between group">
+            <div class="md:w-[45%] mb-8 md:mb-0 text-right pr-8">
+              <span class="text-primary font-bold text-6xl opacity-20 absolute -left-12 top-0 md:relative md:left-auto md:top-auto md:inline-block">03</span>
+              <h3 class="font-heading text-2xl font-bold text-dark mb-4 mt-2">Phagocytosis</h3>
+              <p class="text-gray leading-relaxed">
+                Upon arrival at the damaged tissue, Muse cells exhibit a unique capability: they phagocytose (engulf and clear) dead or dying cells. This critical step prepares the microenvironment for regeneration.
+              </p>
+            </div>
+            
+            <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 hidden md:flex">
+              <div class="w-16 h-16 rounded-full bg-white border-4 border-primary flex items-center justify-center shadow-[0_0_20px_rgba(0,154,222,0.3)] group-hover:scale-110 transition-transform duration-300">
+                <i class="fa-solid fa-recycle text-xl text-primary"></i>
+              </div>
+            </div>
+
+            <div class="md:w-[45%] pl-8">
+              <div class="bg-light rounded-[24px] p-2 border border-gray/10 shadow-lg group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-300">
+                <img class="w-full h-64 object-cover rounded-[20px]" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/04c7b5d578-c0f10b9544098958fe4d.png" alt="3D render of a healthy stem cell engulfing cellular debris, cellular cleanup process, phagocytosis, clean clinical aesthetic, medical blue tones" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Differentiation -->
+          <div class="relative flex flex-col md:flex-row-reverse items-center justify-between group">
+            <div class="md:w-[45%] mb-8 md:mb-0 text-left pl-8">
+              <span class="text-primary font-bold text-6xl opacity-20 absolute -right-12 top-0 md:relative md:right-auto md:top-auto md:inline-block">04</span>
+              <h3 class="font-heading text-2xl font-bold text-dark mb-4 mt-2">Differentiation</h3>
+              <p class="text-gray leading-relaxed">
+                Finally, guided by the local microenvironmental cues of the cleared tissue, Muse cells differentiate into the specific cell types required, structurally integrating to restore functional tissue.
+              </p>
+            </div>
+            
+            <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 hidden md:flex">
+              <div class="w-16 h-16 rounded-full bg-white border-4 border-primary flex items-center justify-center shadow-[0_0_20px_rgba(0,154,222,0.3)] group-hover:scale-110 transition-transform duration-300">
+                <i class="fa-solid fa-cubes text-xl text-primary"></i>
+              </div>
+            </div>
+
+            <div class="md:w-[45%] pr-8">
+              <div class="bg-light rounded-[24px] p-2 border border-gray/10 shadow-lg group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-300">
+                <img class="w-full h-64 object-cover rounded-[20px]" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/6032acc66c-8454e0e43ca36a4d6125.png" alt="visualization of a single stem cell transforming and integrating into a structured tissue matrix, cellular differentiation, bright white and medical blue colors" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bystander Effects Grid -->
+  <section id="bystander" class="py-32 bg-ice relative">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <span class="text-primary font-semibold tracking-wide uppercase text-sm mb-4 block">Beyond Direct Integration</span>
+        <h2 class="font-heading text-4xl lg:text-5xl font-bold text-dark mb-6 tracking-tight">
+          Powerful Bystander Effects
+        </h2>
+        <p class="text-gray text-lg leading-relaxed">
+          While structural integration is their primary function, Muse cells also exert profound paracrine effects, fundamentally altering the local tissue microenvironment to promote healing.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Effect 1 -->
+        <div class="bg-white rounded-[24px] p-10 shadow-sm border border-primary/10 hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-center group">
+          <div class="w-20 h-20 mx-auto rounded-full bg-ice flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300 border border-primary/10">
+            <i class="fa-solid fa-shield-virus text-3xl text-primary group-hover:text-white transition-colors"></i>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-dark mb-4">Immunomodulation</h3>
+          <p class="text-gray text-sm leading-relaxed">
+            Muse cells secrete powerful anti-inflammatory cytokines, calming hyperactive immune responses at the injury site and preventing further inflammatory tissue damage.
+          </p>
+        </div>
+
+        <!-- Effect 2 -->
+        <div class="bg-white rounded-[24px] p-10 shadow-sm border border-primary/10 hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-center group">
+          <div class="w-20 h-20 mx-auto rounded-full bg-ice flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300 border border-primary/10">
+            <i class="fa-solid fa-network-wired text-3xl text-primary group-hover:text-white transition-colors"></i>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-dark mb-4">Angiogenesis</h3>
+          <p class="text-gray text-sm leading-relaxed">
+            By releasing Vascular Endothelial Growth Factor (VEGF) and other factors, they stimulate the formation of new blood vessels, restoring critical blood supply to ischemic tissues.
+          </p>
+        </div>
+
+        <!-- Effect 3 -->
+        <div class="bg-white rounded-[24px] p-10 shadow-sm border border-primary/10 hover:shadow-lg hover:border-primary/30 transition-all duration-300 text-center group">
+          <div class="w-20 h-20 mx-auto rounded-full bg-ice flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300 border border-primary/10">
+            <i class="fa-solid fa-shield-heart text-3xl text-primary group-hover:text-white transition-colors"></i>
+          </div>
+          <h3 class="font-heading text-xl font-bold text-dark mb-4">Anti-Apoptosis</h3>
+          <p class="text-gray text-sm leading-relaxed">
+            They provide trophic support to surrounding stressed cells, halting the cascade of programmed cell death (apoptosis) and preserving existing healthy tissue architecture.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="footer" class="py-24 bg-navy relative border-t border-white/10">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div class="col-span-1 md:col-span-2 lg:col-span-1">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+              <i class="fa-solid fa-dna text-white text-sm"></i>
+            </div>
+            <span class="font-heading font-bold text-xl text-white">Muse Cells</span>
+          </div>
+          <p class="text-white/50 text-sm leading-relaxed mb-6">
+            Advancing the frontier of regenerative medicine through ethically sourced, non-tumorigenic pluripotent stem cell therapies.
+          </p>
+          <div class="flex gap-4">
+            <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/70 hover:bg-primary hover:text-white transition-colors"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/70 hover:bg-primary hover:text-white transition-colors"><i class="fa-brands fa-twitter"></i></a>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="font-heading font-bold text-white mb-6">Science</h4>
+          <ul class="space-y-4 text-sm text-white/60">
+            <li><a href="#" class="hover:text-primary transition-colors">Mechanism of Action</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Clinical Trials</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Publications</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Safety Profile</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-heading font-bold text-white mb-6">Company</h4>
+          <ul class="space-y-4 text-sm text-white/60">
+            <li><a href="#" class="hover:text-primary transition-colors">About Us</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Leadership</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Careers</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-heading font-bold text-white mb-6">Resources</h4>
+          <ul class="space-y-4 text-sm text-white/60">
+            <li><a href="#" class="hover:text-primary transition-colors">Physician Portal</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Patient Information</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">News & Press</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-white/40">
+        <div>© 2026 Muse Stem Cells Inc. All rights reserved.</div>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

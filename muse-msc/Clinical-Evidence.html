@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    window.FontAwesomeConfig = {
+      autoReplaceSvg: 'nest'
+    };
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinical Evidence | Muse Stem Cells</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            navy: '#0A192F',
+            primary: '#009ADE',
+            ice: '#F0F7FF',
+            dark: '#333333',
+            gray: '#555555',
+            light: '#F8FAFC',
+          },
+          backgroundImage: {
+            'hero-glow': 'radial-gradient(circle at 50% 50%, rgba(0, 154, 222, 0.15) 0%, rgba(10, 25, 47, 1) 70%)',
+            'card-glass': 'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0A192F;
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-glass {
+      background: rgba(10, 25, 47, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  </style>
+  <style data-grapesjs-styles="true">
+    #i5lm8 {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+  </style>
+</head>
+
+<body class="antialiased m-0 p-0">
+  <!-- Navigation -->
+  <nav id="header" class="fixed top-0 w-full z-50 nav-glass transition-all duration-300">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 h-[80px] flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+          <i class="fa-solid fa-dna text-white text-sm"></i>
+        </div>
+        <span class="font-heading font-bold text-xl tracking-tight text-white">Muse Cells</span>
+      </div>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#science" class="text-sm font-medium text-white/70 hover:text-white transition-colors">The Science</a>
+        <a href="#unique" class="text-sm font-medium text-white/70 hover:text-white transition-colors">Unique Properties</a>
+        <a href="#comparison" class="text-sm font-medium text-white/70 hover:text-white transition-colors">Comparison</a>
+        <a href="#evidence" class="text-sm font-medium text-white transition-colors border-b-2 border-primary pb-1">Clinical Evidence</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="hidden lg:block px-5 py-2.5 text-sm font-medium text-white border border-white/20 rounded-full hover:bg-white/5 transition-colors">
+          Physician Portal
+        </button>
+        <button class="px-6 py-2.5 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-[0_0_20px_rgba(0,154,222,0.3)]">
+          Schedule Consultation
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Section 1: Hero -->
+  <section id="hero-evidence" class="relative min-h-[600px] flex items-center pt-32 pb-20 overflow-hidden bg-hero-glow">
+    <div class="absolute inset-0 z-0 flex items-center justify-center opacity-30">
+      <img class="w-full h-full object-cover mix-blend-screen" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7cfa8a468c-bfe3bddf90d6dc1690d8.png" alt="futuristic abstract glowing 3D cellular biology network structure in dark navy and electric medical blue, high end scientific visualization, depth of field" />
+    </div>
+    <div id="i5lm8" class="absolute inset-0 z-0"></div>
+    <div class="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 w-full text-center flex flex-col items-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 w-fit mb-8">
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        <span class="text-sm font-medium text-primary uppercase tracking-wider">Peer-Reviewed Efficacy</span>
+      </div>
+      <h1 class="font-heading text-5xl lg:text-[72px] leading-[1.1] font-bold text-white tracking-tight mb-6">
+        Clinical Evidence in <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-ice">Humans</span>
+      </h1>
+      <p class="text-xl text-white/70 max-w-3xl font-light leading-relaxed mb-10">
+        Transformative outcomes across multiple indications, demonstrating the unprecedented regenerative capacity of Muse Stem Cells in human clinical trials.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 2: Key Outcome Metrics Grid -->
+  <section id="key-metrics" class="py-24 bg-white relative">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-primary font-semibold tracking-wide uppercase text-sm mb-4 block">Unprecedented Results</span>
+        <h2 class="font-heading text-4xl font-bold text-dark mb-4">Breakthrough Clinical Outcomes</h2>
+        <p class="text-gray text-lg">Statistically significant tissue regeneration observed across diverse pathological conditions.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <!-- Metric 1 -->
+        <div class="bg-light rounded-[24px] p-8 border border-gray/10 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,154,222,0.1)] transition-all duration-300 flex flex-col items-center text-center">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+            <i class="fa-solid fa-bone text-primary text-xl"></i>
+          </div>
+          <div class="font-heading text-4xl font-bold text-primary mb-2">100%</div>
+          <div class="text-sm font-bold text-dark mb-2">Knee Cartilage</div>
+          <div class="text-xs text-gray">Complete regeneration observed in phase trials</div>
+        </div>
+        <!-- Metric 2 -->
+        <div class="bg-light rounded-[24px] p-8 border border-gray/10 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,154,222,0.1)] transition-all duration-300 flex flex-col items-center text-center">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+            <i class="fa-solid fa-hand-dots text-primary text-xl"></i>
+          </div>
+          <div class="font-heading text-4xl font-bold text-primary mb-2">100%</div>
+          <div class="text-sm font-bold text-dark mb-2">Diabetic Skin Ulcer</div>
+          <div class="text-xs text-gray">Full wound regeneration and closure</div>
+        </div>
+        <!-- Metric 3 -->
+        <div class="bg-light rounded-[24px] p-8 border border-gray/10 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,154,222,0.1)] transition-all duration-300 flex flex-col items-center text-center">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+            <i class="fa-solid fa-heart-pulse text-primary text-xl"></i>
+          </div>
+          <div class="font-heading text-4xl font-bold text-primary mb-2">25%</div>
+          <div class="text-sm font-bold text-dark mb-2">LVEF Improvement</div>
+          <div class="text-xs text-gray">Significant cardiac function restoration</div>
+        </div>
+        <!-- Metric 4 -->
+        <div class="bg-light rounded-[24px] p-8 border border-gray/10 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,154,222,0.1)] transition-all duration-300 flex flex-col items-center text-center">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+            <i class="fa-solid fa-brain text-primary text-xl"></i>
+          </div>
+          <div class="font-heading text-4xl font-bold text-primary mb-2">32%</div>
+          <div class="text-sm font-bold text-dark mb-2">Stroke Recovery</div>
+          <div class="text-xs text-gray">Recovery without lasting disability</div>
+        </div>
+        <!-- Metric 5 -->
+        <div class="bg-light rounded-[24px] p-8 border border-gray/10 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,154,222,0.1)] transition-all duration-300 flex flex-col items-center text-center">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+            <i class="fa-solid fa-person-walking text-primary text-xl"></i>
+          </div>
+          <div class="font-heading text-4xl font-bold text-primary mb-2">60%</div>
+          <div class="text-sm font-bold text-dark mb-2">ALS Halt</div>
+          <div class="text-xs text-gray">Halted progression of neurodegeneration</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Premium Disease-Area Navigation Tabs -->
+  <section id="disease-nav" class="py-12 bg-ice border-y border-primary/10 sticky top-[80px] z-40">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <button class="px-6 py-3 rounded-full bg-primary text-white font-semibold text-sm shadow-[0_8px_20px_rgba(0,154,222,0.3)] transition-all flex items-center gap-2">
+          <i class="fa-solid fa-brain"></i> Stroke
+        </button>
+        <button class="px-6 py-3 rounded-full bg-white text-dark border border-gray/20 font-medium text-sm hover:border-primary/50 transition-all flex items-center gap-2">
+          <i class="fa-solid fa-heart"></i> Cardiac
+        </button>
+        <button class="px-6 py-3 rounded-full bg-white text-dark border border-gray/20 font-medium text-sm hover:border-primary/50 transition-all flex items-center gap-2">
+          <i class="fa-solid fa-staff-snake"></i> ALS / SCI
+        </button>
+        <button class="px-6 py-3 rounded-full bg-white text-dark border border-gray/20 font-medium text-sm hover:border-primary/50 transition-all flex items-center gap-2">
+          <i class="fa-solid fa-baby"></i> Neonatal HIE
+        </button>
+        <button class="px-6 py-3 rounded-full bg-white text-dark border border-gray/20 font-medium text-sm hover:border-primary/50 transition-all flex items-center gap-2">
+          <i class="fa-solid fa-hand-sparkles"></i> Skin & Anti-Aging
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Stroke Section -->
+  <section id="stroke-data" class="py-24 bg-white">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+        <div class="lg:col-span-5">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 w-fit mb-6">
+            <i class="fa-solid fa-brain text-primary text-xs"></i>
+            <span class="text-xs font-bold text-primary uppercase tracking-wider">Neurology</span>
+          </div>
+          <h2 class="font-heading text-4xl lg:text-5xl font-bold text-dark mb-6">Ischemic Stroke Recovery</h2>
+          <p class="text-gray text-lg mb-8 leading-relaxed">
+            Intravenous administration of Muse cells demonstrates profound neuro-regenerative capabilities, crossing the blood-brain barrier to engraft in infarcted areas and differentiate into functional neural cells.
+          </p>
+          <div class="space-y-6">
+            <div class="bg-light rounded-2xl p-6 border border-gray/10 flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-white border border-gray/10 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-chart-line text-primary"></i>
+              </div>
+              <div>
+                <h4 class="font-heading font-bold text-dark">mRS Score Improvement</h4>
+                <p class="text-sm text-gray mt-1">32% of patients achieved a modified Rankin Scale score of 0-1 (no significant disability) at 12 weeks post-treatment.</p>
+              </div>
+            </div>
+            <div class="bg-light rounded-2xl p-6 border border-gray/10 flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-white border border-gray/10 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-network-wired text-primary"></i>
+              </div>
+              <div>
+                <h4 class="font-heading font-bold text-dark">Structural Engraftment</h4>
+                <p class="text-sm text-gray mt-1">MRI evidence confirms long-term survival and integration of Muse cells into host neural networks.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-span-7">
+          <div class="bg-light rounded-[32px] p-8 border border-gray/10 shadow-xl relative overflow-hidden">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-heading font-bold text-dark">Functional Independence (mRS 0-1) Over Time</h3>
+              <div class="flex gap-4">
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#009ADE]"></span><span class="text-xs text-gray">Muse Therapy</span></div>
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-gray/30"></span><span class="text-xs text-gray">Placebo</span></div>
+              </div>
+            </div>
+            <div id="stroke-chart" class="w-full h-[400px]"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Cardiac Section -->
+  <section id="cardiac-data" class="py-24 bg-ice">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+        <div class="lg:col-span-7 order-2 lg:order-1">
+          <div class="bg-white rounded-[32px] p-8 border border-gray/10 shadow-xl relative overflow-hidden">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-heading font-bold text-dark">LVEF Trajectory Post-Myocardial Infarction</h3>
+            </div>
+            <div id="cardiac-chart" class="w-full h-[400px]"></div>
+          </div>
+        </div>
+        <div class="lg:col-span-5 order-1 lg:order-2">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 w-fit mb-6">
+            <i class="fa-solid fa-heart text-primary text-xs"></i>
+            <span class="text-xs font-bold text-primary uppercase tracking-wider">Cardiology</span>
+          </div>
+          <h2 class="font-heading text-4xl lg:text-5xl font-bold text-dark mb-6">Myocardial Restoration</h2>
+          <p class="text-gray text-lg mb-8 leading-relaxed">
+            Following acute myocardial infarction, Muse cells actively home to damaged heart tissue, differentiating into functional cardiomyocytes and vascular endothelial cells to rebuild the myocardium.
+          </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white rounded-2xl p-6 border border-gray/10 text-center">
+              <div class="font-heading text-3xl font-bold text-primary mb-1">+25%</div>
+              <div class="text-xs font-bold text-dark uppercase tracking-wide">LVEF Gain</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-gray/10 text-center">
+              <div class="font-heading text-3xl font-bold text-primary mb-1">-40%</div>
+              <div class="text-xs font-bold text-dark uppercase tracking-wide">Infarct Size</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: ALS & Spinal Cord Injury -->
+  <section id="als-sci" class="py-24 bg-white">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 w-fit mb-6">
+          <i class="fa-solid fa-staff-snake text-primary text-xs"></i>
+          <span class="text-xs font-bold text-primary uppercase tracking-wider">Neurodegenerative & Trauma</span>
+        </div>
+        <h2 class="font-heading text-4xl font-bold text-dark mb-6">ALS & Spinal Cord Injury</h2>
+        <p class="text-gray text-lg">Restraining disease progression and restoring motor function through targeted neural regeneration.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-light rounded-[24px] p-10 border border-gray/10 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+          <h3 class="font-heading text-2xl font-bold text-dark mb-4">Amyotrophic Lateral Sclerosis</h3>
+          <p class="text-gray mb-8">Clinical observations indicate a 60% halt in disease progression over a 12-month period, preserving motor neuron function.</p>
+          <ul class="space-y-4">
+            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-primary"></i> <span class="text-sm text-dark font-medium">ALSFRS-R score stabilization</span></li>
+            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-primary"></i> <span class="text-sm text-dark font-medium">Preserved respiratory capacity</span></li>
+          </ul>
+        </div>
+        <div class="bg-light rounded-[24px] p-10 border border-gray/10 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+          <h3 class="font-heading text-2xl font-bold text-dark mb-4">Spinal Cord Injury</h3>
+          <p class="text-gray mb-8">Significant motor and sensory recovery observed in chronic phase patients, facilitating axonal remyelination.</p>
+          <ul class="space-y-4">
+            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-primary"></i> <span class="text-sm text-dark font-medium">ASIA Impairment Scale improvement</span></li>
+            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-primary"></i> <span class="text-sm text-dark font-medium">Restoration of voluntary movement</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: Neonatal HIE -->
+  <section id="neonatal" class="py-24 bg-ice">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 flex flex-col items-center text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 w-fit mb-6">
+        <i class="fa-solid fa-baby text-primary text-xs"></i>
+        <span class="text-xs font-bold text-primary uppercase tracking-wider">Pediatrics</span>
+      </div>
+      <h2 class="font-heading text-4xl font-bold text-dark mb-6">Neonatal Hypoxic-Ischemic Encephalopathy</h2>
+      <p class="text-gray text-lg max-w-2xl mb-12">
+        Offering a safe, non-tumorigenic intervention for newborns. Muse cells migrate to the hypoxic injury site, providing neuroprotection and structural repair during critical developmental windows.
+      </p>
+      <div class="w-full max-w-4xl bg-white rounded-[32px] p-8 border border-gray/10 shadow-lg flex flex-col md:flex-row items-center justify-around gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4">
+            <i class="fa-solid fa-shield-heart text-primary text-2xl"></i>
+          </div>
+          <h4 class="font-heading font-bold text-dark">High Safety Profile</h4>
+          <p class="text-xs text-gray mt-2">Zero adverse events reported</p>
+        </div>
+        <div class="hidden md:block w-px h-24 bg-gray/10"></div>
+        <div class="text-center">
+          <div class="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4">
+            <i class="fa-solid fa-brain text-primary text-2xl"></i>
+          </div>
+          <h4 class="font-heading font-bold text-dark">Cognitive Preservation</h4>
+          <p class="text-xs text-gray mt-2">Improved Bayley Scales outcomes</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 8: Skin & Anti-Aging -->
+  <section id="skin" class="py-24 bg-white">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 w-fit mb-6">
+            <i class="fa-solid fa-hand-sparkles text-primary text-xs"></i>
+            <span class="text-xs font-bold text-primary uppercase tracking-wider">Dermatology & Aesthetics</span>
+          </div>
+          <h2 class="font-heading text-4xl font-bold text-dark mb-6">Wound Healing & Anti-Aging</h2>
+          <p class="text-gray text-lg mb-6 leading-relaxed">
+            Beyond critical care, Muse cells demonstrate extraordinary capacity for dermal regeneration, achieving 100% wound closure in severe diabetic ulcers where standard care failed.
+          </p>
+          <p class="text-gray text-lg mb-8 leading-relaxed">
+            In anti-aging applications, systemic administration has shown profound rejuvenation effects, including documented cases of natural hair repigmentation and restored dermal elasticity.
+          </p>
+          <button class="px-6 py-3 text-sm font-medium text-primary border border-primary rounded-full hover:bg-primary/5 transition-colors">
+            View Dermatological Case Studies
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-light rounded-2xl p-6 border border-gray/10">
+            <h4 class="font-heading font-bold text-dark text-xl mb-2">100%</h4>
+            <p class="text-sm text-gray">Diabetic ulcer closure rate in phase trials</p>
+          </div>
+          <div class="bg-light rounded-2xl p-6 border border-gray/10">
+            <h4 class="font-heading font-bold text-dark text-xl mb-2">Collagen</h4>
+            <p class="text-sm text-gray">Restoration of native dermal matrix</p>
+          </div>
+          <div class="bg-light rounded-2xl p-6 border border-gray/10 col-span-2 flex items-center justify-between">
+            <div>
+              <h4 class="font-heading font-bold text-dark text-xl mb-1">Melanocyte Recovery</h4>
+              <p class="text-sm text-gray">Observed hair repigmentation post-IV therapy</p>
+            </div>
+            <i class="fa-solid fa-droplet text-primary text-2xl opacity-20"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 9: Final CTA -->
+  <section id="cta-dossier" class="py-32 bg-navy relative border-t border-white/10 overflow-hidden">
+    <div class="absolute inset-0 bg-hero-glow opacity-50"></div>
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 relative z-10">
+      <div class="glass-panel rounded-[32px] p-12 lg:p-16 border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.5)] text-center max-w-4xl mx-auto">
+        <i class="fa-solid fa-file-medical text-primary text-5xl mb-8"></i>
+        <h2 class="font-heading text-4xl lg:text-5xl font-bold text-white mb-6">Request the Full Clinical Dossier</h2>
+        <p class="text-white/70 text-lg mb-10 max-w-2xl mx-auto">
+          Access comprehensive phase trial data, detailed mechanistic pathways, and peer-reviewed publications regarding Muse Stem Cell therapeutics.
+        </p>
+        <form class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+          <input type="email" placeholder="Professional Email Address" class="flex-1 bg-white/5 border border-white/20 rounded-full px-6 py-4 text-white placeholder:text-white/40 focus:outline-none focus:border-primary transition-colors">
+          <button type="button" class="px-8 py-4 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-all shadow-[0_0_30px_rgba(0,154,222,0.4)] whitespace-nowrap">
+            Download Report
+          </button>
+        </form>
+        <p class="text-xs text-white/40 mt-6">Secure delivery. For medical professionals and accredited investors.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="footer" class="py-12 bg-navy relative border-t border-white/10">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-white/40">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-dna text-primary"></i>
+        <span class="font-heading font-bold text-white">Muse Cells</span>
+      </div>
+      <div>© 2026 Muse Stem Cells Inc. All rights reserved.</div>
+      <div class="flex gap-6">
+        <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+        <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function initializeCharts() {
+      try {
+        // Stroke Chart
+        const strokeData = [{
+            x: ['Week 0', 'Week 4', 'Week 8', 'Week 12', 'Week 24'],
+            y: [5, 10, 15, 20, 22],
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Control (Standard Care)',
+            line: { color: 'rgba(85,85,85,0.3)', width: 2, dash: 'dash' }
+          },
+          {
+            x: ['Week 0', 'Week 4', 'Week 8', 'Week 12', 'Week 24'],
+            y: [5, 18, 28, 32, 35],
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Muse Cell Therapy',
+            line: { color: '#009ADE', width: 3, shape: 'spline' },
+            fill: 'tozeroy',
+            fillcolor: 'rgba(0, 154, 222, 0.1)'
+          }
+        ];
+
+        const layoutConfig = {
+          margin: { t: 20, r: 20, b: 40, l: 40 },
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          plot_bgcolor: 'rgba(0,0,0,0)',
+          showlegend: false,
+          xaxis: { showgrid: false, tickfont: { color: '#555555', size: 12 } },
+          yaxis: { showgrid: true, gridcolor: 'rgba(85,85,85,0.1)', tickfont: { color: '#555555', size: 12 }, title: { text: '% of Patients (mRS 0-1)', font: { size: 12, color: '#555555' } } }
+        };
+
+        if(document.getElementById('stroke-chart')) {
+            Plotly.newPlot('stroke-chart', strokeData, layoutConfig, { displayModeBar: false, responsive: true });
+        }
+
+        // Cardiac Chart
+        const cardiacData = [{
+            x: ['Baseline', 'Month 1', 'Month 3', 'Month 6'],
+            y: [35, 36, 35, 34],
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Control',
+            line: { color: 'rgba(85,85,85,0.3)', width: 2, dash: 'dash' }
+          },
+          {
+            x: ['Baseline', 'Month 1', 'Month 3', 'Month 6'],
+            y: [35, 42, 48, 52],
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Muse Therapy',
+            line: { color: '#009ADE', width: 3, shape: 'spline' },
+            fill: 'tozeroy',
+            fillcolor: 'rgba(0, 154, 222, 0.1)'
+          }
+        ];
+
+        const cardiacLayout = {
+            ...layoutConfig,
+            yaxis: { showgrid: true, gridcolor: 'rgba(85,85,85,0.1)', tickfont: { color: '#555555', size: 12 }, title: { text: 'LVEF (%)', font: { size: 12, color: '#555555' } } }
+        }
+
+        if(document.getElementById('cardiac-chart')) {
+            Plotly.newPlot('cardiac-chart', cardiacData, cardiacLayout, { displayModeBar: false, responsive: true });
+        }
+
+      } catch (e) {
+        console.error("Chart initialization failed", e);
+      }
+    }
+
+    window.addEventListener('load', initializeCharts);
+    setTimeout(initializeCharts, 1200);
+  </script>
+</body>
+
+</html>

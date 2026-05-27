@@ -1,0 +1,584 @@
+<html lang="en">
+
+  <head>
+    <script>
+      window.FontAwesomeConfig = {
+        autoReplaceSvg: 'nest'
+      };
+    </script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muse Stem Cells - Regenerative Medicine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme:
+        {
+          extend:
+          {
+            fontFamily:
+            {
+              sans: ['Inter', 'sans-serif'],
+              heading: ['Plus Jakarta Sans', 'sans-serif'],
+              mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco',
+                'Consolas', "Liberation Mono", "Courier New", 'monospace'
+              ],
+            },
+            colors:
+            {
+              navy: '#0A192F',
+              primary: '#009ADE',
+              ice: '#F0F7FF',
+              dark: '#333333',
+              gray: '#555555',
+              light: '#F8FAFC',
+            },
+            backgroundImage:
+            {
+              'hero-glow': 'radial-gradient(circle at 50% 50%, rgba(0, 154, 222, 0.15) 0%, rgba(10, 25, 47, 1) 70%)',
+              'card-glass': 'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body
+      {
+        margin: 0;
+        padding: 0;
+        background-color: #0A192F;
+        color: #FFFFFF;
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6
+      {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+
+      ::-webkit-scrollbar
+      {
+        display: none;
+      }
+
+      .glass-panel
+      {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .nav-glass
+      {
+        background: rgba(10, 25, 47, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .pixel-text
+      {
+        font-family: 'Courier New', Courier, monospace;
+        letter-spacing: 0.1em;
+      }
+
+      .circle-mask
+      {
+        mask-image: radial-gradient(circle, black 50%, transparent 50%);
+        -webkit-mask-image: radial-gradient(circle, black 50%, transparent 50%);
+        mask-size: 200px 200px;
+        -webkit-mask-size: 200px 200px;
+        mask-position: center;
+        -webkit-mask-position: center;
+      }
+    </style>
+    <style data-grapesjs-styles="true">
+      #i5lm8
+      {
+        background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+    </style>
+  </head>
+
+  <body class="antialiased">
+    <!-- Navigation (Verbatim from context) -->
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muse Stem Cells - Regenerative Medicine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <nav id="header"
+      class="fixed top-0 w-full z-50 nav-glass transition-all duration-300">
+      <div
+        class="max-w-[1440px] mx-auto px-6 lg:px-12 h-[80px] flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+            <i class="fa-solid fa-dna text-white text-sm"></i></div><span
+            class="font-heading font-bold text-xl tracking-tight text-white">Muse
+            Cells</span>
+        </div>
+        <div class="hidden md:flex items-center gap-8"><a href="#science"
+            class="text-sm font-medium text-white/70 hover:text-white transition-colors">The
+            Science</a><a href="#unique"
+            class="text-sm font-medium text-white/70 hover:text-white transition-colors">Unique
+            Properties</a><a href="#comparison"
+            class="text-sm font-medium text-white/70 hover:text-white transition-colors">Comparison</a><a
+            href="#evidence"
+            class="text-sm font-medium text-white/70 hover:text-white transition-colors">Clinical
+            Evidence</a></div>
+        <div class="flex items-center gap-4"><button
+            class="hidden lg:block px-5 py-2.5 text-sm font-medium text-white border border-white/20 rounded-full hover:bg-white/5 transition-colors">
+            Physician Portal
+          </button><button
+            class="px-6 py-2.5 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-[0_0_20px_rgba(0,154,222,0.3)]">
+            Schedule Consultation
+          </button></div>
+      </div>
+    </nav><!-- Section 1: Hero -->
+    <section id="hero"
+      class="relative min-h-[1024px] flex items-center pt-20 overflow-hidden bg-navy">
+      <div class="absolute inset-0 z-0"><img
+          src="https://storage.googleapis.com/uxpilot-auth.appspot.com/da159072ab-cde52bdff396f2706b01.png"
+          alt="abstract 3D cellular biology network structure in dark navy and electric medical blue, high end scientific visualization, depth of field, subtle glowing nodes"
+          class="w-full h-full object-cover opacity-30 mix-blend-screen"></div>
+      <div id="i5lm8" class="absolute inset-0 z-0 opacity-50"></div>
+      <div
+        class="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center h-full">
+        <div class="flex flex-col gap-8 pt-20 lg:pt-0">
+          <div
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-[8px] bg-white/5 border border-white/10 w-fit backdrop-blur-sm">
+            <span
+              class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span
+              class="text-xs font-mono text-primary uppercase tracking-widest pixel-text">The
+              Biology Behind Muse Cells</span></div>
+          <h1
+            class="font-heading text-6xl lg:text-[96px] leading-[0.95] font-bold text-white tracking-tighter">
+            Cellular <br><span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-ice">Restoration</span>
+          </h1>
+          <p
+            class="text-lg lg:text-xl text-white/70 max-w-lg font-light leading-relaxed">
+            Discover the power of Muse Stem Cells – the body's natural solution
+            for ultimate tissue restoration without genetic modification. A
+            paradigm shift in clinical therapeutics.
+          </p>
+          <div class="flex items-center gap-6 pt-4">
+            <div class="flex -space-x-4">
+              <div
+                class="w-12 h-12 rounded-full border-2 border-navy bg-primary/20 flex items-center justify-center backdrop-blur-md">
+                <span class="text-xs font-bold text-white">10x</span></div>
+              <div
+                class="w-12 h-12 rounded-full border-2 border-navy bg-white/10 flex items-center justify-center backdrop-blur-md">
+                <span class="text-xs font-bold text-white">0%</span></div>
+            </div><span
+              class="text-sm text-white/50 font-mono pixel-text">EFFICACY /
+              RISK</span>
+          </div>
+        </div>
+        <div class="relative h-[600px] hidden lg:block">
+          <!-- Abstract Circle Composition mimicking ref -->
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-full h-full">
+            <div
+              class="absolute inset-0 grid grid-cols-4 grid-rows-4 gap-2 opacity-20">
+              <!-- Decorative circles -->
+              <div
+                class="rounded-full bg-primary/30 col-start-2 row-start-2 w-full h-full">
+              </div>
+              <div
+                class="rounded-full bg-white/10 col-start-3 row-start-1 w-full h-full">
+              </div>
+              <div
+                class="rounded-full bg-primary/20 col-start-4 row-start-3 w-full h-full">
+              </div>
+              <div
+                class="rounded-full bg-ice/10 col-start-1 row-start-4 w-full h-full">
+              </div>
+            </div><!-- Main floating card mimicking the ref's info boxes -->
+            <div
+              class="absolute left-0 top-1/3 bg-[#FFFBEB] text-dark p-6 rounded-[8px] max-w-[320px] shadow-2xl z-20">
+              <div class="flex items-start gap-2">
+                <div class="w-2 h-2 rounded-full bg-dark mt-1.5"></div>
+                <p
+                  class="font-mono text-sm leading-relaxed pixel-text font-bold">
+                  Endogenous pluripotent-like cells residing in adult tissues...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- Section 2: What Are Muse Cells -->
+    <section id="what-are-muse"
+      class="py-32 bg-light relative overflow-hidden text-dark">
+      <div class="absolute inset-0 opacity-5"><img
+          src="https://storage.googleapis.com/uxpilot-auth.appspot.com/3097b4b415-28a1b17dfe2970fed580.png"
+          alt="microscopic view of stem cells in a petri dish, highly detailed, scientific"
+          class="w-full h-full object-cover grayscale"></div>
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div class="relative h-[500px] rounded-[8px] overflow-hidden"><img
+              src="https://storage.googleapis.com/uxpilot-auth.appspot.com/0f80f43552-0f0c10ef6e4be585b2ac.png"
+              alt="abstract representation of a single glowing muse cell separating from a cluster of regular mesenchymal stem cells, medical blue and white tones"
+              class="w-full h-full object-cover">
+            <div
+              class="absolute bottom-8 right-8 bg-[#FFFBEB] text-dark p-6 rounded-[8px] max-w-[280px] shadow-xl">
+              <div class="flex items-start gap-2">
+                <div class="w-2 h-2 rounded-full bg-dark mt-1.5"></div>
+                <p
+                  class="font-mono text-xs leading-relaxed pixel-text font-bold">
+                  A naturally existing subset of mesenchymal stem cells.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-6"><span
+              class="text-primary font-mono text-sm tracking-widest pixel-text uppercase">Identity</span>
+            <h2 class="font-heading text-5xl font-bold tracking-tight">The
+              Elusive Subpopulation</h2>
+            <p class="text-gray text-lg leading-relaxed">
+              Multilineage-differentiating stress-enduring (Muse) cells are a
+              unique subpopulation of mesenchymal stem cells (MSCs). They
+              represent a fundamental breakthrough in regenerative medicine,
+              possessing the pluripotency typically associated with embryonic
+              cells, but without the ethical dilemmas or tumorigenic risks.
+            </p>
+            <div class="grid grid-cols-2 gap-6 mt-8">
+              <div class="border-l-2 border-primary pl-4">
+                <div class="font-heading text-3xl font-bold text-navy mb-1">1-2%
+                </div>
+                <div class="text-sm text-gray font-mono pixel-text">OF BONE
+                  MARROW MSCS</div>
+              </div>
+              <div class="border-l-2 border-primary pl-4">
+                <div class="font-heading text-3xl font-bold text-navy mb-1">
+                  SSEA-3+</div>
+                <div class="text-sm text-gray font-mono pixel-text">SURFACE
+                  MARKER</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- Section 3: Stemness / ESC Marker Diagram -->
+    <!-- Section 4: Why this matters (Comparison) -->
+    <section id="why-it-matters" class="py-32 bg-white relative text-dark">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+        <div class="flex flex-col lg:flex-row gap-16">
+          <div class="lg:w-1/3"><span
+              class="text-primary font-mono text-sm tracking-widest pixel-text uppercase block mb-4">Paradigm
+              Shift</span>
+            <h2
+              class="font-heading text-4xl lg:text-5xl font-bold mb-6 tracking-tight">
+              Beyond Conventional MSCs</h2>
+            <p class="text-gray text-lg mb-8">
+              The therapeutic potential of conventional MSCs is often limited by
+              their size, survival rate, and differentiation capacity. Muse
+              cells overcome these critical barriers.
+            </p>
+          </div>
+          <div class="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Card 1 -->
+            <div
+              class="bg-light p-8 rounded-[8px] border border-gray/10 group hover:border-primary/30 transition-colors">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6 text-primary font-mono font-bold">
+                01</div>
+              <h3 class="font-heading text-xl font-bold mb-3">Size &amp; Passage
+              </h3>
+              <p class="text-gray text-sm leading-relaxed">
+                Conventional MSCs (20-30μm) often get trapped in lung
+                capillaries (pulmonary first-pass effect). Muse cells (~13μm)
+                pass freely, reaching target organs efficiently.
+              </p>
+            </div><!-- Card 2 -->
+            <div
+              class="bg-light p-8 rounded-[8px] border border-gray/10 group hover:border-primary/30 transition-colors">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6 text-primary font-mono font-bold">
+                02</div>
+              <h3 class="font-heading text-xl font-bold mb-3">Stress Tolerance
+              </h3>
+              <p class="text-gray text-sm leading-relaxed">
+                Muse cells inherently survive severe stress conditions (hypoxia,
+                low nutrition) that typically cause high mortality in
+                conventional MSCs post-transplantation.
+              </p>
+            </div><!-- Card 3 -->
+            <div
+              class="bg-light p-8 rounded-[8px] border border-gray/10 group hover:border-primary/30 transition-colors">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6 text-primary font-mono font-bold">
+                03</div>
+              <h3 class="font-heading text-xl font-bold mb-3">Differentiation
+              </h3>
+              <p class="text-gray text-sm leading-relaxed">
+                While MSCs are limited to mesenchymal lineages, Muse cells can
+                differentiate into endodermal, ectodermal, and mesodermal
+                tissues.
+              </p>
+            </div><!-- Card 4 -->
+            <div
+              class="bg-light p-8 rounded-[8px] border border-gray/10 group hover:border-primary/30 transition-colors">
+              <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6 text-primary font-mono font-bold">
+                04</div>
+              <h3 class="font-heading text-xl font-bold mb-3">Dose Efficiency
+              </h3>
+              <p class="text-gray text-sm leading-relaxed">
+                Due to high survival and homing capabilities, Muse cell
+                therapies require 10-15x fewer cells than conventional MSC
+                treatments to achieve superior outcomes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- Section 5: Self-Homing -->
+    <!-- Section 6: Immune Privilege -->
+    <section id="immune" class="py-32 bg-light relative text-dark">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+        <div class="text-center max-w-3xl mx-auto mb-20"><span
+            class="text-primary font-mono text-sm tracking-widest pixel-text uppercase block mb-4">Safety
+            Profile</span>
+          <h2 class="font-heading text-5xl font-bold mb-6 tracking-tight">Immune
+            Privilege</h2>
+          <p class="text-gray text-lg">
+            A universal donor solution. Muse cells can be administered across
+            HLA mismatches without the need for toxic immunosuppressive therapy.
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div
+            class="bg-white p-8 rounded-[8px] border border-gray/10 shadow-sm text-center">
+            <div
+              class="w-16 h-16 mx-auto bg-primary/5 rounded-full flex items-center justify-center mb-6">
+              <i class="fa-solid fa-shield-halved text-2xl text-primary"></i>
+            </div>
+            <h3 class="font-heading font-bold text-xl mb-3">HLA-G Expression
+            </h3>
+            <p class="text-sm text-gray leading-relaxed">
+              Expression of HLA-G, similar to the mechanism protecting a fetus
+              from maternal immune rejection, shields Muse cells from host
+              immune attacks.
+            </p>
+          </div>
+          <div
+            class="bg-white p-8 rounded-[8px] border border-gray/10 shadow-sm text-center">
+            <div
+              class="w-16 h-16 mx-auto bg-primary/5 rounded-full flex items-center justify-center mb-6">
+              <i class="fa-solid fa-ban text-2xl text-primary"></i></div>
+            <h3 class="font-heading font-bold text-xl mb-3">No
+              Immunosuppressants</h3>
+            <p class="text-sm text-gray leading-relaxed">
+              Eliminates the severe side effects and infection risks associated
+              with systemic immunosuppressive drugs typically required for
+              allogeneic transplants.
+            </p>
+          </div>
+          <div
+            class="bg-white p-8 rounded-[8px] border border-gray/10 shadow-sm text-center">
+            <div
+              class="w-16 h-16 mx-auto bg-primary/5 rounded-full flex items-center justify-center mb-6">
+              <i class="fa-solid fa-globe text-2xl text-primary"></i></div>
+            <h3 class="font-heading font-bold text-xl mb-3">Off-the-Shelf
+              Therapy</h3>
+            <p class="text-sm text-gray leading-relaxed">
+              Enables the creation of universal, ready-to-use cellular
+              therapeutics from healthy donors, drastically reducing costs and
+              wait times.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section><!-- Section 7: Long-Term Integration -->
+    <section id="integration"
+      class="py-32 bg-navy relative border-t border-white/10">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div><span
+              class="text-primary font-mono text-sm tracking-widest pixel-text uppercase block mb-4">Durability</span>
+            <h2
+              class="font-heading text-5xl font-bold text-white mb-6 tracking-tight">
+              Long-Term Integration</h2>
+            <p class="text-white/70 text-lg mb-8 leading-relaxed">
+              Unlike traditional therapies that merely provide temporary
+              paracrine effects before dying off, Muse cells structurally
+              integrate into the host tissue. They survive long-term,
+              differentiating into functional cells that continuously produce
+              healing factors.
+            </p>
+            <div class="bg-[#FFFBEB] text-dark p-6 rounded-[8px] max-w-md">
+              <div class="flex items-start gap-4"><i
+                  class="fa-solid fa-clock mt-1 text-primary"></i>
+                <p
+                  class="font-mono text-xs leading-relaxed pixel-text font-bold">
+                  Studies demonstrate functional Muse cell integration and
+                  survival for over 12 months post-administration in preclinical
+                  models.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="relative h-[400px] bg-white/5 border border-white/10 rounded-[8px] overflow-hidden">
+            <!-- Abstract representation of integration -->
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-full h-full flex flex-col justify-between p-8">
+                <div class="w-full h-[2px] bg-white/10 relative">
+                  <div
+                    class="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white/30">
+                  </div><span
+                    class="absolute left-0 -top-6 text-[10px] font-mono text-white/50 pixel-text">DAY
+                    1</span>
+                </div>
+                <div class="w-full h-[2px] bg-white/20 relative">
+                  <div
+                    class="absolute left-1/3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary/50">
+                  </div><span
+                    class="absolute left-1/3 -top-6 text-[10px] font-mono text-white/50 pixel-text">MONTH
+                    3</span>
+                </div>
+                <div class="w-full h-[2px] bg-white/30 relative">
+                  <div
+                    class="absolute right-1/4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary shadow-[0_0_15px_rgba(0,154,222,0.5)]">
+                  </div><span
+                    class="absolute right-1/4 -top-6 text-[10px] font-mono text-white/50 pixel-text">MONTH
+                    12+</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- Section 8: Scientific Notes & References -->
+    <!-- Footer (Verbatim from context) -->
+    <footer id="footer" class="py-12 bg-navy relative border-t border-white/10">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+        <div
+          class="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-white/40">
+          <div class="flex items-center gap-2"><i
+              class="fa-solid fa-dna text-primary"></i><span
+              class="font-heading font-bold text-white">Muse Cells</span></div>
+          <div>© 2026 Muse Stem Cells Inc. All rights reserved.</div>
+          <div class="flex gap-6"><a href="#"
+              class="hover:text-white transition-colors">Privacy Policy</a><a
+              href="#" class="hover:text-white transition-colors">Terms of
+              Service</a></div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      function initializeCharts()
+      {
+        try
+        {
+          // Stemness Marker Chart (Section 3)
+          const markerData = [
+          {
+            x: ['SSEA-3', 'Nanog', 'Oct3/4', 'Sox2', 'TRA-1-60', 'CD105',
+              'CD90'
+            ],
+            y: [98, 95, 92, 88, 5, 99, 99],
+            type: 'bar',
+            marker:
+            {
+              color: ['#009ADE', '#009ADE', '#009ADE', '#009ADE',
+                'rgba(255,255,255,0.2)', '#F0F7FF', '#F0F7FF'
+              ],
+              cornerradius: 4
+            }
+          }];
+
+          const markerLayout = {
+            margin:
+            {
+              t: 40,
+              r: 20,
+              b: 60,
+              l: 40
+            },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            showlegend: false,
+            title:
+            {
+              text: 'Surface Marker Expression (%)',
+              font:
+              {
+                color: 'rgba(255,255,255,0.8)',
+                size: 14,
+                family: 'Courier New'
+              }
+            },
+            xaxis:
+            {
+              showgrid: false,
+              tickfont:
+              {
+                color: 'rgba(255,255,255,0.6)',
+                size: 12,
+                family: 'Courier New'
+              }
+            },
+            yaxis:
+            {
+              showgrid: true,
+              gridcolor: 'rgba(255,255,255,0.1)',
+              tickfont:
+              {
+                color: 'rgba(255,255,255,0.6)',
+                size: 12,
+                family: 'Courier New'
+              },
+              range: [0, 100]
+            }
+          };
+
+          if (document.getElementById('marker-chart'))
+          {
+            Plotly.newPlot('marker-chart', markerData, markerLayout,
+            {
+              displayModeBar: false,
+              responsive: true
+            });
+          }
+
+        }
+        catch (e)
+        {
+          console.error("Chart initialization failed", e);
+        }
+      }
+
+      window.addEventListener('load', initializeCharts);
+      setTimeout(initializeCharts, 1200);
+    </script>
+  </body>
+
+</html>

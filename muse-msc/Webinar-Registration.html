@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Muse Stem Cells - Webinar Registration</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+  <script>
+    window.FontAwesomeConfig = {
+      autoReplaceSvg: 'nest'
+    };
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            navy: '#0A192F',
+            primary: '#009ADE',
+            ice: '#F0F7FF',
+            dark: '#333333',
+            gray: '#555555',
+            light: '#F8FAFC',
+          },
+          backgroundImage: {
+            'hero-glow': 'radial-gradient(circle at 50% 50%, rgba(0, 154, 222, 0.15) 0%, rgba(10, 25, 47, 1) 70%)',
+            'card-glass': 'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0A192F;
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .nav-glass {
+      background: rgba(10, 25, 47, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    #i5lm8 {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Navigation -->
+  <nav id="header" class="fixed top-0 w-full z-50 nav-glass transition-all duration-300">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 h-[80px] flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+          <i class="fa-solid fa-dna text-white text-sm"></i>
+        </div>
+        <span class="font-heading font-bold text-xl tracking-tight text-white">Muse Cells</span>
+      </div>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#science" class="text-sm font-medium text-white/70 hover:text-white transition-colors">The Science</a>
+        <a href="#unique" class="text-sm font-medium text-white/70 hover:text-white transition-colors">Unique Properties</a>
+        <a href="#comparison" class="text-sm font-medium text-white/70 hover:text-white transition-colors">Comparison</a>
+        <a href="#evidence" class="text-sm font-medium text-white/70 hover:text-white transition-colors">Clinical Evidence</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="hidden lg:block px-5 py-2.5 text-sm font-medium text-white border border-white/20 rounded-full hover:bg-white/5 transition-colors">
+          Physician Portal
+        </button>
+        <button class="px-6 py-2.5 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-[0_0_20px_rgba(0,154,222,0.3)]">
+          Schedule Consultation
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Webinar Hero Section -->
+  <section id="webinar-hero" class="relative min-h-[1024px] flex items-center pt-20 overflow-hidden bg-hero-glow">
+    <!-- Abstract Cellular Background Graphic -->
+    <div class="absolute inset-0 z-0 flex items-center justify-center opacity-40">
+      <img class="w-full h-full object-cover mix-blend-screen" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7cfa8a468c-b8ad22d69b4ce995073a.png" alt="futuristic abstract glowing 3D cellular biology network structure in dark navy and electric medical blue, high end scientific visualization, depth of field" />
+    </div>
+    <!-- Decorative Grid overlay -->
+    <div id="i5lm8" class="absolute inset-0 z-0"></div>
+
+    <div class="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+      
+      <!-- Left Column: Value Prop & Details -->
+      <div class="lg:col-span-7 flex flex-col gap-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 w-fit">
+          <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          <span class="text-xs font-medium text-primary uppercase tracking-wider">Live Expert Webinar</span>
+        </div>
+        
+        <h1 class="font-heading text-5xl lg:text-[72px] leading-[1.1] font-bold text-white tracking-tight">
+          The Future of <br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-ice">Regenerative Medicine</span>
+        </h1>
+        
+        <p class="text-lg text-white/70 max-w-2xl font-light leading-relaxed">
+          Join our lead scientist for an exclusive deep dive into Muse Stem Cells. Discover the breakthrough mechanisms driving the next generation of clinical therapeutics.
+        </p>
+
+        <div class="space-y-6 mt-4">
+          <h3 class="font-heading text-xl font-semibold text-white">What you will learn:</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-4">
+              <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+                <i class="fa-solid fa-check text-primary text-xs"></i>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Mechanism of Action</h4>
+                <p class="text-sm text-white/60 mt-1">Understanding pluripotency without tumorigenic risk.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+                <i class="fa-solid fa-check text-primary text-xs"></i>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Clinical Efficacy</h4>
+                <p class="text-sm text-white/60 mt-1">Reviewing outcomes in recent advanced trials.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+                <i class="fa-solid fa-check text-primary text-xs"></i>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">S1P Signaling & Homing</h4>
+                <p class="text-sm text-white/60 mt-1">How Muse cells target damaged tissue dynamically.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Speaker Info -->
+        <div class="flex items-center gap-4 mt-8 pt-8 border-t border-white/10">
+          <img class="w-16 h-16 rounded-full border-2 border-primary/50 object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/0de9287b7a-0df6188e8f86ff5eca28.png" alt="professional headshot of a mature female lead scientist in a clean clinical setting, wearing a lab coat, subtle blue lighting, high quality portrait" />
+          <div>
+            <h4 class="font-heading font-bold text-white text-lg">Dr. Sarah Chen, Ph.D.</h4>
+            <p class="text-sm text-white/60">Lead Research Scientist, Muse Stem Cells</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Registration Form -->
+      <div class="lg:col-span-5 relative">
+        <div class="glass-panel rounded-[24px] p-8 w-full shadow-[0_20px_40px_rgba(0,0,0,0.4)] border border-white/10 bg-card-glass">
+          <div class="text-center mb-8">
+            <h2 class="font-heading text-2xl font-bold text-white mb-2">Reserve Your Seat</h2>
+            <p class="text-sm text-white/60">Thursday, October 24th • 1:00 PM EST</p>
+          </div>
+          
+          <form class="space-y-5">
+            <div>
+              <label class="block text-xs font-medium text-white/70 mb-1.5 uppercase tracking-wide">Full Name</label>
+              <input type="text" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Dr. Jane Doe">
+            </div>
+            
+            <div>
+              <label class="block text-xs font-medium text-white/70 mb-1.5 uppercase tracking-wide">Professional Email</label>
+              <input type="email" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="jane@hospital.org">
+            </div>
+            
+            <div>
+              <label class="block text-xs font-medium text-white/70 mb-1.5 uppercase tracking-wide">Role / Speciality</label>
+              <div class="relative">
+                <select class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors cursor-pointer">
+                  <option value="" disabled selected class="text-dark">Select your role</option>
+                  <option value="physician" class="text-dark">Physician / Specialist</option>
+                  <option value="researcher" class="text-dark">Researcher / Scientist</option>
+                  <option value="executive" class="text-dark">Healthcare Executive</option>
+                  <option value="other" class="text-dark">Other</option>
+                </select>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <i class="fa-solid fa-chevron-down text-white/50 text-sm"></i>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="w-full mt-6 px-8 py-4 bg-primary text-white rounded-xl font-semibold text-lg hover:bg-primary/90 transition-all shadow-[0_0_30px_rgba(0,154,222,0.4)] flex items-center justify-center gap-2">
+              Register Now
+              <i class="fa-solid fa-arrow-right text-sm"></i>
+            </button>
+            
+            <p class="text-xs text-center text-white/40 mt-4">
+              By registering, you agree to our privacy policy.
+            </p>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Trust Strip -->
+  <section id="trust-strip" class="py-12 bg-white border-b border-gray/10">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <p class="text-center text-sm font-medium text-gray mb-8 uppercase tracking-wider">Trusted by leading medical institutions</p>
+      <div class="flex flex-wrap justify-center items-center gap-12 lg:gap-24 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+        <img class="h-8 w-auto object-contain" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/ebdd89ac20-b01c6aea954a897fdb93.png" alt="minimalist modern medical institution logo, simple typography, clean lines, dark grey" />
+        <img class="h-8 w-auto object-contain" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/69257979da-c3b11958d238ac9730a6.png" alt="abstract healthcare cross logo, modern clinic branding, dark grey" />
+        <img class="h-8 w-auto object-contain" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/6f04cfcec0-8b7e12356166c4f4e893.png" alt="university medical center logo, academic crest style, minimalist dark grey" />
+        <img class="h-8 w-auto object-contain" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/86b4b61508-9d587c68ab1c636f678e.png" alt="biotech research institute logo, dna helix abstract icon, dark grey" />
+        <img class="h-8 w-auto object-contain" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/360a661e09-ba9ecfb60a9b6bd61a5d.png" alt="global health organization logo, modern minimalist emblem, dark grey" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="footer" class="py-16 bg-navy relative border-t border-white/10">
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-white/40">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-dna text-primary"></i>
+          <span class="font-heading font-bold text-white">Muse Cells</span>
+        </div>
+        <div>© 2026 Muse Stem Cells Inc. All rights reserved.</div>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
