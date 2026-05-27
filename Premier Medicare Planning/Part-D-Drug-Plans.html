@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<!-- saved from url=(0012)about:srcdoc -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.13/html-to-image.min.js" integrity="sha512-iZ2ORl595Wx6miw+GuadDet4WQbdSWS3JLMoNfY8cRGoEFy6oT3G9IbcrBeL6AfkgpA51ETt/faX6yLV+/gFJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      (function() {
+        const originalConsole = window.console;
+        window.console = {
+          log: (...args) => {
+            originalConsole.log(...args);
+            window.parent.postMessage({ type: 'console', message: args.join(' ') }, '*');
+          },
+          error: (...args) => {
+            originalConsole.error(...args);
+            window.parent.postMessage({ type: 'console', message: 'Error: ' + args.join(' ') }, '*');
+          },
+          warn: (...args) => {
+            originalConsole.warn(...args);
+            window.parent.postMessage({ type: 'console', message: 'Warning: ' + args.join(' ') }, '*');
+          }
+        };
+
+        let requestId = 0;
+        let callbacksMap = new Map();
+        let streamControllers = new Map();
+        
+        window.claude = {
+          complete: (prompt) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'claudeComplete', id, prompt }, '*');
+            });
+          }
+        };
+
+        window.storage = {
+          get: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageGet', id, key, shared }, '*');
+            });
+          },
+          set: (key, value, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageSet', id, key, value, shared }, '*');
+            });
+          },
+          delete: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageDelete', id, key, shared }, '*');
+            });
+          },
+          list: (prefix, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageList', id, prefix, shared }, '*');
+            });
+          }
+        };
+
+        let pendingBlobs = new Map();
+        URL.createObjectURL = (blob) => {
+          // Store the blob and create an ID and URL for it
+          const blobId = `blob-${Date.now()}-${Math.random()}`;
+          pendingBlobs.set(blobId, blob);
+          return `blob-request://${blobId}`;
+        };
+
+        URL.revokeObjectURL = (url) => {
+          // Remove the blob from our store
+          const blobId = url.replace("blob-request://", "");
+          pendingBlobs.delete(blobId);
+        };
+
+        const getBlobFromURL = (url) => {
+          const blobId = url.replace("blob-request://", "");
+          return pendingBlobs.get(blobId);
+        };
+
+        // Override global fetch with streaming support
+        window.fetch = (url, init = {}) => {
+          return new Promise((resolve, reject) => {
+            const id = requestId++;
+            const channelId = `fetch-${id}-${Date.now()}`;
+            
+            callbacksMap.set(id, { 
+              resolve: (response) => {
+                // Create a ReadableStream for the response body
+                const stream = new ReadableStream({
+                  start(controller) {
+                    streamControllers.set(channelId, controller);
+                  },
+                  cancel() {
+                    streamControllers.delete(channelId);
+                  }
+                });
+                
+                // Create and return the Response with the stream
+                resolve(new Response(stream, {
+                  status: response.status,
+                  statusText: response.statusText,
+                  headers: response.headers
+                }));
+              },
+              reject,
+              channelId
+            });
+            
+            window.parent.postMessage({
+              type: 'proxyFetch',
+              id,
+              url,
+              init,
+              channelId
+            }, '*');
+          });
+        };
+
+        window.addEventListener('message', async (event) => {
+          if (event.data.type === 'takeScreenshot') {
+            const rootElement = document.getElementById('artifacts-component-root-html');
+            if (!rootElement) {
+              window.parent.postMessage({
+                type: 'screenshotError',
+                error: new Error('Root element not found'),
+              }, '*');
+              return;
+            }
+            // Catch CDN load failures (htmlToImage undefined) and toPng errors
+            // so the parent always gets a response instead of hanging forever.
+            try {
+              const screenshot = await htmlToImage.toPng(rootElement, {
+                imagePlaceholder:
+                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjePDgwX8ACOQDoNsk0PMAAAAASUVORK5CYII=",
+              });
+              window.parent.postMessage({
+                type: 'screenshotData',
+                data: screenshot,
+              }, '*');
+            } catch (err) {
+              window.parent.postMessage({
+                type: 'screenshotError',
+                error: err instanceof Error ? err : new Error(String(err)),
+              }, '*');
+            }
+          } else if (event.data.type === 'claudeComplete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.completion);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'proxyFetchResponse') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+              callbacksMap.delete(event.data.id);
+            } else {
+              // Initial response with headers, status, etc.
+              callback.resolve({
+                status: event.data.status,
+                statusText: event.data.statusText,
+                headers: event.data.headers
+              });
+              // Don't delete the callback yet if streaming
+              if (!event.data.body) {
+                callbacksMap.delete(event.data.id);
+              }
+            }
+          } else if (event.data.type === 'proxyFetchStream') {
+            // Handle streaming data chunks
+            const controller = streamControllers.get(event.data.channelId);
+            if (controller) {
+              if (event.data.error) {
+                controller.error(new Error(event.data.error));
+                streamControllers.delete(event.data.channelId);
+              } else if (event.data.done) {
+                controller.close();
+                streamControllers.delete(event.data.channelId);
+                // Clean up the callback
+                const callback = Array.from(callbacksMap.entries()).find(
+                  ([_, value]) => value.channelId === event.data.channelId
+                );
+                if (callback) {
+                  callbacksMap.delete(callback[0]);
+                }
+              } else if (event.data.chunk) {
+                controller.enqueue(new Uint8Array(event.data.chunk));
+              }
+            }
+          } else if (event.data.type === 'storageGet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageSet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageDelete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageList') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          }
+        });
+
+        window.addEventListener('click', (event) => {
+          const isEl = event.target instanceof HTMLElement;
+          if (!isEl) return;
+    
+          // find ancestor links
+          const linkEl = event.target.closest("a");
+          if (!linkEl || !linkEl.href) return;
+    
+          event.preventDefault();
+          event.stopImmediatePropagation();
+    
+          if (linkEl.href.startsWith("blob-request:")) {
+            const blob = getBlobFromURL(linkEl.href);
+            if (!blob) return;
+            void blob.arrayBuffer().then((data) => {
+              window.parent.postMessage({
+                type: "downloadFile",
+                filename: linkEl.download,
+                data,
+                mimeType: blob.type || "application/octet-stream",
+              });
+            });
+          } else if (linkEl.href.startsWith("data:")) {
+            const [header, base64Data] = linkEl.href.split(",");
+            const mimeMatch = header.match(/data:([^;]+)/);
+            const mimeType = mimeMatch ? mimeMatch[1] : "application/octet-stream";
+            const binaryString = atob(base64Data);
+            const data = Uint8Array.from(binaryString, (c) =>
+              c.charCodeAt(0),
+            ).buffer;
+            window.parent.postMessage({
+              type: "downloadFile",
+              filename: linkEl.download,
+              data,
+              mimeType,
+            });
+          } else {
+            let linkUrl;
+            try {
+              linkUrl = new URL(linkEl.href);
+            } catch (error) {
+              return;
+            }
+    
+            if (linkUrl.hostname === window.location.hostname) return;
+      
+            window.parent.postMessage({
+              type: 'openExternal',
+              href: linkEl.href,
+            }, '*');
+          }
+      });
+
+        const originalOpen = window.open;
+        window.open = function (url) {
+          window.parent.postMessage({
+            type: "openExternal",
+            href: url,
+          }, "*");
+        };
+
+        window.addEventListener('error', (event) => {
+          window.parent.postMessage({ type: 'console', message: 'Uncaught Error: ' + event.message }, '*');
+        });
+      })();
+    </script>
+  
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+3:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0e2340;
+    --navy-mid: #163354;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --cream: #f8f5ef;
+    --cream-dark: #ede9e0;
+    --slate: #4a5568;
+    --slate-light: #718096;
+    --white: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Source Sans 3', sans-serif; background: var(--cream); color: var(--navy); overflow-x: hidden; }
+
+  /* TOPBAR */
+  .topbar { background: var(--navy); color: rgba(255,255,255,0.7); font-size: 0.78rem; letter-spacing: 0.04em; padding: 8px 0; text-align: center; }
+  .topbar span { margin: 0 20px; }
+  .topbar a { color: var(--gold-light); text-decoration: none; }
+
+  /* NAV */
+  nav { background: var(--white); border-bottom: 1px solid var(--cream-dark); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(14,35,64,0.08); }
+  .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .logo { display: flex; flex-direction: column; line-height: 1; text-decoration: none; }
+  .logo-main { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--navy); letter-spacing: 0.01em; }
+  .logo-sub { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-top: 2px; font-weight: 600; }
+  .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+  .nav-links a { text-decoration: none; color: var(--slate); font-size: 0.88rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--navy); }
+  .nav-links a.active { border-bottom: 2px solid var(--gold); padding-bottom: 2px; }
+  .nav-cta { background: var(--gold); color: var(--navy) !important; padding: 10px 22px; border-radius: 2px; font-weight: 600 !important; }
+  .nav-cta:hover { background: var(--gold-light) !important; }
+
+  /* PAGE HERO */
+  .page-hero { background: var(--navy); padding: 72px 40px 64px; position: relative; overflow: hidden; }
+  .page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(201,168,76,0.07) 0%, transparent 60%); }
+  .page-hero-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+  .page-hero-eyebrow { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  .page-hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--gold); }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 20px; }
+  .page-hero h1 em { font-style: italic; color: var(--gold-light); }
+  .page-hero-desc { font-family: 'Libre Baskerville', serif; font-size: 1.05rem; color: rgba(255,255,255,0.72); line-height: 1.75; max-width: 640px; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+  .breadcrumb a { font-size: 0.75rem; color: rgba(255,255,255,0.45); text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.2s; }
+  .breadcrumb a:hover { color: var(--gold-light); }
+  .breadcrumb span { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+  .breadcrumb-current { font-size: 0.75rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* CONTENT SECTIONS */
+  section { padding: 80px 40px; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-label { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
+  .section-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gold); }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700; color: var(--navy); line-height: 1.2; margin-bottom: 16px; }
+  .section-title em { font-style: italic; color: var(--gold); }
+  .section-desc { font-family: 'Libre Baskerville', serif; font-size: 1rem; color: var(--slate); line-height: 1.8; }
+  .divider { width: 48px; height: 2px; background: var(--gold); margin: 20px 0 28px; }
+
+  /* CONTENT GRID */
+  .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 64px; align-items: start; }
+  .content-body p { font-size: 0.97rem; color: var(--slate); line-height: 1.85; margin-bottom: 20px; font-family: 'Libre Baskerville', serif; }
+  .content-body h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--navy); margin: 32px 0 14px; }
+  .content-body h4 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--navy); margin: 24px 0 10px; }
+  .content-body strong { color: var(--navy); font-weight: 600; }
+
+  /* SIDEBAR */
+  .sidebar { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 96px; }
+  .sidebar-cta { background: var(--navy); padding: 32px; border-radius: 4px; }
+  .sidebar-cta h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--white); margin-bottom: 8px; }
+  .sidebar-cta p { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 20px; }
+  .sidebar-form input, .sidebar-form select { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: var(--white); padding: 10px 14px; font-size: 0.87rem; border-radius: 2px; outline: none; font-family: 'Source Sans 3', sans-serif; margin-bottom: 10px; transition: border-color 0.2s; }
+  .sidebar-form input::placeholder { color: rgba(255,255,255,0.4); }
+  .sidebar-form select option { background: var(--navy); }
+  .sidebar-form input:focus, .sidebar-form select:focus { border-color: var(--gold); }
+  .sidebar-submit { width: 100%; background: var(--gold); color: var(--navy); border: none; padding: 12px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: background 0.2s; }
+  .sidebar-submit:hover { background: var(--gold-light); }
+  .sidebar-note { font-size: 0.68rem; color: rgba(255,255,255,0.3); text-align: center; margin-top: 8px; }
+  .sidebar-links { background: var(--white); border: 1px solid var(--cream-dark); border-radius: 4px; overflow: hidden; }
+  .sidebar-links-title { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); font-weight: 700; padding: 16px 20px; background: var(--cream); border-bottom: 1px solid var(--cream-dark); }
+  .sidebar-link { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--cream-dark); text-decoration: none; transition: background 0.2s; }
+  .sidebar-link:last-child { border-bottom: none; }
+  .sidebar-link:hover { background: var(--cream); }
+  .sidebar-link span { font-size: 0.87rem; color: var(--navy); font-weight: 500; }
+  .sidebar-link-arrow { color: var(--gold); font-size: 0.75rem; }
+  .sidebar-link.active { background: var(--cream); }
+  .sidebar-link.active span { color: var(--gold); font-weight: 600; }
+
+  /* INFO BOXES */
+  .info-box { padding: 24px 28px; border-radius: 3px; margin: 28px 0; }
+  .info-box.gold { background: var(--gold-pale, #f5edda); border-left: 3px solid var(--gold); }
+  .info-box.navy { background: var(--navy); border-left: 3px solid var(--gold); }
+  .info-box.cream { background: var(--cream-dark); border-left: 3px solid var(--gold); }
+  .info-box h4 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--navy); margin-bottom: 10px; }
+  .info-box.navy h4 { color: var(--white); }
+  .info-box p { font-size: 0.88rem; color: var(--slate); line-height: 1.7; margin-bottom: 0; font-family: 'Source Sans 3', sans-serif; }
+  .info-box.navy p { color: rgba(255,255,255,0.65); }
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .check-list li { font-size: 0.88rem; color: var(--slate); line-height: 1.6; display: flex; gap: 10px; align-items: flex-start; }
+  .check-list li::before { content: '→'; color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .info-box.navy .check-list li { color: rgba(255,255,255,0.65); }
+
+  /* FAQ */
+  .faq-section { background: var(--white); }
+  .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+  .faq-item { padding: 28px; background: var(--cream); border-top: 2px solid var(--gold); }
+  .faq-item h4 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--navy); margin-bottom: 10px; }
+  .faq-item p { font-size: 0.87rem; color: var(--slate); line-height: 1.7; }
+
+  /* CTA BAND */
+  .cta-band { background: var(--gold); padding: 64px 40px; }
+  .cta-band-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 40px; flex-wrap: wrap; }
+  .cta-band h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 2.5vw, 2.2rem); color: var(--navy); font-weight: 700; }
+  .cta-band p { font-size: 1rem; color: rgba(14,35,64,0.7); margin-top: 8px; font-family: 'Libre Baskerville', serif; }
+  .btn-dark { background: var(--navy); color: var(--white); padding: 16px 36px; font-size: 0.88rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: none; cursor: pointer; border-radius: 2px; text-decoration: none; white-space: nowrap; transition: background 0.2s; display: inline-block; }
+  .btn-dark:hover { background: var(--navy-mid); }
+  .btn-primary { background: var(--gold); color: var(--navy); padding: 14px 32px; font-size: 0.88rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: none; cursor: pointer; border-radius: 2px; text-decoration: none; transition: all 0.2s; display: inline-block; }
+  .btn-primary:hover { background: var(--gold-light); }
+
+  /* FOOTER */
+  footer { background: var(--navy); padding: 64px 40px 32px; color: rgba(255,255,255,0.6); }
+  .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+  .footer-brand .logo-main { color: var(--white); font-size: 1.2rem; }
+  .footer-brand .logo-sub { margin-bottom: 16px; display: block; }
+  .footer-brand p { font-size: 0.85rem; line-height: 1.75; color: rgba(255,255,255,0.45); max-width: 280px; }
+  .footer-col h5 { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 20px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.87rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--gold-light); }
+  .footer-bottom { max-width: 1200px; margin: 0 auto; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+  .footer-disclaimer { font-size: 0.72rem; color: rgba(255,255,255,0.25); line-height: 1.7; max-width: 700px; }
+  .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.3); white-space: nowrap; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  .fade-up { animation: fadeUp 0.7s ease both; }
+</style>
+<title>Medicare Part D Prescription Drug Plans Dayton Ohio | Premier Medicare Planning</title>
+<meta name="description" content="Find the right Medicare Part D prescription drug plan in Dayton, Ohio. We analyze your specific medications against every available plan to minimize your drug costs.">
+</head>
+<body id="artifacts-component-root-html" data-new-gr-c-s-check-loaded="14.1296.0" data-gr-ext-installed="">
+
+<div class="topbar">
+  <span>Serving Dayton &amp; All of Ohio</span>
+  <span>·</span>
+  <span>Independent. Unbiased. On Your Side.</span>
+  <span>·</span>
+  <span>Call Us: <a href="tel:9375550100">(937) 555-0100</a></span>
+</div>
+<nav>
+  <div class="nav-inner">
+    <a href="https://www.claudeusercontent.com/artifact/index.html" class="logo">
+      <span class="logo-main">Premier Medicare Planning</span>
+      <span class="logo-sub">Dayton, Ohio · Independent Agency</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="https://www.claudeusercontent.com/artifact/services.html">Services</a></li>
+      <li><a href="https://www.claudeusercontent.com/artifact/turning-65.html">Turning 65</a></li>
+      <li><a href="https://www.claudeusercontent.com/artifact/why-us.html">Why Us</a></li>
+      <li><a href="https://www.claudeusercontent.com/artifact/contact.html" class="nav-cta">Free Consultation</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="https://www.claudeusercontent.com/artifact/index.html">Home</a><span>/</span><span class="breadcrumb-current">Part D Drug Plans</span>
+    </div>
+    <div class="page-hero-eyebrow">Prescription Drug Coverage</div>
+    <h1>Medicare Part D <em>Drug Plans</em></h1>
+    <p class="page-hero-desc">We analyze your specific medications against every available plan to find your lowest total annual drug cost — not just the lowest premium.</p>
+  </div>
+</div>
+
+<section style="background:var(--white);">
+  <div class="section-inner">
+    <div class="content-grid">
+      <div class="content-body fade-up">
+        <div class="section-label">Prescription Drug Coverage</div>
+        <h2 class="section-title">The Right Drug Plan<br>Saves You <em>Real Money</em></h2>
+        <div class="divider"></div>
+        <p>Medicare Part D provides prescription drug coverage through private insurance plans approved and regulated by Medicare. Choosing the wrong Part D plan is one of the most common — and most costly — Medicare mistakes people make, often costing hundreds or thousands of dollars more per year for the exact same medications.</p>
+        <p>The reason is the formulary — every plan has its own list of covered drugs, placed on different cost tiers. A drug that costs you $10/month on one plan might cost $80/month on another. Without comparing your specific drugs against every available plan, you're essentially guessing.</p>
+
+        <h3>Do You Need a Standalone Part D Plan?</h3>
+        <p>It depends on how you have your Medicare coverage set up:</p>
+        <div class="info-box cream">
+          <ul class="check-list">
+            <li><strong>If you have Original Medicare + Medigap:</strong> You need a standalone Part D plan. Medigap does not include drug coverage.</li>
+            <li><strong>If you have Medicare Advantage:</strong> Most MA plans include Part D drug coverage built in. You generally do not need — and cannot have — a separate Part D plan.</li>
+            <li><strong>If you have employer coverage:</strong> You may be able to delay Part D enrollment without penalty if your employer plan meets Medicare's "creditable coverage" standard. We verify this for every client.</li>
+          </ul>
+        </div>
+
+        <h3>How Part D Plans Work</h3>
+        <h4>Formularies and Drug Tiers</h4>
+        <p>Every Part D plan maintains a formulary — a list of covered prescription drugs. Each drug on the formulary is placed on a cost tier, with higher tiers meaning higher out-of-pocket costs. Most plans have 5 tiers: generic drugs (lowest cost), preferred brand, non-preferred brand, specialty drugs (highest cost), and sometimes a select care tier for the lowest-cost generics.</p>
+
+        <h4>The Coverage Phases</h4>
+        <p>Part D coverage works in phases that reset each January 1:</p>
+        <div class="info-box gold">
+          <ul class="check-list">
+            <li><strong>Deductible Phase:</strong> You pay 100% of drug costs until you meet your deductible (up to $545 in 2024 — some plans have $0 deductible for preferred drugs)</li>
+            <li><strong>Initial Coverage Phase:</strong> You pay your copay or coinsurance; the plan pays the rest</li>
+            <li><strong>Catastrophic Coverage:</strong> After reaching $8,000 in out-of-pocket costs in 2024, you pay nothing for covered drugs for the rest of the year (new for 2024 under the Inflation Reduction Act)</li>
+          </ul>
+        </div>
+
+        <h3>The Late Enrollment Penalty — Don't Miss Your Window</h3>
+        <p>This is critically important: if you don't enroll in Part D when you're first eligible and you don't have other creditable drug coverage, you'll pay a <strong>permanent late enrollment penalty</strong> for as long as you have Medicare drug coverage. The penalty is 1% of the national base premium for every month you were without coverage — and it never goes away.</p>
+
+        <div class="info-box navy">
+          <h4 style="color:var(--white);">Example: The Cost of Waiting</h4>
+          <p>If you go 24 months without creditable drug coverage, your penalty is 24% of the base premium — added permanently to every Part D premium you ever pay. On a $40/month plan, that's an extra $9.60 every single month for the rest of your life. We make sure every client understands their enrollment window and acts within it.</p>
+        </div>
+
+        <h3>Our Part D Analysis Process</h3>
+        <p>Finding the right Part D plan isn't about the lowest premium — it's about the lowest <strong>total annual cost</strong>, which includes your premium, deductible, and actual drug costs based on your specific medications and the dosages you take.</p>
+        <div class="info-box cream">
+          <ul class="check-list">
+            <li><strong>Step 1:</strong> You provide your complete medication list with dosages and preferred pharmacy</li>
+            <li><strong>Step 2:</strong> We run your drugs through every available Part D plan in Ohio</li>
+            <li><strong>Step 3:</strong> We calculate your total estimated annual cost — premium + deductible + drug costs — for each plan</li>
+            <li><strong>Step 4:</strong> We present you with the top options clearly, with no pressure</li>
+            <li><strong>Step 5:</strong> We review every year during Annual Enrollment — formularies and drug prices change annually</li>
+          </ul>
+        </div>
+
+        <h3>Extra Help — Low Income Subsidy</h3>
+        <p>If your income and resources are below certain limits, you may qualify for Extra Help — a federal program that significantly reduces your Part D costs, including premiums, deductibles, and copayments. We check every client's potential eligibility for Extra Help and assist with the application if appropriate.</p>
+      </div>
+      <div>
+<aside class="sidebar">
+  <div class="sidebar-cta">
+    <h4>Get Your Free Plan Review</h4>
+    <p>No obligation. No pressure. Real answers from local experts.</p>
+    <div class="sidebar-form">
+      <input type="text" placeholder="Your Full Name">
+      <input type="tel" placeholder="Phone Number">
+      <input type="email" placeholder="Email Address">
+      <select><option value="" disabled="" selected="">I'm interested in...</option>
+        <option>Medicare Advantage</option>
+        <option>Medicare Supplement</option>
+        <option>Part D Drug Plans</option>
+        <option>Turning 65 Planning</option>
+      </select>
+      <button class="sidebar-submit">Schedule My Free Review</button>
+      <p class="sidebar-note">Your information is never sold to third parties.</p>
+    </div>
+  </div>
+  <div class="sidebar-links">
+    <div class="sidebar-links-title">Our Services</div>
+    <a href="https://www.claudeusercontent.com/artifact/medicare-advantage.html" class="sidebar-link">
+      <span>Medicare Advantage</span>
+      <span class="sidebar-link-arrow">→</span>
+    </a>
+    <a href="https://www.claudeusercontent.com/artifact/medicare-supplement.html" class="sidebar-link">
+      <span>Medicare Supplement</span>
+      <span class="sidebar-link-arrow">→</span>
+    </a>
+    <a href="https://www.claudeusercontent.com/artifact/part-d.html" class="sidebar-link active">
+      <span>Part D Drug Plans</span>
+      <span class="sidebar-link-arrow">→</span>
+    </a>
+    <a href="https://www.claudeusercontent.com/artifact/turning-65.html" class="sidebar-link">
+      <span>Turning 65 Planning</span>
+      <span class="sidebar-link-arrow">→</span>
+    </a>
+  </div>
+</aside></div>
+    </div>
+  </div>
+</section>
+
+<section class="faq-section">
+  <div class="section-inner">
+    <div class="section-label">Common Questions</div>
+    <h2 class="section-title">Part D Prescription Plans <em>FAQ</em></h2>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <h4>What if my drug isn't on the plan's formulary?</h4>
+        <p>You can request an exception, ask your doctor to prescribe a therapeutically equivalent drug that is covered, or switch to a plan that covers your medication during the next enrollment period. This is exactly why we verify your specific drugs against every plan before recommending one.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I use any pharmacy with Part D?</h4>
+        <p>Most Part D plans have preferred pharmacy networks where you'll pay the lowest cost-sharing. Using an out-of-network pharmacy may cost more. We factor in your preferred pharmacy when comparing plans.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Do Part D plans cover insulin?</h4>
+        <p>Yes — under the Inflation Reduction Act, Medicare Part D plans cap insulin costs at $35/month per covered insulin product. This applies to all Medicare Part D enrollees regardless of income.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I change my Part D plan mid-year?</h4>
+        <p>Generally no — you're locked into your Part D plan until the next Annual Enrollment Period (Oct 15–Dec 7) unless you experience a qualifying Special Enrollment Period event such as moving, losing other coverage, or qualifying for Extra Help.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What is the Part D income-related adjustment (IRMAA)?</h4>
+        <p>Higher-income Medicare beneficiaries pay an additional monthly surcharge on top of their Part D premium, called IRMAA. In 2024, this ranges from about $12 to $81/month based on your income from two years prior. We discuss IRMAA implications for every client we work with.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Should I enroll in Part D if I don't take any prescriptions?</h4>
+        <p>Generally yes — enrolling in a low-premium Part D plan protects you from the late enrollment penalty if you need prescriptions in the future. Plans are available for as little as $5–10/month. The cost of not enrolling can far exceed the cost of a basic plan over time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band">
+  <div class="cta-band-inner">
+    <div>
+      <h2>Ready to Find the Right Medicare Plan?</h2>
+      <p>Free consultation. No obligation. Real answers from local experts.</p>
+    </div>
+    <a href="https://www.claudeusercontent.com/artifact/contact.html" class="btn-dark">Schedule Your Free Review</a>
+  </div>
+</div>
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="https://www.claudeusercontent.com/artifact/index.html" class="logo">
+        <span class="logo-main">Premier Medicare Planning</span>
+        <span class="logo-sub">Dayton, Ohio · Independent Agency</span>
+      </a>
+      <p style="margin-top:16px;">An independent Medicare insurance agency serving Dayton and all of Ohio. We are not affiliated with or endorsed by the federal Medicare program or any government agency.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Services</h5>
+      <ul>
+        <li><a href="https://www.claudeusercontent.com/artifact/medicare-advantage.html">Medicare Advantage</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/medicare-supplement.html">Medicare Supplement</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/part-d.html">Part D Drug Plans</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/turning-65.html">Turning 65 Planning</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="https://www.claudeusercontent.com/artifact/why-us.html">Why Us</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/contact.html">Contact</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="tel:9375550100">(937) 555-0100</a></li>
+        <li><a href="mailto:info@premiermedicareplanning.com">info@premierMedicarePlanning.com</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/5d8c4e96-8344-4e76-9ba2-cf0bc1acf017?domain=claude.ai&amp;parentOrigin=https%3A%2F%2Fclaude.ai&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Dayton, Ohio</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-disclaimer">Premier Medicare Planning LLC is a licensed independent insurance agency. We are not affiliated with or endorsed by Medicare, the Centers for Medicare &amp; Medicaid Services (CMS), or any government agency. Medicare has neither reviewed nor endorsed this information. Plans vary by region. Not all plans available in all areas. © 2025 Premier Medicare Planning LLC. All rights reserved.</p>
+    <div class="footer-copy">Ohio License #XXXXXXX</div>
+  </div>
+</footer>
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<!-- saved from url=(0012)about:srcdoc -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.13/html-to-image.min.js" integrity="sha512-iZ2ORl595Wx6miw+GuadDet4WQbdSWS3JLMoNfY8cRGoEFy6oT3G9IbcrBeL6AfkgpA51ETt/faX6yLV+/gFJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      (function() {
+        const originalConsole = window.console;
+        window.console = {
+          log: (...args) => {
+            originalConsole.log(...args);
+            window.parent.postMessage({ type: 'console', message: args.join(' ') }, '*');
+          },
+          error: (...args) => {
+            originalConsole.error(...args);
+            window.parent.postMessage({ type: 'console', message: 'Error: ' + args.join(' ') }, '*');
+          },
+          warn: (...args) => {
+            originalConsole.warn(...args);
+            window.parent.postMessage({ type: 'console', message: 'Warning: ' + args.join(' ') }, '*');
+          }
+        };
+
+        let requestId = 0;
+        let callbacksMap = new Map();
+        let streamControllers = new Map();
+        
+        window.claude = {
+          complete: (prompt) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'claudeComplete', id, prompt }, '*');
+            });
+          }
+        };
+
+        window.storage = {
+          get: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageGet', id, key, shared }, '*');
+            });
+          },
+          set: (key, value, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageSet', id, key, value, shared }, '*');
+            });
+          },
+          delete: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageDelete', id, key, shared }, '*');
+            });
+          },
+          list: (prefix, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageList', id, prefix, shared }, '*');
+            });
+          }
+        };
+
+        let pendingBlobs = new Map();
+        URL.createObjectURL = (blob) => {
+          // Store the blob and create an ID and URL for it
+          const blobId = `blob-${Date.now()}-${Math.random()}`;
+          pendingBlobs.set(blobId, blob);
+          return `blob-request://${blobId}`;
+        };
+
+        URL.revokeObjectURL = (url) => {
+          // Remove the blob from our store
+          const blobId = url.replace("blob-request://", "");
+          pendingBlobs.delete(blobId);
+        };
+
+        const getBlobFromURL = (url) => {
+          const blobId = url.replace("blob-request://", "");
+          return pendingBlobs.get(blobId);
+        };
+
+        // Override global fetch with streaming support
+        window.fetch = (url, init = {}) => {
+          return new Promise((resolve, reject) => {
+            const id = requestId++;
+            const channelId = `fetch-${id}-${Date.now()}`;
+            
+            callbacksMap.set(id, { 
+              resolve: (response) => {
+                // Create a ReadableStream for the response body
+                const stream = new ReadableStream({
+                  start(controller) {
+                    streamControllers.set(channelId, controller);
+                  },
+                  cancel() {
+                    streamControllers.delete(channelId);
+                  }
+                });
+                
+                // Create and return the Response with the stream
+                resolve(new Response(stream, {
+                  status: response.status,
+                  statusText: response.statusText,
+                  headers: response.headers
+                }));
+              },
+              reject,
+              channelId
+            });
+            
+            window.parent.postMessage({
+              type: 'proxyFetch',
+              id,
+              url,
+              init,
+              channelId
+            }, '*');
+          });
+        };
+
+        window.addEventListener('message', async (event) => {
+          if (event.data.type === 'takeScreenshot') {
+            const rootElement = document.getElementById('artifacts-component-root-html');
+            if (!rootElement) {
+              window.parent.postMessage({
+                type: 'screenshotError',
+                error: new Error('Root element not found'),
+              }, '*');
+              return;
+            }
+            // Catch CDN load failures (htmlToImage undefined) and toPng errors
+            // so the parent always gets a response instead of hanging forever.
+            try {
+              const screenshot = await htmlToImage.toPng(rootElement, {
+                imagePlaceholder:
+                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjePDgwX8ACOQDoNsk0PMAAAAASUVORK5CYII=",
+              });
+              window.parent.postMessage({
+                type: 'screenshotData',
+                data: screenshot,
+              }, '*');
+            } catch (err) {
+              window.parent.postMessage({
+                type: 'screenshotError',
+                error: err instanceof Error ? err : new Error(String(err)),
+              }, '*');
+            }
+          } else if (event.data.type === 'claudeComplete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.completion);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'proxyFetchResponse') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+              callbacksMap.delete(event.data.id);
+            } else {
+              // Initial response with headers, status, etc.
+              callback.resolve({
+                status: event.data.status,
+                statusText: event.data.statusText,
+                headers: event.data.headers
+              });
+              // Don't delete the callback yet if streaming
+              if (!event.data.body) {
+                callbacksMap.delete(event.data.id);
+              }
+            }
+          } else if (event.data.type === 'proxyFetchStream') {
+            // Handle streaming data chunks
+            const controller = streamControllers.get(event.data.channelId);
+            if (controller) {
+              if (event.data.error) {
+                controller.error(new Error(event.data.error));
+                streamControllers.delete(event.data.channelId);
+              } else if (event.data.done) {
+                controller.close();
+                streamControllers.delete(event.data.channelId);
+                // Clean up the callback
+                const callback = Array.from(callbacksMap.entries()).find(
+                  ([_, value]) => value.channelId === event.data.channelId
+                );
+                if (callback) {
+                  callbacksMap.delete(callback[0]);
+                }
+              } else if (event.data.chunk) {
+                controller.enqueue(new Uint8Array(event.data.chunk));
+              }
+            }
+          } else if (event.data.type === 'storageGet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageSet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageDelete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageList') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          }
+        });
+
+        window.addEventListener('click', (event) => {
+          const isEl = event.target instanceof HTMLElement;
+          if (!isEl) return;
+    
+          // find ancestor links
+          const linkEl = event.target.closest("a");
+          if (!linkEl || !linkEl.href) return;
+    
+          event.preventDefault();
+          event.stopImmediatePropagation();
+    
+          if (linkEl.href.startsWith("blob-request:")) {
+            const blob = getBlobFromURL(linkEl.href);
+            if (!blob) return;
+            void blob.arrayBuffer().then((data) => {
+              window.parent.postMessage({
+                type: "downloadFile",
+                filename: linkEl.download,
+                data,
+                mimeType: blob.type || "application/octet-stream",
+              });
+            });
+          } else if (linkEl.href.startsWith("data:")) {
+            const [header, base64Data] = linkEl.href.split(",");
+            const mimeMatch = header.match(/data:([^;]+)/);
+            const mimeType = mimeMatch ? mimeMatch[1] : "application/octet-stream";
+            const binaryString = atob(base64Data);
+            const data = Uint8Array.from(binaryString, (c) =>
+              c.charCodeAt(0),
+            ).buffer;
+            window.parent.postMessage({
+              type: "downloadFile",
+              filename: linkEl.download,
+              data,
+              mimeType,
+            });
+          } else {
+            let linkUrl;
+            try {
+              linkUrl = new URL(linkEl.href);
+            } catch (error) {
+              return;
+            }
+    
+            if (linkUrl.hostname === window.location.hostname) return;
+      
+            window.parent.postMessage({
+              type: 'openExternal',
+              href: linkEl.href,
+            }, '*');
+          }
+      });
+
+        const originalOpen = window.open;
+        window.open = function (url) {
+          window.parent.postMessage({
+            type: "openExternal",
+            href: url,
+          }, "*");
+        };
+
+        window.addEventListener('error', (event) => {
+          window.parent.postMessage({ type: 'console', message: 'Uncaught Error: ' + event.message }, '*');
+        });
+      })();
+    </script>
+  
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+3:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0e2340;
+    --navy-mid: #163354;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --cream: #f8f5ef;
+    --cream-dark: #ede9e0;
+    --slate: #4a5568;
+    --slate-light: #718096;
+    --white: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Source Sans 3', sans-serif; background: var(--cream); color: var(--navy); overflow-x: hidden; }
+
+  /* TOPBAR */
+  .topbar { background: var(--navy); color: rgba(255,255,255,0.7); font-size: 0.78rem; letter-spacing: 0.04em; padding: 8px 0; text-align: center; }
+  .topbar span { margin: 0 20px; }
+  .topbar a { color: var(--gold-light); text-decoration: none; }
+
+  /* NAV */
+  nav { background: var(--white); border-bottom: 1px solid var(--cream-dark); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(14,35,64,0.08); }
+  .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .logo { display: flex; flex-direction: column; line-height: 1; text-decoration: none; }
+  .logo-main { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--navy); letter-spacing: 0.01em; }
+  .logo-sub { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-top: 2px; font-weight: 600; }
+  .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+  .nav-links a { text-decoration: none; color: var(--slate); font-size: 0.88rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--navy); }
+  .nav-links a.active { border-bottom: 2px solid var(--gold); padding-bottom: 2px; }
+  .nav-cta { background: var(--gold); color: var(--navy) !important; padding: 10px 22px; border-radius: 2px; font-weight: 600 !important; }
+  .nav-cta:hover { background: var(--gold-light) !important; }
+
+  /* PAGE HERO */
+  .page-hero { background: var(--navy); padding: 72px 40px 64px; position: relative; overflow: hidden; }
+  .page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(201,168,76,0.07) 0%, transparent 60%); }
+  .page-hero-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+  .page-hero-eyebrow { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  .page-hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--gold); }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 20px; }
+  .page-hero h1 em { font-style: italic; color: var(--gold-light); }
+  .page-hero-desc { font-family: 'Libre Baskerville', serif; font-size: 1.05rem; color: rgba(255,255,255,0.72); line-height: 1.75; max-width: 640px; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+  .breadcrumb a { font-size: 0.75rem; color: rgba(255,255,255,0.45); text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.2s; }
+  .breadcrumb a:hover { color: var(--gold-light); }
+  .breadcrumb span { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+  .breadcrumb-current { font-size: 0.75rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* CONTENT SECTIONS */
+  section { padding: 80px 40px; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-label { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
+  .section-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gold); }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700; color: var(--navy); line-height: 1.2; margin-bottom: 16px; }
+  .section-title em { font-style: italic; color: var(--gold); }
+  .section-desc { font-family: 'Libre Baskerville', serif; font-size: 1rem; color: var(--slate); line-height: 1.8; }
+  .divider { width: 48px; height: 2px; background: var(--gold); margin: 20px 0 28px; }
+
+  /* CONTENT GRID */
+  .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 64px; align-items: start; }
+  .content-body p { font-size: 0.97rem; color: var(--slate); line-height: 1.85; margin-bottom: 20px; font-family: 'Libre Baskerville', serif; }
+  .content-body h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--navy); margin: 32px 0 14px; }
+  .content-body h4 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--navy); margin: 24px 0 10px; }
+  .content-body strong { color: var(--navy); font-weight: 600; }
+
+  /* SIDEBAR */
+  .sidebar { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 96px; }
+  .sidebar-cta { background: var(--navy); padding: 32px; border-radius: 4px; }
+  .sidebar-cta h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--white); margin-bottom: 8px; }
+  .sidebar-cta p { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 20px; }
+  .sidebar-form input, .sidebar-form select { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: var(--white); padding: 10px 14px; font-size: 0.87rem; border-radius: 2px; outline: none; font-family: 'Source Sans 3', sans-serif; margin-bottom: 10px; transition: border-color 0.2s; }
+  .sidebar-form input::placeholder { color: rgba(255,255,255,0.4); }
+  .sidebar-form select option { background: var(--navy); }
+  .sidebar-form input:focus, .sidebar-form select:focus { border-color: var(--gold); }
+  .sidebar-submit { width: 100%; background: var(--gold); color: var(--navy); border: none; padding: 12px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: background 0.2s; }
+  .sidebar-submit:hover { background: var(--gold-light); }
+  .sidebar-note { font-size: 0.68rem; color: rgba(255,255,255,0.3); text-align: center; margin-top: 8px; }
+  .sidebar-links { background: var(--white); border: 1px solid var(--cream-dark); border-radius: 4px; overflow: hidden; }
+  .sidebar-links-title { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); font-weight: 700; padding: 16px 20px; background: var(--cream); border-bottom: 1px solid var(--cream-dark); }
+  .sidebar-link { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--cream-dark); text-decoration: none; transition: background 0.2s; }
+  .sidebar-link:last-child { border-bottom: none; }
+  .sidebar-link:hover { background: var(--cream); }
+  .sidebar-link span { font-size: 0.87rem; color: var(--navy); font-weight: 500; }
+  .sidebar-link-arrow { color: var(--gold); font-size: 0.75rem; }
+  .sidebar-link.active { background: var(--cream); }
+  .sidebar-link.active span { color: var(--gold); font-weight: 600; }
+
+  /* INFO BOXES */
+  .info-box { padding: 24px 28px; border-radius: 3px; margin: 28px 0; }
+  .info-box.gold { background: var(--gold-pale, #f5edda); border-left: 3px solid var(--gold); }
+  .info-box.navy { background: var(--navy); border-left: 3px solid var(--gold); }
+  .info-box.cream { background: var(--cream-dark); border-left: 3px solid var(--gold); }
+  .info-box h4 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--navy); margin-bottom: 10px; }
+  .info-box.navy h4 { color: var(--white); }
+  .info-box p { font-size: 0.88rem; color: var(--slate); line-height: 1.7; margin-bottom: 0; font-family: 'Source Sans 3', sans-serif; }
+  .info-box.navy p { color: rgba(255,255,255,0.65); }
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .check-list li { font-size: 0.88rem; color: var(--slate); line-height: 1.6; display: flex; gap: 10px; align-items: flex-start; }
+  .check-list li::before { content: '→'; color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .info-box.navy .check-list li { color: rgba(255,255,255,0.65); }
+
+  /* FAQ */
+  .faq-section { background: var(--white); }
+  .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+  .faq-item { padding: 28px; background: var(--cream); border-top: 2px solid var(--gold); }
+  .faq-item h4 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--navy); margin-bottom: 10px; }
+  .faq-item p { font-size: 0.87rem; color: var(--slate); line-height: 1.7; }
+
+  /* CTA BAND */
+  .cta-band { background: var(--gold); padding: 64px 40px; }
+  .cta-band-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 40px; flex-wrap: wrap; }
+  .cta-band h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 2.5vw, 2.2rem); color: var(--navy); font-weight: 700; }
+  .cta-band p { font-size: 1rem; color: rgba(14,35,64,0.7); margin-top: 8px; font-family: 'Libre Baskerville', serif; }
+  .btn-dark { background: var(--navy); color: var(--white); padding: 16px 36px; font-size: 0.88rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: none; cursor: pointer; border-radius: 2px; text-decoration: none; white-space: nowrap; transition: background 0.2s; display: inline-block; }
+  .btn-dark:hover { background: var(--navy-mid); }
+  .btn-primary { background: var(--gold); color: var(--navy); padding: 14px 32px; font-size: 0.88rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: none; cursor: pointer; border-radius: 2px; text-decoration: none; transition: all 0.2s; display: inline-block; }
+  .btn-primary:hover { background: var(--gold-light); }
+
+  /* FOOTER */
+  footer { background: var(--navy); padding: 64px 40px 32px; color: rgba(255,255,255,0.6); }
+  .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+  .footer-brand .logo-main { color: var(--white); font-size: 1.2rem; }
+  .footer-brand .logo-sub { margin-bottom: 16px; display: block; }
+  .footer-brand p { font-size: 0.85rem; line-height: 1.75; color: rgba(255,255,255,0.45); max-width: 280px; }
+  .footer-col h5 { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 20px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.87rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--gold-light); }
+  .footer-bottom { max-width: 1200px; margin: 0 auto; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+  .footer-disclaimer { font-size: 0.72rem; color: rgba(255,255,255,0.25); line-height: 1.7; max-width: 700px; }
+  .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.3); white-space: nowrap; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  .fade-up { animation: fadeUp 0.7s ease both; }
+</style>
+<title>Medicare Supplement Medigap Plans Dayton Ohio | Premier Medicare Planning</title>
+<meta name="description" content="Compare Medicare Supplement (Medigap) plans in Dayton, Ohio. Plan G, Plan N and more. Premier Medicare Planning shops every carrier to find you the lowest rate for identical coverage.">
+</head>
+<body id="artifacts-component-root-html" data-new-gr-c-s-check-loaded="14.1296.0" data-gr-ext-installed="">
+
+<div class="topbar">
+  <span>Serving Dayton &amp; All of Ohio</span>
+  <span>·</span>
+  <span>Independent. Unbiased. On Your Side.</span>
+  <span>·</span>
+  <span>Call Us: <a href="tel:9375550100">(937) 555-0100</a></span>
+</div>
+<nav>
+  <div class="nav-inner">
+    <a href="https://www.claudeusercontent.com/artifact/index.html" class="logo">
+      <span class="logo-main">Premier Medicare Planning</span>
+      <span class="logo-sub">Dayton, Ohio · Independent Agency</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="https://www.claudeusercontent.com/artifact/services.html">Services</a></li>
+      <li><a href="https://www.claudeusercontent.com/artifact/turning-65.html">Turning 65</a></li>
+      <li><a href="https://www.claudeusercontent.com/artifact/why-us.html">Why Us</a></li>
+      <li><a href="https://www.claudeusercontent.com/artifact/contact.html" class="nav-cta">Free Consultation</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="https://www.claudeusercontent.com/artifact/index.html">Home</a><span>/</span><span class="breadcrumb-current">Medicare Supplement</span>
+    </div>
+    <div class="page-hero-eyebrow">Medigap Coverage</div>
+    <h1>Medicare <em>Supplement</em> Plans</h1>
+    <p class="page-hero-desc">Predictable costs. No networks. See any doctor nationwide who accepts Medicare. We find you the lowest rate for the same coverage.</p>
+  </div>
+</div>
+
+<section style="background:var(--white);">
+  <div class="section-inner">
+    <div class="content-grid">
+      <div class="content-body fade-up">
+        <div class="section-label">What Is Medicare Supplement?</div>
+        <h2 class="section-title">Fill the <em>Gaps</em> in<br>Original Medicare</h2>
+        <div class="divider"></div>
+        <p>Original Medicare (Parts A and B) covers a significant portion of your healthcare costs — but not everything. You're responsible for deductibles, copayments, and coinsurance that can add up quickly, especially if you have a serious illness or frequent medical needs.</p>
+        <p>Medicare Supplement insurance — also called Medigap — is designed to fill those gaps. These plans, sold by private insurance companies, pay some or all of the costs that Original Medicare leaves behind, giving you much more predictable out-of-pocket expenses and peace of mind.</p>
+
+        <h3>The Key Advantage: No Networks</h3>
+        <p>Unlike Medicare Advantage plans, Medigap plans work alongside Original Medicare — and Original Medicare is accepted by virtually every doctor and hospital in the country. This means with a Medigap plan, you can see <strong>any provider who accepts Medicare</strong>, anywhere in the United States, without referrals and without network restrictions.</p>
+        <p>For people who travel frequently, have specialists they want to keep, or simply want maximum flexibility, this is often the decisive factor in choosing Medigap over Medicare Advantage.</p>
+
+        <div class="info-box gold">
+          <h4>Medigap Plans Are Standardized By Law</h4>
+          <p>This is one of the most important facts to understand about Medigap: a Plan G from Company A covers <strong>exactly the same things</strong> as a Plan G from Company B. The federal government standardizes the benefits — every insurer must offer identical coverage for the same plan letter. The only difference between carriers is <strong>price and financial stability</strong>. This means shopping with an independent agent like us — who can compare every carrier — is the only way to ensure you're not overpaying for identical coverage.</p>
+        </div>
+
+        <h3>The Most Popular Medigap Plans</h3>
+        <h4>Plan G — Most Comprehensive for New Enrollees</h4>
+        <p>Plan G is the most popular Medigap plan for people new to Medicare. It covers virtually everything Original Medicare doesn't — including the Part A deductible, coinsurance, hospice care, skilled nursing facility coinsurance, and foreign travel emergencies. The only cost you're responsible for is the annual Part B deductible ($240 in 2024), after which Plan G covers 100% of your Medicare-approved costs.</p>
+
+        <h4>Plan N — Lower Premium with Modest Copays</h4>
+        <p>Plan N offers nearly the same coverage as Plan G at a lower monthly premium, in exchange for small copayments — up to $20 for office visits and up to $50 for emergency room visits (waived if admitted). Plan N does not cover Part B excess charges, which are rare but worth understanding. For people in good health who visit the doctor infrequently, Plan N can save meaningful money over time.</p>
+
+        <h4>High Deductible Plan G (HDG)</h4>
+        <p>HDG works exactly like Plan G, but you pay a high deductible ($2,800 in 2024) before the plan begins paying. In exchange, the monthly premium is significantly lower — often 60–70% less than standard Plan G. This is an excellent option for healthy individuals who want catastrophic-level protection at a low monthly cost and are comfortable with the deductible risk.</p>
+
+        <div class="info-box cream">
+          <h4>Medigap Plan Comparison at a Glance</h4>
+          <ul class="check-list">
+            <li><strong>Plan G:</strong> Highest coverage, predictable costs, most popular — best for those who want comprehensive protection</li>
+            <li><strong>Plan N:</strong> Lower premium, small copays — best for healthy individuals comfortable with modest cost-sharing</li>
+            <li><strong>High Deductible G:</strong> Lowest premium, higher deductible — best for budget-conscious, healthy enrollees</li>
+          </ul>
+        </div>
+
+        <h3>Medigap and Prescription Drugs</h3>
+        <p>Medigap plans do not include prescription drug coverage. If you choose a Medigap plan, you will need to enroll in a standalone Medicare Part D prescription drug plan to cover your medications. We handle this analysis as part of every Medigap consultation — finding the right Part D plan alongside your Medigap plan to minimize your total out-of-pocket costs.</p>
+
+        <h3>When to Enroll in Medigap</h3>
+        <p>The best time to enroll in a Medigap plan is during your <strong>Medigap Open Enrollment Period</strong> — the 6-month window that begins the first month you have Medicare Part B and are 65 or older. During this window, insurance companies cannot deny you coverage or charge you more due to pre-existing conditions. After this window closes, insurers can use medical underwriting in most states, which can result in higher premiums or denial of coverage.</p>
+
+        <div class="info-box navy">
+          <h4 style="color:var(--white);">Why the Enrollment Timing Matters</h4>
+          <p>This is one of the most consequential decisions in your Medicare journey — and one we help every client navigate carefully. Choosing Medigap after your open enrollment window can mean permanently higher premiums if you have health conditions. We map your specific enrollment dates and make sure you apply at exactly the right time.</p>
+        </div>
+
+        <h3>Our Process for Finding Your Best Rate</h3>
+        <p>Because Medigap benefits are identical across carriers for the same plan letter, our job is straightforward: find you the lowest premium from a financially stable, highly-rated insurance company. We compare every carrier offering Medigap in Ohio, analyze their rate increase history, and present you with the best options — clearly and without pressure.</p>
+      </div>
+      <div>
+<aside class="sidebar">
+  <div class="sidebar-cta">
+    <h4>Get Your Free Plan Review</h4>
+    <p>No obligation. No pressure. Real answers from local experts.</p>
+    <div class="sidebar-form">
+      <input type="text" placeholder="Your Full Name">
+      <input type="tel" placeholder="Phone Number">
+      <input type="email" placeholder="Email Address">
+      <select><option value="" disabled="" selected="">I'm interested in...</option>
+        <option>Medicare Advantage</option>
+        <option>Medicare Supplement</option>
+        <option>Part D Drug Plans</option>
+        <option>Turning 65 Planning</option>
+      </select>
+      <button class="sidebar-submit">Schedule My Free Review</button>
+      <p class="sidebar-note">Your information is never sold to third parties.</p>
+    </div>
+  </div>
+  <div class="sidebar-links">
+    <div class="sidebar-links-title">Our Services</div>
+    <a href="https://www.claudeusercontent.com/artifact/medicare-advantage.html" class="sidebar-link">
+      <span>Medicare Advantage</span>
+      <span class="sidebar-link-arrow">→</span>
+    </a>
+    <a href="https://www.claudeusercontent.com/artifact/medicare-supplement.html" class="sidebar-link active">
+      <span>Medicare Supplement</span>
+      <span class="sidebar-link-arrow">→</span>
+    </a>
+    <a href="https://www.claudeusercontent.com/artifact/part-d.html" class="sidebar-link">
+      <span>Part D Drug Plans</span>
+      <span class="sidebar-link-arrow">→</span>
+    </a>
+    <a href="https://www.claudeusercontent.com/artifact/turning-65.html" class="sidebar-link">
+      <span>Turning 65 Planning</span>
+      <span class="sidebar-link-arrow">→</span>
+    </a>
+  </div>
+</aside></div>
+    </div>
+  </div>
+</section>
+
+<section class="faq-section">
+  <div class="section-inner">
+    <div class="section-label">Common Questions</div>
+    <h2 class="section-title">Medicare Supplement <em>FAQ</em></h2>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <h4>How much does Medigap cost per month?</h4>
+        <p>Premiums vary by plan type, age, gender, tobacco use, and carrier. In Ohio, Plan G premiums for a 65-year-old typically range from $90–$180/month depending on the carrier. This is exactly why shopping multiple carriers matters — the benefits are identical, but the price can vary by 50% or more.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I be denied Medigap coverage?</h4>
+        <p>During your Medigap Open Enrollment Period, no — insurers must accept you regardless of health status. After that window, Ohio allows medical underwriting, which means you could be denied or charged more based on pre-existing conditions. Timing your enrollment correctly is critical.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Will my Medigap plan be accepted everywhere?</h4>
+        <p>Yes — as long as the provider accepts Medicare, your Medigap plan will work. Because Medigap doesn't have its own network, any Medicare-accepting provider in any state will accept your coverage.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can my Medigap plan be cancelled?</h4>
+        <p>As long as you pay your premiums, your Medigap plan is guaranteed renewable — the insurer cannot cancel it. However, premiums can increase over time, which is why we track rate increase history when recommending carriers.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Does Medigap cover dental and vision?</h4>
+        <p>No — standard Medigap plans do not include dental, vision, or hearing coverage. If you need these benefits, a Medicare Advantage plan may include them, or you can purchase standalone dental/vision plans. We discuss this tradeoff during every Medigap consultation.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Plan F vs. Plan G — what's the difference?</h4>
+        <p>Plan F covers the Part B deductible ($240/year in 2024) while Plan G does not. However, Plan F is no longer available to people who became eligible for Medicare after January 1, 2020. If you were eligible before that date, you may still be able to enroll in Plan F, but Plan G is almost always a better value today.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band">
+  <div class="cta-band-inner">
+    <div>
+      <h2>Ready to Find the Right Medicare Plan?</h2>
+      <p>Free consultation. No obligation. Real answers from local experts.</p>
+    </div>
+    <a href="https://www.claudeusercontent.com/artifact/contact.html" class="btn-dark">Schedule Your Free Review</a>
+  </div>
+</div>
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="https://www.claudeusercontent.com/artifact/index.html" class="logo">
+        <span class="logo-main">Premier Medicare Planning</span>
+        <span class="logo-sub">Dayton, Ohio · Independent Agency</span>
+      </a>
+      <p style="margin-top:16px;">An independent Medicare insurance agency serving Dayton and all of Ohio. We are not affiliated with or endorsed by the federal Medicare program or any government agency.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Services</h5>
+      <ul>
+        <li><a href="https://www.claudeusercontent.com/artifact/medicare-advantage.html">Medicare Advantage</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/medicare-supplement.html">Medicare Supplement</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/part-d.html">Part D Drug Plans</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/turning-65.html">Turning 65 Planning</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="https://www.claudeusercontent.com/artifact/why-us.html">Why Us</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/contact.html">Contact</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="tel:9375550100">(937) 555-0100</a></li>
+        <li><a href="mailto:info@premiermedicareplanning.com">info@premierMedicarePlanning.com</a></li>
+        <li><a href="https://www.claudeusercontent.com/artifact/214bc4b4-c688-49c8-8dd7-078ef781439a?domain=claude.ai&amp;parentOrigin=https%3A%2F%2Fclaude.ai&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true#">Dayton, Ohio</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-disclaimer">Premier Medicare Planning LLC is a licensed independent insurance agency. We are not affiliated with or endorsed by Medicare, the Centers for Medicare &amp; Medicaid Services (CMS), or any government agency. Medicare has neither reviewed nor endorsed this information. Plans vary by region. Not all plans available in all areas. © 2025 Premier Medicare Planning LLC. All rights reserved.</p>
+    <div class="footer-copy">Ohio License #XXXXXXX</div>
+  </div>
+</footer>
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
