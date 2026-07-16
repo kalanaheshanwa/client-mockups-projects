@@ -46,9 +46,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .project-number { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #555; text-transform: uppercase; margin-bottom: 6px; }
 .project-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
 .project-desc { font-size: 14px; color: #888; line-height: 1.6; max-width: 500px; }
-.project-type-badge { font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 20px; white-space: nowrap; align-self: flex-start; margin-top: 4px; }
+.project-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.project-type-badge { font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 20px; white-space: nowrap; }
 .badge-html { color: #6a9fff; background: rgba(106,159,255,0.1); border: 1px solid rgba(106,159,255,0.25); }
 .badge-image { color: #c97fff; background: rgba(201,127,255,0.1); border: 1px solid rgba(201,127,255,0.25); }
+.badge-pdf { color: #ffb86a; background: rgba(255,184,106,0.1); border: 1px solid rgba(255,184,106,0.25); }
+.badge-challenge { color: #00D692; background: rgba(0,214,146,0.1); border: 1px solid rgba(0,214,146,0.25); }
 
 /* Project card */
 .project-card { border: 1px solid #2a2a2a; border-radius: 16px; overflow: hidden; background: #111; }
@@ -60,6 +63,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .dot.green { background: #28c840; }
 .browser-address { flex: 1; min-width: 0; background: #3a3a3a; color: #ccc; font-family: monospace; font-size: 13px; padding: 5px 12px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .browser-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #6a9fff; white-space: nowrap; flex-shrink: 0; }
+
 .page-tabs-wrap { background: #1e1e1e; padding: 12px 16px; border-bottom: 1px solid #333; }
 .tabs-hint { display: block; font-size: 11px; color: #555; margin-bottom: 8px; letter-spacing: 0.03em; }
 .page-tabs { display: flex; overflow-x: auto; gap: 6px; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
@@ -69,12 +73,25 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .page-tab.active::before { content: '✦'; }
 .page-tab:hover { background: #3a3a3a; border-color: #00D692; color: #fff; }
 .page-tab.active { background: #00D692; border-color: #00D692; color: #111; font-weight: 700; }
+.page-tab.pdf-tab::before { content: '📋'; }
+.page-tab.pdf-tab.active::before { content: '✦'; }
+
 .page-dropdown-wrap { display: none; align-items: center; gap: 10px; padding: 10px 16px; background: #1e1e1e; border-bottom: 1px solid #333; }
 .dropdown-label { font-size: 12px; color: #888; white-space: nowrap; font-family: monospace; }
 .page-dropdown { flex: 1; background: #2a2a2a; color: #fff; border: 1px solid #444; border-radius: 6px; padding: 8px 10px; font-size: 13px; font-family: monospace; cursor: pointer; }
 @media (max-width: 680px) { .page-tabs-wrap { display: none; } .page-dropdown-wrap { display: flex; } }
+
 .iframe-wrapper { width: 100%; overflow: hidden; background: #fff; }
 .iframe-wrapper iframe { display: block; border: none; width: 100%; height: 720px; }
+
+/* Challenge solved bar */
+.challenge-bar { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; background: rgba(0,214,146,0.05); border-bottom: 1px solid rgba(0,214,146,0.15); }
+.challenge-bar-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.challenge-bar-content { flex: 1; }
+.challenge-bar-title { font-size: 13px; font-weight: 700; color: #00D692; margin-bottom: 4px; letter-spacing: 0.03em; }
+.challenge-bar-desc { font-size: 13px; color: #888; line-height: 1.5; }
+
+/* Story bar for image projects */
 .story-bar { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 12px 22px; background: #161616; border-bottom: 1px solid #2a2a2a; flex-wrap: wrap; }
 .story-step { display: flex; align-items: center; gap: 8px; }
 .story-icon { font-size: 16px; }
@@ -84,6 +101,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .image-label { padding: 8px 16px; background: #2a2a2a; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #c97fff; }
 .mockup-image-wrap { background: #f5f5f5; max-height: 720px; overflow-y: auto; }
 .mockup-image { width: 100%; display: block; }
+
 .card-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px 20px; background: #161616; border-top: 1px solid #2a2a2a; }
 .footer-note { font-size: 13px; color: #555; }
 .live-btn { display: inline-block; background: #00D692; color: #111; font-weight: 700; font-size: 14px; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: all 0.2s; white-space: nowrap; }
@@ -174,8 +192,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="project-number">Project 01</div>
         <div class="project-title">Premier Medicare Planning</div>
         <div class="project-desc">Client provided 7 HTML files — one per page. I rebuilt the full site in Squarespace matching their design exactly, then refined details based on their feedback.</div>
+        <div class="project-badges"><span class="project-type-badge badge-html">📄 HTML Files</span></div>
       </div>
-      <span class="project-type-badge badge-html">📄 HTML Files</span>
     </div>
     <div class="project-card">
       <div class="browser-bar">
@@ -224,8 +242,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="project-number">Project 02</div>
         <div class="project-title">Muse MSC</div>
         <div class="project-desc">Client provided 7 HTML files covering their full site structure. Rebuilt in Squarespace with all pages, interactions and content intact.</div>
+        <div class="project-badges"><span class="project-type-badge badge-html">📄 HTML Files</span></div>
       </div>
-      <span class="project-type-badge badge-html">📄 HTML Files</span>
     </div>
     <div class="project-card">
       <div class="browser-bar">
@@ -274,8 +292,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="project-number">Project 03</div>
         <div class="project-title">Resurface Co.</div>
         <div class="project-desc">Client had only one homepage image — no other pages designed. I matched the style across the full site, creating every additional page from scratch in Squarespace.</div>
+        <div class="project-badges"><span class="project-type-badge badge-image">🖼 Image Mockup</span></div>
       </div>
-      <span class="project-type-badge badge-image">🖼 Image Mockup</span>
     </div>
     <div class="project-card">
       <div class="story-bar">
@@ -290,6 +308,68 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <div class="card-footer">
         <span class="footer-note">🖼 Single image provided by client — full site built in Squarespace</span>
         <a href="https://www.resurface.co/" target="_blank" class="live-btn">View Live Website →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 4 -->
+  <div class="project-block">
+    <div class="project-intro">
+      <div class="project-intro-left">
+        <div class="project-number">Project 04</div>
+        <div class="project-title">Brand Your Journey</div>
+        <div class="project-desc">Client provided 5 HTML page mockups plus a 24-post blog content PDF for their Strategy Room. Beyond the standard build, the client needed a filterable blog index — I built a custom filter system in Squarespace so visitors can sort posts by category without any third-party plugins.</div>
+        <div class="project-badges">
+          <span class="project-type-badge badge-html">📄 HTML Files</span>
+          <span class="project-type-badge badge-pdf">📋 PDF Content</span>
+          <span class="project-type-badge badge-challenge">⚡ Custom Filter Built</span>
+        </div>
+      </div>
+    </div>
+    <div class="project-card">
+
+      <!-- Challenge solved bar -->
+      <div class="challenge-bar">
+        <span class="challenge-bar-icon">⚡</span>
+        <div class="challenge-bar-content">
+          <div class="challenge-bar-title">Challenge Solved — Strategy Room Filter</div>
+          <div class="challenge-bar-desc">The client needed their 24-post blog (The Strategy Room) to be filterable by category. Squarespace doesn't offer native blog filtering. I built a custom JavaScript filter system directly in Squarespace — no third-party plugins, no extra cost — so visitors can instantly sort posts by topic. You can see it live on the Strategy Room page.</div>
+        </div>
+      </div>
+
+      <div class="browser-bar">
+        <div class="browser-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+        <div class="browser-address" id="p4-address">home.html</div>
+        <div class="browser-tag">HTML MOCKUP</div>
+      </div>
+      <div class="page-tabs-wrap">
+        <span class="tabs-hint">🗂 Click a page to preview:</span>
+        <div class="page-tabs">
+          <button class="page-tab active" onclick="switchPage('p4','https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/home.html','home.html',this)">home.html</button>
+          <button class="page-tab" onclick="switchPage('p4','https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/about.html','about.html',this)">about.html</button>
+          <button class="page-tab" onclick="switchPage('p4','https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/blog.html','blog.html',this)">blog.html</button>
+          <button class="page-tab" onclick="switchPage('p4','https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/blog-post.html','blog-post.html',this)">blog-post.html</button>
+          <button class="page-tab" onclick="switchPage('p4','https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/booking.html','booking.html',this)">booking.html</button>
+          <button class="page-tab pdf-tab" onclick="switchPage('p4','https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/24-blog-posts.pdf','24-blog-posts.pdf',this)">24-blog-posts.pdf</button>
+        </div>
+      </div>
+      <div class="page-dropdown-wrap">
+        <span class="dropdown-label">📄 Page:</span>
+        <select class="page-dropdown" onchange="switchPageMobile('p4',this)">
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/home.html" data-name="home.html">home.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/about.html" data-name="about.html">about.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/blog.html" data-name="blog.html">blog.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/blog-post.html" data-name="blog-post.html">blog-post.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/booking.html" data-name="booking.html">booking.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/24-blog-posts.pdf" data-name="24-blog-posts.pdf">24-blog-posts.pdf</option>
+        </select>
+      </div>
+      <div class="iframe-wrapper">
+        <iframe id="p4-iframe" src="https://kalanaheshanwa.github.io/client-mockups-projects/brand-your-journey/home.html"></iframe>
+      </div>
+      <div class="card-footer">
+        <span class="footer-note">📄 HTML files + PDF content provided by client</span>
+        <a href="https://www.brandyourjourney.com/" target="_blank" class="live-btn">View Live Website →</a>
       </div>
     </div>
   </div>
