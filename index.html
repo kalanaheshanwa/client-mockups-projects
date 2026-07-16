@@ -80,6 +80,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .page-tab.img-tab::before { content: '🖼'; }
 .page-tab.img-tab.active::before { content: '✦'; }
 
+/* Grid layout for tabs (used when there are many files, to avoid horizontal scrolling) */
+.page-tabs.grid-tabs { flex-wrap: wrap; overflow-x: visible; display: grid; grid-template-columns: repeat(3, 1fr); }
+.page-tabs.grid-tabs .page-tab { width: 100%; text-align: left; }
+@media (max-width: 900px) { .page-tabs.grid-tabs { grid-template-columns: repeat(2, 1fr); } }
+
 .page-dropdown-wrap { display: none; align-items: center; gap: 10px; padding: 10px 16px; background: #1e1e1e; border-bottom: 1px solid #333; }
 .dropdown-label { font-size: 12px; color: #888; white-space: nowrap; font-family: monospace; }
 .page-dropdown { flex: 1; background: #2a2a2a; color: #fff; border: 1px solid #444; border-radius: 6px; padding: 8px 10px; font-size: 13px; font-family: monospace; cursor: pointer; }
@@ -110,14 +115,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .image-label { padding: 8px 16px; background: #2a2a2a; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #c97fff; }
 .mockup-image-wrap { background: #f5f5f5; max-height: 720px; overflow-y: auto; }
 .mockup-image { width: 100%; display: block; }
-
-/* Case study strip */
-.casestudy-strip { border-top: 1px solid #2a2a2a; background: #0d0d0d; padding: 20px; }
-.casestudy-strip-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #555; text-transform: uppercase; margin-bottom: 12px; }
-.casestudy-images { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.casestudy-images img { width: 100%; display: block; border-radius: 8px; border: 1px solid #2a2a2a; cursor: pointer; transition: opacity 0.2s; }
-.casestudy-images img:hover { opacity: 0.8; }
-@media (max-width: 600px) { .casestudy-images { grid-template-columns: 1fr; } }
 
 .card-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px 20px; background: #161616; border-top: 1px solid #2a2a2a; }
 .footer-note { font-size: 13px; color: #555; }
@@ -420,7 +417,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
       <div class="page-tabs-wrap">
         <span class="tabs-hint">🗂 Click a file to preview:</span>
-        <div class="page-tabs">
+        <div class="page-tabs grid-tabs">
           <button class="page-tab img-tab active" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_NadiaSarmova_com.png','Homepage_NadiaSarmova_com.png',this)">Homepage_NadiaSarmova_com.png</button>
           <button class="page-tab img-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_Revised.png','Homepage_Revised.png',this)">Homepage_Revised.png</button>
           <button class="page-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/WorkPage_Nadia_Sarmova.html','WorkPage_Nadia_Sarmova.html',this)">WorkPage_Nadia_Sarmova.html</button>
@@ -437,31 +434,21 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <div class="page-dropdown-wrap">
         <span class="dropdown-label">📄 File:</span>
         <select class="page-dropdown" onchange="switchPageMobile('p5',this)">
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_NadiaSarmova_com.png" data-name="Homepage_NadiaSarmova_com.png">Homepage_NadiaSarmova.com.png</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_NadiaSarmova_com.png" data-name="Homepage_NadiaSarmova_com.png">Homepage_NadiaSarmova_com.png</option>
           <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_Revised.png" data-name="Homepage_Revised.png">Homepage_Revised.png</option>
           <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/WorkPage_Nadia_Sarmova.html" data-name="WorkPage_Nadia_Sarmova.html">WorkPage_Nadia_Sarmova.html</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Work_Page_NadiaSarmova_com.png" data-name="Work_Page_NadiaSarmova_com.png">Work_Page_NadiaSarmova.com.png</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Work_Page_NadiaSarmova_com.png" data-name="Work_Page_NadiaSarmova_com.png">Work_Page_NadiaSarmova_com.png</option>
           <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/WorkPage_Revised.png" data-name="WorkPage_Revised.png">WorkPage_Revised.png</option>
           <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ApproachPage_v2_Nadia_Sarmova.html" data-name="ApproachPage_v2_Nadia_Sarmova.html">ApproachPage_v2_Nadia_Sarmova.html</option>
           <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ApproachPage_v2_Nadia_Sarmova.png" data-name="ApproachPage_v2_Nadia_Sarmova.png">ApproachPage_v2_Nadia_Sarmova.png</option>
           <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/AboutPage_Nadia_Sarmova.html" data-name="AboutPage_Nadia_Sarmova.html">AboutPage_Nadia_Sarmova.html</option>
           <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ContactPage_v4_Nadia_Sarmova.html" data-name="ContactPage_v4_Nadia_Sarmova.html">ContactPage_v4_Nadia_Sarmova.html</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Contact_Page_NadiaSarmova_com.png" data-name="Contact_Page_NadiaSarmova_com.png">Contact_Page_NadiaSarmova.com.png</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Contact_Page_NadiaSarmova_com.png" data-name="Contact_Page_NadiaSarmova_com.png">Contact_Page_NadiaSarmova_com.png</option>
         </select>
       </div>
 
       <div class="iframe-wrapper">
         <iframe id="p5-iframe" src="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_NadiaSarmova_com.png"></iframe>
-      </div>
-
-      <!-- Case study images -->
-      <div class="casestudy-strip">
-        <div class="casestudy-strip-label">✦ My case study for this project</div>
-        <div class="casestudy-images">
-          <img src="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/casestudy-cover.png" alt="Case study cover" onclick="window.open(this.src,'_blank')" />
-          <img src="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/casestudy-bento.png" alt="Case study bento" onclick="window.open(this.src,'_blank')" />
-          <img src="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/casestudy-result.png" alt="Case study result" onclick="window.open(this.src,'_blank')" />
-        </div>
       </div>
 
       <div class="card-footer">
