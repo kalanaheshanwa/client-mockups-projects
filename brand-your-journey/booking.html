@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Your Free Strategy Consultation | Brand Your Journey</title>
+<meta name="description" content="Book a free 30-minute brand strategy consultation with Brand Your Journey. We'll identify your biggest brand gap and give you a clear next step — no commitment required.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1510;
+    --ink-soft: #4a4035;
+    --cream: #faf6ef;
+    --warm-white: #fffdf9;
+    --gold: #b8893a;
+    --gold-text: #6b4f1a;
+    --gold-light: #e8c97a;
+    --gold-pale: #f5ead4;
+    --gold-btn: #7a5518;
+    --gold-btn-hover: #5e3f0f;
+    --border: rgba(184,137,58,0.25);
+    --error: #8a1c1c;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ─────────────────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 6vw;
+    background: rgba(250,246,239,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    line-height: 1;
+  }
+  .nav-logo span { color: #8a6020; font-weight: 700; }
+  .nav-back {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .nav-back:hover { color: var(--gold-text); }
+
+  /* ── PAGE LAYOUT ────────────────────────────── */
+  .page-wrap {
+    min-height: 100vh;
+    padding-top: 6rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* ── LEFT PANEL ─────────────────────────────── */
+  .left-panel {
+    background: var(--ink);
+    padding: 5rem 6vw 5rem 8vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .left-panel::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -15%;
+    width: 60%;
+    height: 70%;
+    background: radial-gradient(ellipse, rgba(184,137,58,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .left-panel::after {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 28rem;
+    color: rgba(232,201,122,0.04);
+    position: absolute;
+    top: -4rem;
+    left: -2rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .left-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+    position: relative;
+  }
+  .left-eyebrow::before {
+    content: '';
+    width: 2rem;
+    height: 1px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .left-panel h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 700;
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .left-panel h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .left-panel .tagline {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.65);
+    font-weight: 300;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+    max-width: 42ch;
+    position: relative;
+  }
+
+  /* What to expect */
+  .expect-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: relative;
+  }
+  .expect-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .expect-icon {
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+  .expect-icon svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--gold-light);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .expect-text h3 {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: white;
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
+  }
+  .expect-text p {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+  }
+
+  .left-divider {
+    height: 1px;
+    background: rgba(184,137,58,0.2);
+    margin: 2.5rem 0;
+    position: relative;
+  }
+
+  .promise-block {
+    background: rgba(232,201,122,0.06);
+    border-left: 2px solid var(--gold);
+    padding: 1.25rem 1.5rem;
+    position: relative;
+  }
+  .promise-block p {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.6;
+  }
+  .promise-block span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    color: var(--gold-light);
+    font-style: normal;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    display: block;
+    margin-top: 0.75rem;
+  }
+
+  /* ── RIGHT PANEL ────────────────────────────── */
+  .right-panel {
+    background: var(--warm-white);
+    padding: 5rem 8vw 5rem 6vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .form-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    line-height: 1.25;
+  }
+  .form-sub {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+  }
+
+  /* ── FORM ───────────────────────────────────── */
+  .booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .field label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold-text);
+  }
+  .field label .req {
+    color: var(--gold);
+    margin-left: 2px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 0.8rem 1rem;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder { color: rgba(74,64,53,0.4); }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--gold);
+    background: var(--warm-white);
+  }
+  .field input.error,
+  .field select.error,
+  .field textarea.error { border-color: var(--error); }
+
+  .field textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+
+  /* Custom select arrow */
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gold-text);
+    pointer-events: none;
+    font-size: 0.85rem;
+  }
+  .select-wrap select { padding-right: 2.5rem; cursor: pointer; }
+
+  /* Radio group for org type */
+  .radio-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+  .radio-option { position: relative; }
+  .radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+  }
+  .radio-option label {
+    display: block;
+    padding: 0.65rem 0.5rem;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    background: var(--cream);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: none;
+    line-height: 1.3;
+  }
+  .radio-option input[type="radio"]:checked + label {
+    background: var(--gold-pale);
+    border-color: var(--gold);
+    color: var(--gold-text);
+    font-weight: 500;
+  }
+  .radio-option label:hover { border-color: var(--gold); }
+
+  /* Checkbox */
+  .checkbox-field {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .checkbox-field input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+    accent-color: var(--gold-btn);
+    cursor: pointer;
+  }
+  .checkbox-field label {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+  .checkbox-field label a { color: var(--gold-text); }
+
+  /* Submit */
+  .submit-btn {
+    background: var(--gold-btn);
+    color: white;
+    border: 2px solid var(--gold-btn);
+    padding: 1rem 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .submit-btn:hover:not(:disabled) {
+    background: var(--gold-btn-hover);
+    border-color: var(--gold-btn-hover);
+  }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .submit-btn .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .form-note {
+    font-size: 0.78rem;
+    color: rgba(74,64,53,0.5);
+    text-align: center;
+    margin-top: 0.75rem;
+  }
+
+  /* ── SUCCESS STATE ───────────────────────────── */
+  .success-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 0;
+  }
+  .success-icon {
+    width: 5rem; height: 5rem;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  .success-icon svg {
+    width: 2rem; height: 2rem;
+    stroke: var(--gold-text);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .success-state h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+  }
+  .success-state p {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    max-width: 38ch;
+    line-height: 1.7;
+    margin-bottom: 0.5rem;
+  }
+  .success-state .back-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--gold-text);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid var(--gold-text);
+    padding-bottom: 2px;
+  }
+
+  /* ── FOOTER ─────────────────────────────────── */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.4);
+    padding: 1.5rem 6vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .foot-logo {
+    font-family: 'Playfair Display', serif;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.95rem;
+  }
+  .foot-logo span { color: var(--gold-light); }
+
+  /* ── RESPONSIVE ─────────────────────────────── */
+  @media (max-width: 900px) {
+    .page-wrap { grid-template-columns: 1fr; }
+    .left-panel { padding: 4rem 6vw; }
+    .right-panel { padding: 4rem 6vw; }
+    .left-panel::after { font-size: 16rem; }
+    footer { flex-direction: column; text-align: center; }
+  }
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .radio-group { grid-template-columns: 1fr 1fr; }
+    .nav-logo { font-size: 1.6rem; }
+  }
+
+  /* ── ANIMATIONS ─────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .left-panel > * { animation: fadeUp 0.6s ease both; }
+  .left-eyebrow    { animation-delay: 0.1s; }
+  .left-panel h1   { animation-delay: 0.2s; }
+  .left-panel .tagline { animation-delay: 0.3s; }
+  .expect-list     { animation-delay: 0.4s; }
+  .left-divider    { animation-delay: 0.5s; }
+  .promise-block   { animation-delay: 0.55s; }
+
+  .right-panel > * { animation: fadeUp 0.6s ease both; }
+  .form-heading    { animation-delay: 0.25s; }
+  .form-sub        { animation-delay: 0.35s; }
+  .booking-form    { animation-delay: 0.45s; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="brand-your-journey.html" class="nav-logo">Brand Your <span>Journey</span></a>
+  <a href="brand-your-journey.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9,2 4,7 9,12"/></svg>
+    Back to main site
+  </a>
+</nav>
+
+<!-- MAIN -->
+<div class="page-wrap">
+
+  <!-- LEFT: Context & value -->
+  <div class="left-panel">
+    <p class="left-eyebrow">Free 30-Minute Consultation</p>
+    <h1>Let's find your<br><em>brand gap.</em></h1>
+    <p class="tagline">No pitch. No pressure. A focused conversation about where your brand strategy stands — and what one clear next step looks like for your organization.</p>
+
+    <div class="expect-list">
+      <div class="expect-item">
+        <div class="expect-icon">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="expect-text">
+          <h3>We listen first</h3>
+          <p>You'll spend most of the time talking. We'll spend ours asking questions that surface what's actually holding your brand back.</p>
+        </div>
+      </div>
+      <div class="expect-item">
+        <div class="expect-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="expect-text">
+          <h3>30 minutes, one clear output</h3>
+          <p>You leave with a specific diagnosis — your biggest brand gap — and one concrete next step, regardless of whether we work together.</p>
+        </div>
+      </div>
+      <div class="expect-item">
+        <div class="expect-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="expect-text">
+          <h3>No commitment required</h3>
+          <p>The conversation has value on its own. If there's a fit for working together, we'll talk about that — but it's never the point of the call.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="left-divider"></div>
+
+    <div class="promise-block">
+      <p>"The clearest thinking about your brand often happens in conversation. We bring the questions. You bring the honesty. The strategy emerges from that."</p>
+      <span>Brand Your Journey</span>
+    </div>
+  </div>
+
+  <!-- RIGHT: Booking form -->
+  <div class="right-panel">
+
+    <!-- FORM STATE -->
+    <div id="formState">
+      <h2 class="form-heading">Book your free call</h2>
+      <p class="form-sub">Fill in a few details and we'll confirm your time within one business day.</p>
+
+      <form class="booking-form" id="bookingForm" novalidate>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="firstName">First Name <span class="req">*</span></label>
+            <input type="text" id="firstName" name="firstName" placeholder="Jane" autocomplete="given-name" required>
+          </div>
+          <div class="field">
+            <label for="lastName">Last Name <span class="req">*</span></label>
+            <input type="text" id="lastName" name="lastName" placeholder="Smith" autocomplete="family-name" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email">Email Address <span class="req">*</span></label>
+          <input type="email" id="email" name="email" placeholder="jane@yourorganization.org" autocomplete="email" required>
+        </div>
+
+        <div class="field">
+          <label for="orgName">Organization Name <span class="req">*</span></label>
+          <input type="text" id="orgName" name="orgName" placeholder="Your Organization" required>
+        </div>
+
+        <div class="field">
+          <label>Organization Type <span class="req">*</span></label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="orgType" id="typeNonprofit" value="Nonprofit">
+              <label for="typeNonprofit">Nonprofit</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="orgType" id="typeStartup" value="Startup">
+              <label for="typeStartup">Startup</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="orgType" id="typeSmallBiz" value="Small Business">
+              <label for="typeSmallBiz">Small Business</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="role">Your Role <span class="req">*</span></label>
+          <div class="select-wrap">
+            <select id="role" name="role" required>
+              <option value="" disabled selected>Select your role</option>
+              <option value="Executive Director / CEO">Executive Director / CEO</option>
+              <option value="Founder">Founder</option>
+              <option value="Co-Founder">Co-Founder</option>
+              <option value="Marketing / Communications Lead">Marketing / Communications Lead</option>
+              <option value="Development Director">Development Director</option>
+              <option value="Board Member">Board Member</option>
+              <option value="Owner">Owner</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="challenge">What's your biggest brand challenge right now? <span class="req">*</span></label>
+          <textarea id="challenge" name="challenge" placeholder="Describe in a sentence or two what you're struggling with — wrong donors, unclear messaging, inconsistent identity, or something else entirely." required></textarea>
+        </div>
+
+        <div class="field">
+          <label for="website">Website URL</label>
+          <input type="url" id="website" name="website" placeholder="https://yourorganization.org" autocomplete="url">
+        </div>
+
+        <div class="field">
+          <label>Social Media Accounts</label>
+          <div style="display:flex;flex-direction:column;gap:0.6rem;">
+            <div style="position:relative;">
+              <span style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);font-size:0.82rem;color:var(--ink-soft);pointer-events:none;">LinkedIn</span>
+              <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile" style="padding-left:5.5rem;" autocomplete="off">
+            </div>
+            <div style="position:relative;">
+              <span style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);font-size:0.82rem;color:var(--ink-soft);pointer-events:none;">Instagram</span>
+              <input type="url" id="instagram" name="instagram" placeholder="https://instagram.com/yourhandle" style="padding-left:5.5rem;" autocomplete="off">
+            </div>
+            <div style="position:relative;">
+              <span style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);font-size:0.82rem;color:var(--ink-soft);pointer-events:none;">Facebook</span>
+              <input type="url" id="facebook" name="facebook" placeholder="https://facebook.com/yourpage" style="padding-left:5.5rem;" autocomplete="off">
+            </div>
+            <div style="position:relative;">
+              <span style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);font-size:0.82rem;color:var(--ink-soft);pointer-events:none;">X / Twitter</span>
+              <input type="url" id="twitter" name="twitter" placeholder="https://x.com/yourhandle" style="padding-left:5.5rem;" autocomplete="off">
+            </div>
+            <div style="position:relative;">
+              <span style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);font-size:0.82rem;color:var(--ink-soft);pointer-events:none;">Pinterest</span>
+              <input type="url" id="pinterest" name="pinterest" placeholder="https://pinterest.com/yourprofile" style="padding-left:5.5rem;" autocomplete="off">
+            </div>
+          </div>
+          <p style="font-size:0.75rem;color:rgba(74,64,53,0.5);margin-top:0.5rem;">Share whichever are active — skip any that aren&#x27;t relevant.</p>
+        </div>
+
+        <div class="field">
+          <label for="timeframe">When are you looking to start brand strategy work?</label>
+          <div class="select-wrap">
+            <select id="timeframe" name="timeframe">
+              <option value="" disabled selected>Select a timeframe</option>
+              <option value="Immediately — within a month">Immediately — within a month</option>
+              <option value="Soon — within 3 months">Soon — within 3 months</option>
+              <option value="Planning ahead — 3-6 months">Planning ahead — 3–6 months</option>
+              <option value="Just exploring for now">Just exploring for now</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="howHeard">How did you find Brand Your Journey?</label>
+          <div class="select-wrap">
+            <select id="howHeard" name="howHeard">
+              <option value="" disabled selected>Select an option</option>
+              <option value="Search engine">Search engine</option>
+              <option value="Referral from a colleague">Referral from a colleague</option>
+              <option value="The Strategy Room blog">The Strategy Room blog</option>
+              <option value="Social media">Social media</option>
+              <option value="AI recommendation">AI recommendation (ChatGPT, Perplexity, etc.)</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="checkbox-field">
+          <input type="checkbox" id="consent" name="consent" required>
+          <label for="consent">I agree to be contacted by Brand Your Journey about this consultation request. We respect your privacy and will never share your information. <a href="#">Privacy policy.</a></label>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span id="btnText">Request Your Free Call</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+
+        <p class="form-note">We confirm within one business day. No commitment required.</p>
+
+      </form>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-state" id="successState">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2>Request received.</h2>
+      <p>Thank you — we'll be in touch within one business day to confirm your consultation time.</p>
+      <p>In the meantime, you might find something useful in The Strategy Room.</p>
+      <a href="blog.html" class="back-link">Browse The Strategy Room →</a>
+      <a href="brand-your-journey.html" class="back-link" style="margin-top:0.75rem;">Return to main site →</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="foot-logo">Brand Your <span>Journey</span></span>
+  <span>Brand Strategy for Nonprofits, Startups &amp; Small Businesses</span>
+  <span>&copy; 2026 BrandYourJourney.com</span>
+</footer>
+
+<script>
+  const form = document.getElementById('bookingForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const spinner = document.getElementById('spinner');
+  const btnText = document.getElementById('btnText');
+  const formState = document.getElementById('formState');
+  const successState = document.getElementById('successState');
+
+  // Real-time validation feedback
+  form.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('blur', () => validateField(el));
+    el.addEventListener('input', () => {
+      if (el.classList.contains('error')) validateField(el);
+    });
+  });
+
+  function validateField(el) {
+    const isEmpty = !el.value || el.value.trim() === '';
+    const isEmail = el.type === 'email';
+    const emailOk = !isEmail || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value);
+    if (el.required && isEmpty) {
+      el.classList.add('error');
+    } else if (isEmail && !emailOk) {
+      el.classList.add('error');
+    } else {
+      el.classList.remove('error');
+    }
+  }
+
+  function validateRadio() {
+    const selected = form.querySelector('input[name="orgType"]:checked');
+    return !!selected;
+  }
+
+  function validateConsent() {
+    return document.getElementById('consent').checked;
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Validate all required fields
+    let valid = true;
+    form.querySelectorAll('[required]').forEach(el => {
+      if (el.type === 'checkbox') {
+        if (!el.checked) valid = false;
+      } else if (el.type !== 'radio') {
+        validateField(el);
+        if (el.classList.contains('error') || !el.value.trim()) valid = false;
+      }
+    });
+    if (!validateRadio()) valid = false;
+    if (!validateConsent()) valid = false;
+
+    if (!valid) {
+      // Scroll to first error
+      const firstError = form.querySelector('.error, input[required]:not([value]), textarea[required]:placeholder-shown');
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // Simulate submission
+    submitBtn.disabled = true;
+    btnText.textContent = 'Sending…';
+    spinner.style.display = 'block';
+
+    // Collect form data (replace with your actual endpoint / Formspree / Netlify Forms)
+    const data = {
+      firstName: form.firstName.value,
+      lastName: form.lastName.value,
+      email: form.email.value,
+      orgName: form.orgName.value,
+      orgType: form.querySelector('input[name="orgType"]:checked')?.value || '',
+      role: form.role.value,
+      challenge: form.challenge.value,
+      website: form.website.value,
+      linkedin: form.linkedin.value,
+      instagram: form.instagram.value,
+      facebook: form.facebook.value,
+      twitter: form.twitter.value,
+      pinterest: form.pinterest.value,
+      timeframe: form.timeframe.value,
+      howHeard: form.howHeard.value,
+    };
+
+    // Redirect to thank you page after brief delay
+    setTimeout(() => {
+      window.location.href = 'thankyou.html';
+    }, 1400);
+
+    // ── INTEGRATION NOTE ───────────────────────────────────────────────
+    // Replace the setTimeout above with a real fetch to your endpoint:
+    //
+    // fetch('https://formspree.io/f/YOUR_ID', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    //   body: JSON.stringify(data)
+    // }).then(r => {
+    //   if (r.ok) { formState.style.display='none'; successState.style.display='flex'; }
+    // });
+    //
+    // Or for Netlify Forms, add data-netlify="true" to the <form> tag.
+    // ──────────────────────────────────────────────────────────────────
+  });
+</script>
+</body>
+</html>
