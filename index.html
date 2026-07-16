@@ -93,6 +93,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .iframe-wrapper { width: 100%; overflow: hidden; background: #fff; }
 .iframe-wrapper iframe { display: block; border: none; width: 100%; height: 720px; }
 
+/* Auto-scaling viewer for Nadia Sarmova project — fits fixed-width (1440px) mockups
+   and full-size screenshots into the card width instead of clipping/misaligning */
+#p5-wrapper { max-height: 720px; background: #f5f5f5; }
+.p5-scale-box { transform-origin: top left; }
+.p5-scale-box iframe { display: none; border: none; }
+.p5-scale-box img { display: none; max-width: none; }
+
 /* Image viewer for screenshot projects */
 .image-viewer { width: 100%; background: #f0f0f0; position: relative; }
 .image-viewer-main { width: 100%; max-height: 720px; overflow-y: auto; background: #f5f5f5; }
@@ -411,44 +418,47 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
       <div class="browser-bar">
         <div class="browser-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
-        <div class="browser-address" id="p5-address">Homepage_NadiaSarmova.com.png</div>
+        <div class="browser-address" id="p5-address">Homepage_NadiaSarmova_com.png</div>
         <div class="browser-tag">MIXED HTML & IMAGE FILES</div>
       </div>
 
       <div class="page-tabs-wrap">
         <span class="tabs-hint">🗂 Click a file to preview:</span>
         <div class="page-tabs grid-tabs">
-          <button class="page-tab img-tab active" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_NadiaSarmova.com.png','Homepage_NadiaSarmova.com.png',this)">Homepage_NadiaSarmova.com.png</button>
-          <button class="page-tab img-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_Revised.png','Homepage_Revised.png',this)">Homepage_Revised.png</button>
-          <button class="page-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/WorkPage_Nadia_Sarmova.html','WorkPage_Nadia_Sarmova.html',this)">WorkPage_Nadia_Sarmova.html</button>
-          <button class="page-tab img-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Work_Page_NadiaSarmova.com.png','Work_Page_NadiaSarmova.com.png',this)">Work_Page_NadiaSarmova.com.png</button>
-          <button class="page-tab img-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/WorkPage_Revised.png','WorkPage_Revised.png',this)">WorkPage_Revised.png</button>
-          <button class="page-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ApproachPage_v2_Nadia_Sarmova.html','ApproachPage_v2_Nadia_Sarmova.html',this)">ApproachPage_v2_Nadia_Sarmova.html</button>
-          <button class="page-tab img-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ApproachPage_v2_Nadia_Sarmova.png','ApproachPage_v2_Nadia_Sarmova.png',this)">ApproachPage_v2_Nadia_Sarmova.png</button>
-          <button class="page-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/AboutPage_Nadia_Sarmova.html','AboutPage_Nadia_Sarmova.html',this)">AboutPage_Nadia_Sarmova.html</button>
-          <button class="page-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ContactPage_v4_Nadia_Sarmova.html','ContactPage_v4_Nadia_Sarmova.html',this)">ContactPage_v4_Nadia_Sarmova.html</button>
-          <button class="page-tab img-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Contact_Page_NadiaSarmova.com.png','Contact_Page_NadiaSarmova.com.png',this)">Contact_Page_NadiaSarmova.com.png</button>
+          <button class="page-tab img-tab active" data-key="Homepage_NadiaSarmova_com.png" onclick="switchP5(this.dataset.key,this)">Homepage_NadiaSarmova_com.png</button>
+          <button class="page-tab img-tab" data-key="Homepage_Revised.png" onclick="switchP5(this.dataset.key,this)">Homepage_Revised.png</button>
+          <button class="page-tab" data-key="WorkPage_Nadia_Sarmova.html" onclick="switchP5(this.dataset.key,this)">WorkPage_Nadia_Sarmova.html</button>
+          <button class="page-tab img-tab" data-key="Work_Page_NadiaSarmova_com.png" onclick="switchP5(this.dataset.key,this)">Work_Page_NadiaSarmova_com.png</button>
+          <button class="page-tab img-tab" data-key="WorkPage_Revised.png" onclick="switchP5(this.dataset.key,this)">WorkPage_Revised.png</button>
+          <button class="page-tab" data-key="ApproachPage_v2_Nadia_Sarmova.html" onclick="switchP5(this.dataset.key,this)">ApproachPage_v2_Nadia_Sarmova.html</button>
+          <button class="page-tab img-tab" data-key="ApproachPage_v2_Nadia_Sarmova.png" onclick="switchP5(this.dataset.key,this)">ApproachPage_v2_Nadia_Sarmova.png</button>
+          <button class="page-tab" data-key="AboutPage_Nadia_Sarmova.html" onclick="switchP5(this.dataset.key,this)">AboutPage_Nadia_Sarmova.html</button>
+          <button class="page-tab" data-key="ContactPage_v4_Nadia_Sarmova.html" onclick="switchP5(this.dataset.key,this)">ContactPage_v4_Nadia_Sarmova.html</button>
+          <button class="page-tab img-tab" data-key="Contact_Page_NadiaSarmova_com.png" onclick="switchP5(this.dataset.key,this)">Contact_Page_NadiaSarmova_com.png</button>
         </div>
       </div>
 
       <div class="page-dropdown-wrap">
         <span class="dropdown-label">📄 File:</span>
-        <select class="page-dropdown" onchange="switchPageMobile('p5',this)">
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_NadiaSarmova.com.png" data-name="Homepage_NadiaSarmova.com.png">Homepage_NadiaSarmova.com.png</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_Revised.png" data-name="Homepage_Revised.png">Homepage_Revised.png</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/WorkPage_Nadia_Sarmova.html" data-name="WorkPage_Nadia_Sarmova.html">WorkPage_Nadia_Sarmova.html</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Work_Page_NadiaSarmova.com.png" data-name="Work_Page_NadiaSarmova.com.png">Work_Page_NadiaSarmova.com.png</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/WorkPage_Revised.png" data-name="WorkPage_Revised.png">WorkPage_Revised.png</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ApproachPage_v2_Nadia_Sarmova.html" data-name="ApproachPage_v2_Nadia_Sarmova.html">ApproachPage_v2_Nadia_Sarmova.html</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ApproachPage_v2_Nadia_Sarmova.png" data-name="ApproachPage_v2_Nadia_Sarmova.png">ApproachPage_v2_Nadia_Sarmova.png</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/AboutPage_Nadia_Sarmova.html" data-name="AboutPage_Nadia_Sarmova.html">AboutPage_Nadia_Sarmova.html</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ContactPage_v4_Nadia_Sarmova.html" data-name="ContactPage_v4_Nadia_Sarmova.html">ContactPage_v4_Nadia_Sarmova.html</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Contact_Page_NadiaSarmova.com.png" data-name="Contact_Page_NadiaSarmova.com.png">Contact_Page_NadiaSarmova.com.png</option>
+        <select class="page-dropdown" onchange="switchP5Mobile(this)">
+          <option value="Homepage_NadiaSarmova_com.png">Homepage_NadiaSarmova_com.png</option>
+          <option value="Homepage_Revised.png">Homepage_Revised.png</option>
+          <option value="WorkPage_Nadia_Sarmova.html">WorkPage_Nadia_Sarmova.html</option>
+          <option value="Work_Page_NadiaSarmova_com.png">Work_Page_NadiaSarmova_com.png</option>
+          <option value="WorkPage_Revised.png">WorkPage_Revised.png</option>
+          <option value="ApproachPage_v2_Nadia_Sarmova.html">ApproachPage_v2_Nadia_Sarmova.html</option>
+          <option value="ApproachPage_v2_Nadia_Sarmova.png">ApproachPage_v2_Nadia_Sarmova.png</option>
+          <option value="AboutPage_Nadia_Sarmova.html">AboutPage_Nadia_Sarmova.html</option>
+          <option value="ContactPage_v4_Nadia_Sarmova.html">ContactPage_v4_Nadia_Sarmova.html</option>
+          <option value="Contact_Page_NadiaSarmova_com.png">Contact_Page_NadiaSarmova_com.png</option>
         </select>
       </div>
 
-      <div class="iframe-wrapper">
-        <iframe id="p5-iframe" src="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_NadiaSarmova.com.png"></iframe>
+      <div class="iframe-wrapper" id="p5-wrapper">
+        <div class="p5-scale-box" id="p5-scale-box">
+          <iframe id="p5-iframe" title="Nadia Sarmova mockup preview"></iframe>
+          <img id="p5-img" alt="Nadia Sarmova mockup" />
+        </div>
       </div>
 
       <div class="card-footer">
@@ -502,6 +512,75 @@ function switchPageMobile(projId, select) {
   document.getElementById(projId + '-iframe').src = url;
   document.getElementById(projId + '-address').textContent = filename;
 }
+
+/* ---- Project 5 (Nadia Sarmova) — mixed HTML + PNG viewer with auto-scaling ---- */
+const P5_BASE = 'https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/';
+const p5Files = {
+  'Homepage_NadiaSarmova_com.png':      { type: 'img',  w: 1024, h: 1536 },
+  'Homepage_Revised.png':                { type: 'img',  w: 1440, h: 3166 },
+  'WorkPage_Nadia_Sarmova.html':         { type: 'html', w: 1440, h: 900  },
+  'Work_Page_NadiaSarmova_com.png':      { type: 'img',  w: 1024, h: 1536 },
+  'WorkPage_Revised.png':                { type: 'img',  w: 1440, h: 3743 },
+  'ApproachPage_v2_Nadia_Sarmova.html':  { type: 'html', w: 1440, h: 900  },
+  'ApproachPage_v2_Nadia_Sarmova.png':   { type: 'img',  w: 1440, h: 5250 },
+  'AboutPage_Nadia_Sarmova.html':        { type: 'html', w: 1440, h: 900  },
+  'ContactPage_v4_Nadia_Sarmova.html':   { type: 'html', w: 1440, h: 900  },
+  'Contact_Page_NadiaSarmova_com.png':   { type: 'img',  w: 1024, h: 1536 }
+};
+let p5CurrentKey = 'Homepage_NadiaSarmova_com.png';
+
+function renderP5() {
+  const f = p5Files[p5CurrentKey];
+  if (!f) return;
+  const wrapper = document.getElementById('p5-wrapper');
+  const box = document.getElementById('p5-scale-box');
+  const iframe = document.getElementById('p5-iframe');
+  const img = document.getElementById('p5-img');
+  if (!wrapper || !box || !iframe || !img) return;
+
+  const scale = wrapper.clientWidth / f.w;
+  box.style.width = f.w + 'px';
+  box.style.transform = 'scale(' + scale + ')';
+
+  if (f.type === 'html') {
+    img.style.display = 'none';
+    img.src = '';
+    iframe.style.display = 'block';
+    iframe.style.width = f.w + 'px';
+    iframe.style.height = f.h + 'px';
+    iframe.src = P5_BASE + p5CurrentKey;
+    wrapper.style.overflowY = 'hidden';
+    wrapper.style.height = Math.min(f.h * scale, 720) + 'px';
+  } else {
+    iframe.style.display = 'none';
+    iframe.src = '';
+    img.style.display = 'block';
+    img.style.width = f.w + 'px';
+    img.style.height = f.h + 'px';
+    img.src = P5_BASE + p5CurrentKey;
+    wrapper.style.overflowY = 'auto';
+    wrapper.style.height = '720px';
+  }
+}
+function switchP5(key, btn) {
+  p5CurrentKey = key;
+  document.getElementById('p5-address').textContent = key;
+  btn.closest('.page-tabs').querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderP5();
+}
+function switchP5Mobile(select) {
+  p5CurrentKey = select.value;
+  document.getElementById('p5-address').textContent = p5CurrentKey;
+  const tabsWrap = select.closest('.project-card').querySelector('.page-tabs');
+  if (tabsWrap) {
+    tabsWrap.querySelectorAll('.page-tab').forEach(b => b.classList.toggle('active', b.dataset.key === p5CurrentKey));
+  }
+  renderP5();
+}
+window.addEventListener('resize', renderP5);
+window.addEventListener('DOMContentLoaded', renderP5);
+renderP5();
 </script>
 </body>
 </html>
