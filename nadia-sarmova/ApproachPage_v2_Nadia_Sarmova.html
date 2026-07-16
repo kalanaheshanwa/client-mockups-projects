@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>Approach – Nadia Sarmova</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --gold: #C8A96E;
+    --gold-dim: rgba(200,169,110,0.15);
+    --black: #0A0A08;
+    --off-black: #111110;
+    --dark: #1A1A18;
+    --dark2: #141412;
+    --mid: #2C2C2A;
+    --light-text: #9A9890;
+    --off-white: #F5F3EE;
+    --white: #FFFFFF;
+    --border: rgba(255,255,255,0.07);
+    --border-light: rgba(0,0,0,0.08);
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Montserrat', sans-serif;
+  }
+  body { background: var(--black); color: var(--white); font-family: var(--font-body);
+         -webkit-font-smoothing: antialiased; width: 1440px; }
+
+  /* ── NAV ──────────────────────────────────────────────────────────────── */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 80px; border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { display: flex; flex-direction: column; gap: 2px; }
+  .nav-name  { font-weight: 500; font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white); }
+  .nav-sub   { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--light-text); }
+  .nav-links { display: flex; align-items: center; gap: 40px; }
+  .nav-links a { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--light-text); text-decoration: none; font-weight: 500; }
+  .nav-links a.active { color: var(--gold); border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
+
+  /* ── HERO ─────────────────────────────────────────────────────────────── */
+  .hero {
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: 500px; position: relative; overflow: hidden;
+  }
+  .hero-left { padding: 90px 80px; display: flex; flex-direction: column; justify-content: center; }
+  .eyebrow { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-bottom: 28px; }
+  .hero-headline {
+    font-family: var(--font-display); font-size: 64px; line-height: 1.0;
+    font-weight: 300; color: var(--white); margin-bottom: 32px;
+  }
+  .hero-headline em { font-style: italic; color: var(--gold); }
+  .hero-body { font-size: 15px; line-height: 1.8; color: rgba(255,255,255,0.55); font-weight: 300; max-width: 420px; }
+  .hero-right {
+    position: relative; display: flex; align-items: center; justify-content: flex-end;
+    padding: 80px; background: var(--dark2);
+    border-left: 1px solid var(--border);
+  }
+  /* Decorative quote pulled right */
+  .hero-pull-quote {
+    max-width: 380px; text-align: right;
+  }
+  .pull-mark { font-family: var(--font-display); font-size: 96px; line-height: 0.6; color: var(--gold); opacity: 0.2; text-align: right; margin-bottom: 20px; }
+  .pull-text { font-family: var(--font-display); font-size: 26px; line-height: 1.4; font-weight: 300; color: rgba(255,255,255,0.75); margin-bottom: 16px; }
+  .pull-attr { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); }
+
+  /* ── SECTION SHARED ───────────────────────────────────────────────────── */
+  .sec-label {
+    font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 16px;
+  }
+  .sec-label::after { content:''; flex:1; height:1px; background: var(--gold-dim); }
+  .sec-title {
+    font-family: var(--font-display); font-size: 48px; font-weight: 300;
+    line-height: 1.1; color: var(--white); margin-bottom: 16px;
+  }
+  .sec-title.dark { color: var(--black); }
+  .sec-body { font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.5); font-weight: 300; }
+  .sec-body.dark { color: rgba(0,0,0,0.5); }
+
+  /* ── WHEN TO BRING ME IN ──────────────────────────────────────────────── */
+  .section-when { background: var(--off-white); padding: 100px 80px; }
+  .when-intro { margin-bottom: 64px; max-width: 640px; }
+  .sec-label.dk { color: #8a6a30; }
+  .sec-label.dk::after { background: rgba(138,106,48,0.2); }
+
+  .timeline { position: relative; }
+  .timeline-line {
+    position: absolute; left: 178px; top: 0; bottom: 0; width: 1px;
+    background: linear-gradient(180deg, rgba(200,169,110,0.6) 0%, rgba(200,169,110,0.1) 100%);
+  }
+  .stage { display: grid; grid-template-columns: 178px 1fr; gap: 0; margin-bottom: 0; }
+  .stage:last-child .stage-right { border-bottom: none; }
+
+  .stage-left {
+    padding: 40px 40px 40px 0; text-align: right; position: relative;
+  }
+  .stage-num {
+    font-family: var(--font-display); font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: #aaa; margin-bottom: 6px; display: block;
+  }
+  .stage-name {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--black);
+  }
+  .stage-dot {
+    position: absolute; right: -5px; top: 50px; width: 9px; height: 9px;
+    border-radius: 50%; background: var(--gold); border: 2px solid var(--off-white);
+  }
+
+  .stage-right {
+    padding: 40px 0 40px 48px; border-bottom: 1px solid rgba(0,0,0,0.07);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+  }
+  .stage-headline {
+    font-family: var(--font-display); font-size: 28px; font-weight: 300;
+    color: var(--black); line-height: 1.2; margin-bottom: 12px;
+  }
+  .stage-desc { font-size: 13px; line-height: 1.75; color: #555; font-weight: 300; }
+  .stage-services { }
+  .svc-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8a6a30; margin-bottom: 12px; font-weight: 600; }
+  .svc-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .svc-list li { font-size: 12px; color: #444; font-weight: 300; padding-left: 14px; position: relative; line-height: 1.5; }
+  .svc-list li::before { content: '—'; position: absolute; left: 0; color: var(--gold); font-size: 10px; top: 1px; }
+
+  /* ── THE TWO TRACKS ───────────────────────────────────────────────────── */
+  .section-tracks { background: var(--dark); padding: 100px 80px; }
+  .tracks-intro { max-width: 640px; margin-bottom: 72px; }
+  .tracks-grid { display: grid; grid-template-columns: 1fr 1px 1fr; gap: 0; }
+  .track-divider { background: var(--border); margin: 0 70px; }
+  .track { }
+  .track-badge {
+    display: inline-block; border: 1px solid var(--gold); color: var(--gold);
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500;
+    padding: 6px 16px; margin-bottom: 32px;
+  }
+  .track-title {
+    font-family: var(--font-display); font-size: 42px; font-weight: 300;
+    color: var(--white); line-height: 1.1; margin-bottom: 8px;
+  }
+  .track-sub { font-size: 12px; color: var(--light-text); letter-spacing: 0.08em; margin-bottom: 28px; font-style: italic; font-family: var(--font-display); }
+  .track-desc { font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.5); font-weight: 300; margin-bottom: 40px; max-width: 460px; }
+  .track-delivers { margin-bottom: 40px; }
+  .delivers-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; font-weight: 600; }
+  .delivers-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .delivers-list li { font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 300; padding-left: 18px; position: relative; line-height: 1.6; }
+  .delivers-list li::before { content: '·'; position: absolute; left: 0; color: var(--gold); font-size: 16px; top: -2px; }
+  .track-ideal { }
+  .ideal-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 12px; font-weight: 600; }
+  .ideal-text { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.35); font-style: italic; font-family: var(--font-display); }
+
+  /* ── PROCESS ──────────────────────────────────────────────────────────── */
+  .section-process { background: var(--black); padding: 100px 80px; border-top: 1px solid var(--border); }
+  .process-intro { max-width: 640px; margin-bottom: 72px; }
+  .process-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+  .process-step { background: var(--dark2); padding: 40px 32px; position: relative; }
+  .process-step:first-child { background: var(--dark); }
+  .step-num {
+    font-family: var(--font-display); font-size: 72px; font-weight: 300;
+    color: rgba(200,169,110,0.12); line-height: 1; margin-bottom: 24px; display: block;
+  }
+  .step-name { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 12px; }
+  .step-title { font-family: var(--font-display); font-size: 24px; font-weight: 300; color: var(--white); margin-bottom: 14px; line-height: 1.2; }
+  .step-desc { font-size: 12px; line-height: 1.75; color: rgba(255,255,255,0.45); font-weight: 300; }
+  .step-border { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: transparent; }
+  .process-step:first-child .step-border { background: var(--gold); }
+
+  /* ── AI TOOLS NOTE ────────────────────────────────────────────────────── */
+  .section-ai { background: var(--dark2); padding: 70px 80px; border-top: 1px solid var(--border); }
+  .ai-grid { display: grid; grid-template-columns: 1fr 1px 1fr; gap: 0; align-items: center; }
+  .ai-divider { background: var(--border); margin: 0 70px; align-self: stretch; }
+  .ai-left { }
+  .ai-eyebrow { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+  .ai-headline { font-family: var(--font-display); font-size: 36px; font-weight: 300; color: var(--white); line-height: 1.2; margin-bottom: 20px; }
+  .ai-desc { font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.5); font-weight: 300; }
+  .ai-right { display: flex; flex-direction: column; gap: 20px; }
+  .ai-item { display: flex; gap: 16px; align-items: flex-start; }
+  .ai-icon { font-size: 16px; color: var(--gold); opacity: 0.6; flex-shrink: 0; margin-top: 2px; }
+  .ai-item-text { }
+  .ai-item-name { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 3px; }
+  .ai-item-desc { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.6; font-weight: 300; }
+
+  /* ── RIGHT FIT ────────────────────────────────────────────────────────── */
+  .section-fit { background: var(--off-white); padding: 100px 80px; }
+  .fit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .fit-left { }
+  .fit-yes { margin-bottom: 48px; }
+  .fit-heading { font-family: var(--font-display); font-size: 32px; font-weight: 300; color: var(--black); margin-bottom: 20px; }
+  .fit-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .fit-list li { font-size: 13px; line-height: 1.65; color: #444; font-weight: 300; padding-left: 20px; position: relative; }
+  .fit-list.yes li::before { content: '✓'; position: absolute; left: 0; color: #5a8a5a; font-size: 11px; top: 2px; font-weight: 600; }
+  .fit-list.no  li::before { content: '×'; position: absolute; left: 0; color: #aaa; font-size: 13px; top: 0; }
+  .fit-divider  { height: 1px; background: rgba(0,0,0,0.08); margin: 36px 0; }
+  .fit-right { padding-top: 8px; }
+  .fit-quote-block { background: var(--black); padding: 48px; }
+  .fq-mark { font-family: var(--font-display); font-size: 56px; line-height: 0.8; color: var(--gold); opacity: 0.4; margin-bottom: 16px; }
+  .fq-text { font-family: var(--font-display); font-size: 22px; line-height: 1.5; font-weight: 300; color: var(--white); margin-bottom: 20px; }
+  .fq-attr { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
+  .fit-cta-block { margin-top: 32px; }
+  .fit-cta-text { font-size: 14px; line-height: 1.75; color: #555; font-weight: 300; margin-bottom: 20px; }
+  .fit-cta {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: var(--black); color: var(--white); padding: 16px 32px;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500;
+    text-decoration: none; cursor: pointer;
+  }
+
+  /* ── PHOTO HERO ──────────────────────────────────────────────────────── */
+  .hero-photo-section {
+    position: relative; min-height: 560px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .hero-photo-bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center 30%;
+    background-repeat: no-repeat;
+    filter: brightness(0.45) saturate(0.7);
+  }
+  .hero-photo-overlay {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, rgba(10,10,8,0.72) 0%, rgba(10,10,8,0.3) 55%, rgba(10,10,8,0.55) 100%),
+      linear-gradient(0deg, rgba(10,10,8,0.6) 0%, transparent 50%);
+  }
+  .hero-photo-content {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: 560px;
+  }
+  .hero-photo-left {
+    padding: 90px 80px; display: flex; flex-direction: column; justify-content: center;
+  }
+  .hero-photo-right {
+    display: flex; align-items: center; justify-content: flex-end; padding: 80px;
+  }
+
+  /* ── LEGIBILITY FIXES: boost text contrast on dark sections ──────────── */
+  /* Track descriptions */
+  .track-desc      { color: rgba(255,255,255,0.72) !important; }
+  /* Delivers list */
+  .delivers-list li { color: rgba(255,255,255,0.78) !important; }
+  /* Ideal-for text */
+  .ideal-text       { color: rgba(255,255,255,0.58) !important; }
+  /* Step descriptions in process section */
+  .step-desc        { color: rgba(255,255,255,0.72) !important; }
+  /* AI section description */
+  .ai-desc          { color: rgba(255,255,255,0.72) !important; }
+  .ai-item-desc     { color: rgba(255,255,255,0.62) !important; }
+  /* Track subtitle */
+  .track-sub        { color: rgba(255,255,255,0.52) !important; }
+
+  /* ── PROCESS SECTION: warm parchment — clearly different from dark tracks */
+  .section-process {
+    background: #EDE8DF !important;   /* warm parchment — distinct from black & off-white */
+    border-top: none !important;
+    padding: 100px 80px;
+  }
+  /* Flip text colours for the light background */
+  .section-process .sec-label         { color: #8a6a30; }
+  .section-process .sec-label::after  { background: rgba(138,106,48,0.2); }
+  .section-process .sec-title         { color: var(--black); }
+  .section-process .sec-body          { color: rgba(0,0,0,0.52); }
+  .section-process .step-num          { color: rgba(200,169,110,0.25) !important; }
+  .section-process .step-name         { color: #8a6a30; }
+  .section-process .step-title        { color: var(--black) !important; }
+  .section-process .step-desc         { color: rgba(0,0,0,0.58) !important; }
+  /* Card backgrounds */
+  .section-process .process-step              { background: #E4DED4; }
+  .section-process .process-step:first-child  { background: #D8D0C4; }
+
+  /* ── FOOTER ───────────────────────────────────────────────────────────── */
+  footer { background: var(--black); border-top: 1px solid var(--border); padding: 24px 80px; display: flex; align-items: center; justify-content: space-between; }
+  .footer-location { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--light-text); }
+  .footer-email { font-size: 12px; color: var(--light-text); }
+  .footer-social { display: flex; gap: 16px; }
+  .footer-social a { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--light-text); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <span class="nav-name">Nadia Sarmova</span>
+    <span class="nav-sub">Producer · 1st AD · Strategic Partner</span>
+  </div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Work</a>
+    <a href="#" class="active">Approach</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="eyebrow">My Approach</p>
+    <h1 class="hero-headline">
+      How I work.<br>When to call.<br><em>What you get.</em>
+    </h1>
+    <p class="hero-body">
+      Every project is different. The role I play depends on what you're building and where you are in the process. This page exists to make that conversation easier.
+    </p>
+  </div>
+  <div class="hero-right">
+    <div class="hero-pull-quote">
+      <div class="pull-mark">"</div>
+      <div class="pull-text">The best producers are invisible when things go right — and indispensable when they don't.</div>
+      <div class="pull-attr">— N.S.</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHEN TO BRING ME IN -->
+<section class="section-when">
+  <div class="when-intro">
+    <div class="sec-label dk">When to Bring Me In</div>
+    <h2 class="sec-title dark" style="font-size:42px;">The earlier, the better. But it's never too late.</h2>
+    <p class="sec-body dark" style="margin-top:16px;">I can step in at any stage of a production. Here's what each engagement looks like and what I bring to each phase.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-line"></div>
+
+    <!-- Stage 1 -->
+    <div class="stage">
+      <div class="stage-left">
+        <span class="stage-num">Stage 01</span>
+        <span class="stage-name">Development</span>
+        <div class="stage-dot"></div>
+      </div>
+      <div class="stage-right">
+        <div>
+          <div class="stage-headline">You have an idea. You need someone to help shape it into something that can actually be made.</div>
+          <p class="stage-desc">This is where strategy meets creativity. I work with you to pressure-test the concept, identify the right format, build a realistic scope, and lay the groundwork for a production that's designed to succeed — not just to start.</p>
+        </div>
+        <div class="stage-services">
+          <div class="svc-label">What I do here</div>
+          <ul class="svc-list">
+            <li>Concept development and format strategy</li>
+            <li>Feasibility and scope assessment</li>
+            <li>Pitch deck and treatment production support</li>
+            <li>Initial budget modelling and timeline mapping</li>
+            <li>Platform and distribution strategy input</li>
+            <li>Key creative and crew recommendations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 2 -->
+    <div class="stage">
+      <div class="stage-left">
+        <span class="stage-num">Stage 02</span>
+        <span class="stage-name">Pre-Production</span>
+        <div class="stage-dot"></div>
+      </div>
+      <div class="stage-right">
+        <div>
+          <div class="stage-headline">You're greenlit. Now the real work of making it possible begins.</div>
+          <p class="stage-desc">Pre-production is where productions are won or lost — and where my dual Producer / 1st AD experience is most valuable. I build the systems that protect the creative through the chaos of production.</p>
+        </div>
+        <div class="stage-services">
+          <div class="svc-label">What I do here</div>
+          <ul class="svc-list">
+            <li>Full production planning and scheduling</li>
+            <li>Department head hiring and crew assembly</li>
+            <li>Budget management and cost reporting</li>
+            <li>Location scouting, permits, and logistics</li>
+            <li>Script breakdown and shooting schedule</li>
+            <li>Creative reviews with all departments</li>
+            <li>Vendor, equipment, and contract management</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 3 -->
+    <div class="stage">
+      <div class="stage-left">
+        <span class="stage-num">Stage 03</span>
+        <span class="stage-name">Production</span>
+        <div class="stage-dot"></div>
+      </div>
+      <div class="stage-right">
+        <div>
+          <div class="stage-headline">Camera is rolling. Every decision has a cost. I make sure the right ones get made.</div>
+          <p class="stage-desc">On set I wear both hats simultaneously — Producer oversight on the creative and financial health of the production, and 1st AD discipline running the floor. The director directs. Everyone else knows exactly what to do and when.</p>
+        </div>
+        <div class="stage-services">
+          <div class="svc-label">What I do here</div>
+          <ul class="svc-list">
+            <li>On-set production management</li>
+            <li>Daily scheduling and call sheet ownership</li>
+            <li>Crew communication and department coordination</li>
+            <li>On-the-day problem solving and contingency management</li>
+            <li>Budget tracking against actuals in real time</li>
+            <li>Creative protection — keeping the story intact under pressure</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 4 -->
+    <div class="stage">
+      <div class="stage-left">
+        <span class="stage-num">Stage 04</span>
+        <span class="stage-name">Post & Delivery</span>
+        <div class="stage-dot"></div>
+      </div>
+      <div class="stage-right">
+        <div>
+          <div class="stage-headline">The shoot is done. Getting it across the finish line is its own discipline.</div>
+          <p class="stage-desc">Post-production oversight is often where producer involvement drops off — and where productions quietly go over budget or over schedule. I stay involved to protect the edit, manage the delivery pipeline, and make sure what lands matches what was promised.</p>
+        </div>
+        <div class="stage-services">
+          <div class="svc-label">What I do here</div>
+          <ul class="svc-list">
+            <li>Post-production supervision and editorial oversight</li>
+            <li>Vendor and post-house management</li>
+            <li>Music licensing, clearances, and legal coordination</li>
+            <li>Platform and broadcaster delivery requirements</li>
+            <li>Final budget reconciliation and cost reporting</li>
+            <li>Archival and deliverables organisation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+</section>
+
+<!-- THE TWO TRACKS -->
+<section class="section-tracks">
+  <div class="tracks-intro">
+    <div class="sec-label">Two Ways to Work Together</div>
+    <h2 class="sec-title">Producer or 1st AD.<br>Sometimes both.</h2>
+    <p class="sec-body" style="margin-top:16px; max-width:560px;">Depending on the project and what you need, I operate in one of two modes — or across both simultaneously on productions where it makes sense.</p>
+  </div>
+
+  <div class="tracks-grid">
+    <!-- Producer track -->
+    <div class="track">
+      <div class="track-badge">Track 01</div>
+      <div class="track-title">Producer</div>
+      <div class="track-sub">Executive Producer · Series Producer · Line Producer</div>
+      <p class="track-desc">
+        You need someone who owns the production from concept to delivery. Who protects the creative while controlling the variables. Who your director, your client, and your network can trust equally.
+      </p>
+      <div class="track-delivers">
+        <div class="delivers-label">What this delivers</div>
+        <ul class="delivers-list">
+          <li>End-to-end production ownership — development through delivery</li>
+          <li>Creative integrity maintained under budget and schedule pressure</li>
+          <li>A single point of accountability for the whole production</li>
+          <li>Relationships with talent, crew, and vendors built on trust</li>
+          <li>Transparent reporting — no surprises for you or your stakeholders</li>
+        </ul>
+      </div>
+      <div class="track-ideal">
+        <div class="ideal-label">Ideal for</div>
+        <div class="ideal-text">Feature films, branded documentaries, content series, multi-platform campaigns, and any project where the creative and operational complexity require unified leadership.</div>
+      </div>
+    </div>
+
+    <div class="track-divider"></div>
+
+    <!-- 1st AD track -->
+    <div class="track">
+      <div class="track-badge">Track 02</div>
+      <div class="track-title">1st Assistant Director</div>
+      <div class="track-sub">On-set leadership · Schedule · Crew management</div>
+      <p class="track-desc">
+        You already have a producer. What you need is someone who runs the floor with authority, keeps the director in the creative zone, and makes sure the day ends on schedule. That's the 1st AD role — and it's what separates a smooth shoot from a chaotic one.
+      </p>
+      <div class="track-delivers">
+        <div class="delivers-label">What this delivers</div>
+        <ul class="delivers-list">
+          <li>A set that runs on time, every day</li>
+          <li>Clear communication between every department</li>
+          <li>A director who directs — not manages logistics</li>
+          <li>Safety protocols and crew wellbeing maintained under pressure</li>
+          <li>Contingency thinking built into every shooting day</li>
+        </ul>
+      </div>
+      <div class="track-ideal">
+        <div class="ideal-label">Ideal for</div>
+        <div class="ideal-text">Productions with an existing producing team that need experienced on-set leadership. Particularly valuable on complex shoots, remote locations, large ensemble casts, or tight schedules where floor efficiency is critical.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="section-process">
+  <div class="process-intro">
+    <div class="sec-label">How I Work</div>
+    <h2 class="sec-title">A process built around clarity — at every stage.</h2>
+    <p class="sec-body" style="margin-top:16px;">Every engagement follows the same underlying logic: understand first, plan completely, execute with discipline, and debrief honestly.</p>
+  </div>
+
+  <div class="process-grid">
+    <div class="process-step">
+      <div class="step-border"></div>
+      <span class="step-num">01</span>
+      <div class="step-name">Understand</div>
+      <div class="step-title">The story, the stakes, the constraints.</div>
+      <p class="step-desc">Before anything else, I need to understand what you're building and why it matters. The creative vision, the audience, the platform, the budget reality, the timeline, and the non-negotiables. Most production problems start here — with assumptions that were never questioned.</p>
+    </div>
+    <div class="process-step">
+      <span class="step-num">02</span>
+      <div class="step-name">Plan</div>
+      <div class="step-title">In detail. Then plan for what won't go to plan.</div>
+      <p class="step-desc">I build production plans that account for complexity from day one. Shooting schedules, department budgets, crew structures, vendor agreements, location logistics, and contingency buffers. The plan isn't a document — it's shared understanding across every department.</p>
+    </div>
+    <div class="process-step">
+      <span class="step-num">03</span>
+      <div class="step-name">Execute</div>
+      <div class="step-title">Calm under pressure. Clear in the room.</div>
+      <p class="step-desc">On set and in post, I maintain the discipline and communication that keeps productions moving. Decisions get made quickly and transparently. Problems get solved before they escalate. The creative stays protected because the logistics are controlled.</p>
+    </div>
+    <div class="process-step">
+      <span class="step-num">04</span>
+      <div class="step-name">Deliver</div>
+      <div class="step-title">On time. On budget. On brief.</div>
+      <p class="step-desc">Delivery isn't just a file handoff. It's the moment everything you committed to in pre-production is either honored or isn't. I stay in it through final delivery — platform specs, clearances, client sign-off — until the project is genuinely done.</p>
+    </div>
+  </div>
+</section>
+
+<!-- AI TOOLS -->
+<section class="section-ai">
+  <div class="ai-grid">
+    <div class="ai-left">
+      <div class="ai-eyebrow">Production Tools</div>
+      <h3 class="ai-headline">AI-assisted planning for tighter timelines and fewer surprises.</h3>
+      <p class="ai-desc">I use AI-assisted tools in pre-production planning — for scheduling, script breakdown, budget modelling, and logistics coordination. The result is faster turnaround on the groundwork, more time for the creative decisions that actually matter, and tighter control over production variables before a single frame is shot.</p>
+    </div>
+    <div class="ai-divider"></div>
+    <div class="ai-right">
+      <div class="ai-item">
+        <span class="ai-icon">◫</span>
+        <div class="ai-item-text">
+          <div class="ai-item-name">Script Breakdown & Scheduling</div>
+          <div class="ai-item-desc">AI-assisted breakdown reduces pre-production time without sacrificing detail — every scene, every department need, flagged and organised faster.</div>
+        </div>
+      </div>
+      <div class="ai-item">
+        <span class="ai-icon">◻</span>
+        <div class="ai-item-text">
+          <div class="ai-item-name">Budget Modelling</div>
+          <div class="ai-item-desc">Faster scenario modelling means I can present you with more options earlier — so budget decisions are informed by real data, not guesswork.</div>
+        </div>
+      </div>
+      <div class="ai-item">
+        <span class="ai-icon">◎</span>
+        <div class="ai-item-text">
+          <div class="ai-item-name">Logistics Coordination</div>
+          <div class="ai-item-desc">Location research, permit mapping, crew availability — AI tools compress the research phase so planning starts from a stronger foundation.</div>
+        </div>
+      </div>
+      <div class="ai-item">
+        <span class="ai-icon">◈</span>
+        <div class="ai-item-text">
+          <div class="ai-item-name">Reporting & Communication</div>
+          <div class="ai-item-desc">Cleaner daily reports, faster stakeholder updates, and better documentation — so you always know exactly where the production stands.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RIGHT FIT -->
+<section class="section-fit">
+  <div class="fit-grid">
+    <div class="fit-left">
+      <div class="sec-label dk">Is This the Right Fit?</div>
+      <div class="fit-yes">
+        <div class="fit-heading">We're probably a good fit if…</div>
+        <ul class="fit-list yes">
+          <li>You're working on a project where the stakes — creative, commercial, or reputational — are real</li>
+          <li>You need a producer who can hold the creative and the logistics simultaneously</li>
+          <li>You value transparent communication over comfortable reassurance</li>
+          <li>You want a set that runs with discipline and care for the people on it</li>
+          <li>You're building something you want to be proud of — not just done</li>
+          <li>You're a brand, studio, streamer, agency, or creator working at a professional level</li>
+        </ul>
+      </div>
+      <div class="fit-divider"></div>
+      <div class="fit-no">
+        <div class="fit-heading" style="font-size:24px; color:#999;">We're probably not a fit if…</div>
+        <ul class="fit-list no" style="margin-top:16px;">
+          <li>You need someone to rubber-stamp decisions already made</li>
+          <li>Budget and timeline are fixed with no room for honest conversation</li>
+          <li>The creative brief changes weekly with no clear decision-maker</li>
+          <li>You're looking for the cheapest option rather than the right one</li>
+        </ul>
+      </div>
+    </div>
+    <div class="fit-right">
+      <div class="fit-quote-block">
+        <div class="fq-mark">"</div>
+        <div class="fq-text">I take on a small number of projects each year. The ones I choose are the ones where I can genuinely make a difference — and where the people I'm working with are as committed to getting it right as I am.</div>
+        <div class="fq-attr">— Nadia Sarmova</div>
+      </div>
+      <div class="fit-cta-block">
+        <p class="fit-cta-text">If what you're building sounds like it belongs in that group, I'd like to hear about it. Tell me about the project and where you are in the process.</p>
+        <a href="#" class="fit-cta">Start a conversation →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-location">Los Angeles · Working Worldwide</span>
+  <span class="footer-email">nadia@nadiasarmova.com</span>
+  <div class="footer-social">
+    <a href="#">in</a>
+    <a href="#">ig</a>
+  </div>
+</footer>
+
+</body>
+</html>
