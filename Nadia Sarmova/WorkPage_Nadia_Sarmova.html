@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>Work – Nadia Sarmova</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --gold: #C8A96E;
+    --gold-light: #D4B98A;
+    --black: #0A0A08;
+    --off-black: #111110;
+    --dark: #1A1A18;
+    --mid: #2C2C2A;
+    --light-text: #9A9890;
+    --off-white: #F5F3EE;
+    --white: #FFFFFF;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Montserrat', sans-serif;
+  }
+  html { font-size: 16px; }
+  body { background: var(--off-white); color: var(--black); font-family: var(--font-body); -webkit-font-smoothing: antialiased; width: 1440px; }
+
+  /* NAV */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 80px; background: var(--black);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-brand { display: flex; flex-direction: column; gap: 2px; }
+  .nav-name { font-family: var(--font-body); font-weight: 500; font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white); }
+  .nav-sub { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--light-text); }
+  .nav-links { display: flex; align-items: center; gap: 40px; }
+  .nav-links a { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--light-text); text-decoration: none; font-weight: 500; }
+  .nav-links a.active { color: var(--gold); border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
+  .nav-links a.plain { color: var(--white); }
+
+  /* HERO */
+  .work-hero {
+    background: var(--black); padding: 80px 80px 100px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .hero-eyebrow { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; }
+  .hero-headline {
+    font-family: var(--font-display); font-size: 56px; line-height: 1.1; font-weight: 300;
+    color: var(--white); margin-bottom: 24px;
+  }
+  .hero-body { font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.55); font-weight: 300; max-width: 460px; }
+  .hero-right-img {
+    width: 100%; aspect-ratio: 16/9;
+    background: linear-gradient(160deg, #2a2820 0%, #141210 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-img-label {
+    font-family: var(--font-display); font-size: 24px; color: rgba(255,255,255,0.12);
+    letter-spacing: 0.15em; text-transform: uppercase;
+  }
+
+  /* PROJECTS */
+  .projects-section { background: var(--off-white); }
+  .project-row {
+    display: grid; grid-template-columns: 60px 380px 1fr 1fr 1fr;
+    gap: 0; align-items: stretch;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    padding: 60px 80px;
+  }
+  .project-num {
+    font-family: var(--font-display); font-size: 48px; font-weight: 300;
+    color: rgba(0,0,0,0.15); line-height: 1; padding-top: 8px;
+  }
+  .project-card {
+    background: var(--black); position: relative; overflow: hidden; margin-right: 40px;
+  }
+  .project-card-bg {
+    width: 100%; height: 260px;
+    background: linear-gradient(160deg, #2a2820 0%, #0e0e0c 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .project-card-bg.p1 { background: linear-gradient(160deg, #3d2a1a 0%, #1a1008 100%); }
+  .project-card-bg.p2 { background: linear-gradient(160deg, #1a2a1a 0%, #0a1208 100%); }
+  .project-card-bg.p3 { background: linear-gradient(160deg, #1a1a2a 0%, #08081a 100%); }
+  .project-card-bg.p4 { background: linear-gradient(160deg, #2a1a1a 0%, #180808 100%); }
+  .project-card-bg.p5 { background: linear-gradient(160deg, #2a2010 0%, #181005 100%); }
+  .project-card-content { padding: 20px 24px; }
+  .project-card-title { font-family: var(--font-display); font-size: 22px; font-weight: 500; color: var(--white); margin-bottom: 4px; }
+  .project-card-type { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
+  .project-card-platform { font-size: 10px; color: rgba(255,255,255,0.4); }
+
+  .project-col { padding: 0 24px 0 0; }
+  .col-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #999; margin-bottom: 16px; font-weight: 600; }
+  .role-main { font-size: 15px; font-weight: 500; color: var(--black); margin-bottom: 6px; }
+  .role-also-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #bbb; margin: 14px 0 4px; font-weight: 500; }
+  .role-also { font-size: 13px; color: #777; }
+  .req-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .req-list li { font-size: 13px; line-height: 1.6; color: #444; font-weight: 300; padding-left: 14px; position: relative; }
+  .req-list li::before { content: '·'; position: absolute; left: 0; color: var(--gold); }
+  .outcome-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .outcome-list li { font-size: 13px; line-height: 1.6; color: #444; font-weight: 300; padding-left: 14px; position: relative; }
+  .outcome-list li::before { content: '·'; position: absolute; left: 0; color: var(--gold); }
+  .outcome-stat { font-family: var(--font-display); font-size: 22px; font-weight: 500; color: var(--black); display: block; margin-bottom: 2px; }
+
+  /* MY EDGE */
+  .section-edge { background: var(--dark); padding: 80px; }
+  .edge-grid { display: grid; grid-template-columns: 1fr 1px 1fr 1px 1fr 1px 1fr; gap: 0; align-items: start; }
+  .edge-headline { font-family: var(--font-display); font-size: 36px; font-weight: 300; color: var(--white); line-height: 1.2; }
+  .edge-divider { background: rgba(255,255,255,0.08); align-self: stretch; margin: 0 40px; }
+  .edge-pillar { padding: 0 20px; }
+  .edge-pillar-name { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; font-weight: 600; }
+  .edge-pillar-desc { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.5); font-weight: 300; }
+
+  /* CLOSING */
+  .section-closing { background: var(--off-black); padding: 80px; }
+  .closing-grid { display: grid; grid-template-columns: 1fr auto; gap: 80px; align-items: center; }
+  .closing-text { font-family: var(--font-display); font-size: 36px; font-weight: 300; color: var(--white); line-height: 1.3; max-width: 600px; }
+  .closing-contacts { display: flex; flex-direction: column; gap: 14px; }
+  .contact-line { display: flex; align-items: center; gap: 12px; font-size: 13px; color: rgba(255,255,255,0.55); }
+  .contact-icon { font-size: 14px; color: var(--gold); }
+  .closing-cta {
+    display: inline-flex; align-items: center; gap: 12px; margin-top: 28px;
+    border: 1px solid var(--gold); color: var(--gold); padding: 14px 28px;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500;
+    text-decoration: none; cursor: pointer;
+  }
+
+  /* FOOTER */
+  footer { background: var(--black); border-top: 1px solid rgba(255,255,255,0.06); padding: 24px 80px; display: flex; align-items: center; justify-content: space-between; }
+  .footer-location { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--light-text); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <span class="nav-name">Nadia Sarmova</span>
+    <span class="nav-sub">Producer · 1st AD · Strategic Partner</span>
+  </div>
+  <div class="nav-links">
+    <a href="#" class="plain">Home</a>
+    <a href="#" class="active">Work</a>
+    <a href="#" class="plain">Approach</a>
+    <a href="#" class="plain">About</a>
+    <a href="#" class="plain">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="work-hero">
+  <div>
+    <p class="hero-eyebrow">Selected Work</p>
+    <h1 class="hero-headline">Projects I brought from the page to the screen — on time, on brief, and on budget.</h1>
+    <p class="hero-body">I partner on projects where the stakes are real — across story, people, and execution. Here are four that reflect what I do at my best.</p>
+  </div>
+  <div class="hero-right-img">
+    <span class="hero-img-label">Producer</span>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<div class="projects-section">
+
+  <!-- 01 -->
+  <div class="project-row">
+    <div class="project-num">01</div>
+    <div class="project-card">
+      <div class="project-card-bg p1"></div>
+      <div class="project-card-content">
+        <div class="project-card-type">Feature Film · Prime Video</div>
+        <div class="project-card-title">Road to Yesterday</div>
+      </div>
+    </div>
+    <div class="project-col">
+      <div class="col-label">My Role</div>
+      <div class="role-main">Producer</div>
+      <div class="role-also-label">Also</div>
+      <div class="role-also">1st Assistant Director</div>
+    </div>
+    <div class="project-col">
+      <div class="col-label">What This Required</div>
+      <ul class="req-list">
+        <li>Led a cross-functional team across multiple countries with complex logistics and cultural nuances</li>
+        <li>Balanced a sensitive narrative with commercial appeal and wide audience reach</li>
+        <li>Maintained creative integrity and schedule through development to delivery</li>
+      </ul>
+    </div>
+    <div class="project-col">
+      <div class="col-label">Outcome</div>
+      <ul class="outcome-list">
+        <li><span class="outcome-stat">Top 10 in 12 countries</span>Prime Video, multiple markets</li>
+        <li>Strong audience response and social engagement</li>
+        <li>Built a foundation for future franchise potential</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 02 -->
+  <div class="project-row">
+    <div class="project-num">02</div>
+    <div class="project-card">
+      <div class="project-card-bg p2"></div>
+      <div class="project-card-content">
+        <div class="project-card-type">Branded Documentary · Amazon</div>
+        <div class="project-card-title">The Climb</div>
+      </div>
+    </div>
+    <div class="project-col">
+      <div class="col-label">My Role</div>
+      <div class="role-main">Executive Producer</div>
+      <div class="role-also-label">Also</div>
+      <div class="role-also">1st Assistant Director</div>
+    </div>
+    <div class="project-col">
+      <div class="col-label">What This Required</div>
+      <ul class="req-list">
+        <li>Developed a documentary series around resilience and mental health with subject matter sensitivity</li>
+        <li>Collaborated with experts and brand partners to shape a responsible, authentic story</li>
+        <li>Managed a lean, fast-moving production in remote locations</li>
+      </ul>
+    </div>
+    <div class="project-col">
+      <div class="col-label">Outcome</div>
+      <ul class="outcome-list">
+        <li><span class="outcome-stat">Global campaign</span>Across Amazon platforms</li>
+        <li>Drove brand conversation on mental health</li>
+        <li>High completion rates and strongly positive audience feedback</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 03 -->
+  <div class="project-row">
+    <div class="project-num">03</div>
+    <div class="project-card">
+      <div class="project-card-bg p3"></div>
+      <div class="project-card-content">
+        <div class="project-card-type">Branded Content Series · YouTube Originals</div>
+        <div class="project-card-title">She Stories</div>
+      </div>
+    </div>
+    <div class="project-col">
+      <div class="col-label">My Role</div>
+      <div class="role-main">Executive Producer</div>
+      <div class="role-also-label">Also</div>
+      <div class="role-also">1st Assistant Director</div>
+    </div>
+    <div class="project-col">
+      <div class="col-label">What This Required</div>
+      <ul class="req-list">
+        <li>Created a safe space for vulnerable storytelling across diverse voices and experiences</li>
+        <li>Led a collaborative creative process from concept to final cut</li>
+        <li>Managed multiple vendors, budgets, and tight turnaround</li>
+      </ul>
+    </div>
+    <div class="project-col">
+      <div class="col-label">Outcome</div>
+      <ul class="outcome-list">
+        <li><span class="outcome-stat">2M+ views</span>Across YouTube in first 30 days</li>
+        <li>Featured by YouTube Originals</li>
+        <li>Strengthened brand credibility in meaningful ways</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 04 -->
+  <div class="project-row">
+    <div class="project-num">04</div>
+    <div class="project-card">
+      <div class="project-card-bg p4"></div>
+      <div class="project-card-content">
+        <div class="project-card-type">Docu-Series · BET</div>
+        <div class="project-card-title">60 Days In</div>
+      </div>
+    </div>
+    <div class="project-col">
+      <div class="col-label">My Role</div>
+      <div class="role-main">Series Producer</div>
+      <div class="role-also-label">Also</div>
+      <div class="role-also">1st Assistant Director</div>
+    </div>
+    <div class="project-col">
+      <div class="col-label">What This Required</div>
+      <ul class="req-list">
+        <li>Managed a high-pressure docu-series with real-life stories and strict timelines</li>
+        <li>Coordinated large crew, contributors, and post-production across episodes</li>
+        <li>Maintained transparency and trust with participants and network</li>
+      </ul>
+    </div>
+    <div class="project-col">
+      <div class="col-label">Outcome</div>
+      <ul class="outcome-list">
+        <li><span class="outcome-stat">Nominated</span>Best Reality Series</li>
+        <li>Strong ratings and audience retention throughout run</li>
+        <li>Established trust with network for future collaborations</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 05 -->
+  <div class="project-row">
+    <div class="project-num">05</div>
+    <div class="project-card">
+      <div class="project-card-bg p5"></div>
+      <div class="project-card-content">
+        <div class="project-card-type">Feature Film · Netflix</div>
+        <div class="project-card-title">Lionheart</div>
+      </div>
+    </div>
+    <div class="project-col">
+      <div class="col-label">My Role</div>
+      <div class="role-main">1st Assistant Director</div>
+    </div>
+    <div class="project-col">
+      <div class="col-label">What This Required</div>
+      <ul class="req-list">
+        <li>Managed a large-scale feature production across multiple Nigerian locations</li>
+        <li>Coordinated a multi-department crew with complex daily logistics</li>
+        <li>Maintained schedule and creative momentum through a demanding shoot</li>
+      </ul>
+    </div>
+    <div class="project-col">
+      <div class="col-label">Outcome</div>
+      <ul class="outcome-list">
+        <li><span class="outcome-stat">Netflix Original</span>Nigeria's first Netflix Original Feature</li>
+        <li>Wide international distribution and critical recognition</li>
+        <li>Africa Movie Academy Award Winner</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- MY EDGE -->
+<section class="section-edge">
+  <div class="edge-grid">
+    <div>
+      <div class="edge-headline">I've been on the road and in the edit suite. I know how sets are run and how stories come together.</div>
+    </div>
+    <div class="edge-divider"></div>
+    <div class="edge-pillar">
+      <div class="edge-pillar-name">People First</div>
+      <div class="edge-pillar-desc">Kind leadership. Clear communication. Teams that trust each other produce better work — every time.</div>
+    </div>
+    <div class="edge-divider"></div>
+    <div class="edge-pillar">
+      <div class="edge-pillar-name">Process Driven</div>
+      <div class="edge-pillar-desc">Anticipate. Plan. Execute with precision. Deliver on time. I protect the creative by controlling the variables.</div>
+    </div>
+    <div class="edge-divider"></div>
+    <div class="edge-pillar">
+      <div class="edge-pillar-name">Calm Under Pressure</div>
+      <div class="edge-pillar-desc">I thrive in complexity so the creative process can thrive. Clarity and composure when it matters most.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="section-closing">
+  <div class="closing-grid">
+    <div>
+      <p class="closing-text">If you're building something meaningful and need a producer who can lead it from idea to impact, let's talk.</p>
+      <a href="#" class="closing-cta">Start the conversation →</a>
+    </div>
+    <div class="closing-contacts">
+      <div class="contact-line"><span class="contact-icon">✉</span> nadia@nadiasarmova.com</div>
+      <div class="contact-line"><span class="contact-icon">in</span> linkedin.com/in/nadiasarmova</div>
+      <div class="contact-line"><span class="contact-icon">◻</span> @nadiasarmova</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-location">Los Angeles · Working Worldwide</span>
+</footer>
+
+</body>
+</html>
