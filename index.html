@@ -394,10 +394,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <div class="project-intro-left">
         <div class="project-number">Project 05</div>
         <div class="project-title">Nadia Sarmova</div>
-        <div class="project-desc">Client sent full-page screenshot references for each page of her portfolio — no HTML, no Figma. I used these as the design brief and built a cinematic, film-grade Squarespace portfolio for a film & TV producer working with Netflix, Prime Video, and major brands.</div>
+        <div class="project-desc">Client sent a mix of HTML page mockups and PNG screenshot references — plus revised versions of the Home and Work pages as the design evolved mid-project. I unified everything into one cohesive, cinematic Squarespace portfolio for a film & TV producer working with Netflix, Prime Video, and major brands.</div>
         <div class="project-badges">
-          <span class="project-type-badge badge-screenshot">📸 Screenshot References</span>
-          <span class="project-type-badge badge-challenge">⚡ Full Design Interpretation</span>
+          <span class="project-type-badge badge-html">📄 HTML Files</span>
+          <span class="project-type-badge badge-image">🖼 PNG Mockups</span>
+          <span class="project-type-badge badge-challenge">🔄 Revised Versions</span>
         </div>
       </div>
     </div>
@@ -406,41 +407,51 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <div class="challenge-bar">
         <span class="challenge-bar-icon">🎬</span>
         <div class="challenge-bar-content">
-          <div class="challenge-bar-title">Screenshot references only — no HTML, no Figma</div>
-          <div class="challenge-bar-desc">The client had no design files — only screenshots of how she envisioned each page. I interpreted the visual direction, sourced the right Squarespace template, and built a cinematic portfolio that matches the high-stakes film industry aesthetic she needed to command the room.</div>
+          <div class="challenge-bar-title">Mixed file formats, plus mid-project revisions</div>
+          <div class="challenge-bar-desc">The client sent a combination of HTML mockups and PNG screenshots across pages, and revised the Home and Work page designs partway through. I reconciled every version into a single, consistent design system and built a cinematic portfolio that matches the high-stakes film industry aesthetic she needed.</div>
         </div>
       </div>
 
       <div class="browser-bar">
         <div class="browser-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
-        <div class="browser-address" id="p5-address">home — screenshot reference</div>
-        <div class="browser-tag screenshot-tag">SCREENSHOT REFERENCE</div>
+        <div class="browser-address" id="p5-address">HomepageNadiaSarmova_com.png</div>
+        <div class="browser-tag">MIXED HTML & IMAGE FILES</div>
       </div>
 
       <div class="page-tabs-wrap">
-        <span class="tabs-hint">🗂 Click a page to preview the client's screenshot reference:</span>
+        <span class="tabs-hint">🗂 Click a file to preview:</span>
         <div class="page-tabs">
-          <button class="page-tab img-tab active" onclick="switchScreenshot('https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/home.png', 'home — screenshot reference', this)">home.png</button>
-          <button class="page-tab img-tab" onclick="switchScreenshot('https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/work.png', 'work — screenshot reference', this)">work.png</button>
-          <button class="page-tab img-tab" onclick="switchScreenshot('https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/approach.png', 'approach — screenshot reference', this)">approach.png</button>
-          <button class="page-tab img-tab" onclick="switchScreenshot('https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/about.png', 'about — screenshot reference', this)">about.png</button>
+          <button class="page-tab img-tab active" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_NadiaSarmova_com.png','Homepage_NadiaSarmova_com.png',this)">Homepage_NadiaSarmova_com.png</button>
+          <button class="page-tab img-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_Revised.png','Homepage_Revised.png',this)">Homepage_Revised.png</button>
+          <button class="page-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/WorkPage_Nadia_Sarmova.html','WorkPage_Nadia_Sarmova.html',this)">WorkPage_Nadia_Sarmova.html</button>
+          <button class="page-tab img-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Work_Page_NadiaSarmova_com.png','Work_Page_NadiaSarmova_com.png',this)">Work_Page_NadiaSarmova_com.png</button>
+          <button class="page-tab img-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/WorkPage_Revised.png','WorkPage_Revised.png',this)">WorkPage_Revised.png</button>
+          <button class="page-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ApproachPage_v2_Nadia_Sarmova.html','ApproachPage_v2_Nadia_Sarmova.html',this)">ApproachPage_v2_Nadia_Sarmova.html</button>
+          <button class="page-tab img-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ApproachPage_v2_Nadia_Sarmova.png','ApproachPage_v2_Nadia_Sarmova.png',this)">ApproachPage_v2_Nadia_Sarmova.png</button>
+          <button class="page-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/AboutPage_Nadia_Sarmova.html','AboutPage_Nadia_Sarmova.html',this)">AboutPage_Nadia_Sarmova.html</button>
+          <button class="page-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ContactPage_v4_Nadia_Sarmova.html','ContactPage_v4_Nadia_Sarmova.html',this)">ContactPage_v4_Nadia_Sarmova.html</button>
+          <button class="page-tab img-tab" onclick="switchPage('p5','https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Contact_Page_NadiaSarmova_com.png','Contact_Page_NadiaSarmova_com.png',this)">Contact_Page_NadiaSarmova_com.png</button>
         </div>
       </div>
 
       <div class="page-dropdown-wrap">
-        <span class="dropdown-label">📸 Page:</span>
-        <select class="page-dropdown" onchange="switchScreenshotMobile(this)">
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/home.png" data-name="home — screenshot reference">home.png</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/work.png" data-name="work — screenshot reference">work.png</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/approach.png" data-name="approach — screenshot reference">approach.png</option>
-          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/about.png" data-name="about — screenshot reference">about.png</option>
+        <span class="dropdown-label">📄 File:</span>
+        <select class="page-dropdown" onchange="switchPageMobile('p5',this)">
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_NadiaSarmova_com.png" data-name="Homepage_NadiaSarmova_com.png">Homepage_NadiaSarmova_com.png</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_Revised.png" data-name="Homepage_Revised.png">Homepage_Revised.png</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/WorkPage_Nadia_Sarmova.html" data-name="WorkPage_Nadia_Sarmova.html">WorkPage_Nadia_Sarmova.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Work_Page_NadiaSarmova_com.png" data-name="Work_Page_NadiaSarmova_com.png">Work_Page_NadiaSarmova_com.png</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/WorkPage_Revised.png" data-name="WorkPage_Revised.png">WorkPage_Revised.png</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ApproachPage_v2_Nadia_Sarmova.html" data-name="ApproachPage_v2_Nadia_Sarmova.html">ApproachPage_v2_Nadia_Sarmova.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ApproachPage_v2_Nadia_Sarmova.png" data-name="ApproachPage_v2_Nadia_Sarmova.png">ApproachPage_v2_Nadia_Sarmova.png</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/AboutPage_Nadia_Sarmova.html" data-name="AboutPage_Nadia_Sarmova.html">AboutPage_Nadia_Sarmova.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/ContactPage_v4_Nadia_Sarmova.html" data-name="ContactPage_v4_Nadia_Sarmova.html">ContactPage_v4_Nadia_Sarmova.html</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Contact_Page_NadiaSarmova_com.png" data-name="Contact_Page_NadiaSarmova_com.png">Contact_Page_NadiaSarmova_com.png</option>
         </select>
       </div>
 
-      <div class="image-viewer">
-        <div class="image-viewer-main">
-          <img id="p5-screenshot" src="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/home.png" alt="Nadia Sarmova screenshot reference" />
-        </div>
+      <div class="iframe-wrapper">
+        <iframe id="p5-iframe" src="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/Homepage_NadiaSarmova_com.png"></iframe>
       </div>
 
       <!-- Case study images -->
@@ -454,7 +465,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       </div>
 
       <div class="card-footer">
-        <span class="footer-note">📸 Screenshot references provided by client — full site designed & built in Squarespace</span>
+        <span class="footer-note">📄🖼 Mixed HTML & PNG files provided by client — full site designed & built in Squarespace</span>
         <a href="https://www.nadiasarmova.com/" target="_blank" class="live-btn">View Live Website →</a>
       </div>
     </div>
@@ -503,18 +514,6 @@ function switchPageMobile(projId, select) {
   const filename = select.options[select.selectedIndex].getAttribute('data-name');
   document.getElementById(projId + '-iframe').src = url;
   document.getElementById(projId + '-address').textContent = filename;
-}
-function switchScreenshot(url, label, btn) {
-  document.getElementById('p5-screenshot').src = url;
-  document.getElementById('p5-address').textContent = label;
-  btn.closest('.page-tabs').querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-function switchScreenshotMobile(select) {
-  const url = select.value;
-  const label = select.options[select.selectedIndex].getAttribute('data-name');
-  document.getElementById('p5-screenshot').src = url;
-  document.getElementById('p5-address').textContent = label;
 }
 </script>
 </body>
