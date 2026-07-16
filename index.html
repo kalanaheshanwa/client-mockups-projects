@@ -46,12 +46,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .project-number { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #555; text-transform: uppercase; margin-bottom: 6px; }
 .project-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
 .project-desc { font-size: 14px; color: #888; line-height: 1.6; max-width: 500px; }
-.project-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.project-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .project-type-badge { font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 20px; white-space: nowrap; }
 .badge-html { color: #6a9fff; background: rgba(106,159,255,0.1); border: 1px solid rgba(106,159,255,0.25); }
 .badge-image { color: #c97fff; background: rgba(201,127,255,0.1); border: 1px solid rgba(201,127,255,0.25); }
 .badge-pdf { color: #ffb86a; background: rgba(255,184,106,0.1); border: 1px solid rgba(255,184,106,0.25); }
 .badge-challenge { color: #00D692; background: rgba(0,214,146,0.1); border: 1px solid rgba(0,214,146,0.25); }
+.badge-screenshot { color: #ff9eb5; background: rgba(255,158,181,0.1); border: 1px solid rgba(255,158,181,0.25); }
 
 /* Project card */
 .project-card { border: 1px solid #2a2a2a; border-radius: 16px; overflow: hidden; background: #111; }
@@ -63,6 +64,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .dot.green { background: #28c840; }
 .browser-address { flex: 1; min-width: 0; background: #3a3a3a; color: #ccc; font-family: monospace; font-size: 13px; padding: 5px 12px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .browser-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #6a9fff; white-space: nowrap; flex-shrink: 0; }
+.browser-tag.screenshot-tag { color: #ff9eb5; }
 
 .page-tabs-wrap { background: #1e1e1e; padding: 12px 16px; border-bottom: 1px solid #333; }
 .tabs-hint { display: block; font-size: 11px; color: #555; margin-bottom: 8px; letter-spacing: 0.03em; }
@@ -75,6 +77,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .page-tab.active { background: #00D692; border-color: #00D692; color: #111; font-weight: 700; }
 .page-tab.pdf-tab::before { content: '📋'; }
 .page-tab.pdf-tab.active::before { content: '✦'; }
+.page-tab.img-tab::before { content: '🖼'; }
+.page-tab.img-tab.active::before { content: '✦'; }
 
 .page-dropdown-wrap { display: none; align-items: center; gap: 10px; padding: 10px 16px; background: #1e1e1e; border-bottom: 1px solid #333; }
 .dropdown-label { font-size: 12px; color: #888; white-space: nowrap; font-family: monospace; }
@@ -84,14 +88,19 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .iframe-wrapper { width: 100%; overflow: hidden; background: #fff; }
 .iframe-wrapper iframe { display: block; border: none; width: 100%; height: 720px; }
 
-/* Challenge solved bar */
+/* Image viewer for screenshot projects */
+.image-viewer { width: 100%; background: #f0f0f0; position: relative; }
+.image-viewer-main { width: 100%; max-height: 720px; overflow-y: auto; background: #f5f5f5; }
+.image-viewer-main img { width: 100%; display: block; }
+
+/* Challenge bar */
 .challenge-bar { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; background: rgba(0,214,146,0.05); border-bottom: 1px solid rgba(0,214,146,0.15); }
 .challenge-bar-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
 .challenge-bar-content { flex: 1; }
 .challenge-bar-title { font-size: 13px; font-weight: 700; color: #00D692; margin-bottom: 4px; letter-spacing: 0.03em; }
 .challenge-bar-desc { font-size: 13px; color: #888; line-height: 1.5; }
 
-/* Story bar for image projects */
+/* Story bar */
 .story-bar { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 12px 22px; background: #161616; border-bottom: 1px solid #2a2a2a; flex-wrap: wrap; }
 .story-step { display: flex; align-items: center; gap: 8px; }
 .story-icon { font-size: 16px; }
@@ -101,6 +110,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .image-label { padding: 8px 16px; background: #2a2a2a; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #c97fff; }
 .mockup-image-wrap { background: #f5f5f5; max-height: 720px; overflow-y: auto; }
 .mockup-image { width: 100%; display: block; }
+
+/* Case study strip */
+.casestudy-strip { border-top: 1px solid #2a2a2a; background: #0d0d0d; padding: 20px; }
+.casestudy-strip-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #555; text-transform: uppercase; margin-bottom: 12px; }
+.casestudy-images { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.casestudy-images img { width: 100%; display: block; border-radius: 8px; border: 1px solid #2a2a2a; cursor: pointer; transition: opacity 0.2s; }
+.casestudy-images img:hover { opacity: 0.8; }
+@media (max-width: 600px) { .casestudy-images { grid-template-columns: 1fr; } }
 
 .card-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px 20px; background: #161616; border-top: 1px solid #2a2a2a; }
 .footer-note { font-size: 13px; color: #555; }
@@ -327,16 +344,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       </div>
     </div>
     <div class="project-card">
-
-      <!-- Challenge solved bar -->
       <div class="challenge-bar">
         <span class="challenge-bar-icon">⚡</span>
         <div class="challenge-bar-content">
           <div class="challenge-bar-title">Challenge Solved — Strategy Room Filter</div>
-          <div class="challenge-bar-desc">The client needed their 24-post blog (The Strategy Room) to be filterable by category. Squarespace doesn't offer native blog filtering. I built a custom JavaScript filter system directly in Squarespace — no third-party plugins, no extra cost — so visitors can instantly sort posts by topic. You can see it live on the Strategy Room page.</div>
+          <div class="challenge-bar-desc">The client needed their 24-post blog (The Strategy Room) to be filterable by category. Squarespace doesn't offer native blog filtering. I built a custom JavaScript filter system directly in Squarespace — no third-party plugins, no extra cost — so visitors can instantly sort posts by topic.</div>
         </div>
       </div>
-
       <div class="browser-bar">
         <div class="browser-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
         <div class="browser-address" id="p4-address">home.html</div>
@@ -370,6 +384,78 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <div class="card-footer">
         <span class="footer-note">📄 HTML files + PDF content provided by client</span>
         <a href="https://www.brandyourjourney.com/" target="_blank" class="live-btn">View Live Website →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 5 -->
+  <div class="project-block">
+    <div class="project-intro">
+      <div class="project-intro-left">
+        <div class="project-number">Project 05</div>
+        <div class="project-title">Nadia Sarmova</div>
+        <div class="project-desc">Client sent full-page screenshot references for each page of her portfolio — no HTML, no Figma. I used these as the design brief and built a cinematic, film-grade Squarespace portfolio for a film & TV producer working with Netflix, Prime Video, and major brands.</div>
+        <div class="project-badges">
+          <span class="project-type-badge badge-screenshot">📸 Screenshot References</span>
+          <span class="project-type-badge badge-challenge">⚡ Full Design Interpretation</span>
+        </div>
+      </div>
+    </div>
+    <div class="project-card">
+
+      <div class="challenge-bar">
+        <span class="challenge-bar-icon">🎬</span>
+        <div class="challenge-bar-content">
+          <div class="challenge-bar-title">Screenshot references only — no HTML, no Figma</div>
+          <div class="challenge-bar-desc">The client had no design files — only screenshots of how she envisioned each page. I interpreted the visual direction, sourced the right Squarespace template, and built a cinematic portfolio that matches the high-stakes film industry aesthetic she needed to command the room.</div>
+        </div>
+      </div>
+
+      <div class="browser-bar">
+        <div class="browser-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+        <div class="browser-address" id="p5-address">home — screenshot reference</div>
+        <div class="browser-tag screenshot-tag">SCREENSHOT REFERENCE</div>
+      </div>
+
+      <div class="page-tabs-wrap">
+        <span class="tabs-hint">🗂 Click a page to preview the client's screenshot reference:</span>
+        <div class="page-tabs">
+          <button class="page-tab img-tab active" onclick="switchScreenshot('https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/home.png', 'home — screenshot reference', this)">home.png</button>
+          <button class="page-tab img-tab" onclick="switchScreenshot('https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/work.png', 'work — screenshot reference', this)">work.png</button>
+          <button class="page-tab img-tab" onclick="switchScreenshot('https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/approach.png', 'approach — screenshot reference', this)">approach.png</button>
+          <button class="page-tab img-tab" onclick="switchScreenshot('https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/about.png', 'about — screenshot reference', this)">about.png</button>
+        </div>
+      </div>
+
+      <div class="page-dropdown-wrap">
+        <span class="dropdown-label">📸 Page:</span>
+        <select class="page-dropdown" onchange="switchScreenshotMobile(this)">
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/home.png" data-name="home — screenshot reference">home.png</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/work.png" data-name="work — screenshot reference">work.png</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/approach.png" data-name="approach — screenshot reference">approach.png</option>
+          <option value="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/about.png" data-name="about — screenshot reference">about.png</option>
+        </select>
+      </div>
+
+      <div class="image-viewer">
+        <div class="image-viewer-main">
+          <img id="p5-screenshot" src="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/home.png" alt="Nadia Sarmova screenshot reference" />
+        </div>
+      </div>
+
+      <!-- Case study images -->
+      <div class="casestudy-strip">
+        <div class="casestudy-strip-label">✦ My case study for this project</div>
+        <div class="casestudy-images">
+          <img src="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/casestudy-cover.png" alt="Case study cover" onclick="window.open(this.src,'_blank')" />
+          <img src="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/casestudy-bento.png" alt="Case study bento" onclick="window.open(this.src,'_blank')" />
+          <img src="https://kalanaheshanwa.github.io/client-mockups-projects/nadia-sarmova/casestudy-result.png" alt="Case study result" onclick="window.open(this.src,'_blank')" />
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span class="footer-note">📸 Screenshot references provided by client — full site designed & built in Squarespace</span>
+        <a href="https://www.nadiasarmova.com/" target="_blank" class="live-btn">View Live Website →</a>
       </div>
     </div>
   </div>
@@ -417,6 +503,18 @@ function switchPageMobile(projId, select) {
   const filename = select.options[select.selectedIndex].getAttribute('data-name');
   document.getElementById(projId + '-iframe').src = url;
   document.getElementById(projId + '-address').textContent = filename;
+}
+function switchScreenshot(url, label, btn) {
+  document.getElementById('p5-screenshot').src = url;
+  document.getElementById('p5-address').textContent = label;
+  btn.closest('.page-tabs').querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function switchScreenshotMobile(select) {
+  const url = select.value;
+  const label = select.options[select.selectedIndex].getAttribute('data-name');
+  document.getElementById('p5-screenshot').src = url;
+  document.getElementById('p5-address').textContent = label;
 }
 </script>
 </body>
