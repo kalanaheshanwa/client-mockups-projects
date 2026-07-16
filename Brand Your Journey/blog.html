@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Strategy Room — Brand Thinking for Nonprofits, Startups & Small Businesses | Brand Your Journey</title>
+<meta name="description" content="Practical brand strategy thinking for nonprofits, startups, and small businesses under $2M. One post at a time.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#1a1510;--ink-soft:#4a4035;--cream:#faf6ef;--warm-white:#fffdf9;--gold:#b8893a;--gold-text:#6b4f1a;--gold-light:#e8c97a;--gold-pale:#f5ead4;--gold-btn:#7a5518;--gold-btn-hover:#5e3f0f;--border:rgba(184,137,58,0.25)}
+html{scroll-behavior:smooth}
+body{font-family:"DM Sans",sans-serif;background:var(--cream);color:var(--ink);font-size:16px;line-height:1.7;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.2rem 6vw;background:rgba(250,246,239,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:"Playfair Display",serif;font-size:2.2rem;letter-spacing:0.02em;color:var(--ink);text-decoration:none;line-height:1}
+.nav-logo span{color:#8a6020;font-weight:700}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-links a{font-size:0.85rem;font-weight:500;color:var(--ink-soft);text-decoration:none;letter-spacing:0.04em;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--gold-text)}
+.nav-links a.cta-nav{color:var(--gold-text);border:1px solid var(--gold-text);padding:0.5rem 1.2rem;text-transform:uppercase;letter-spacing:0.08em;transition:all 0.2s}
+.nav-links a.cta-nav:hover{background:var(--gold-btn);border-color:var(--gold-btn);color:white}
+.blog-hero{padding:9rem 6vw 5rem;text-align:center;background:var(--warm-white);border-bottom:1px solid var(--border)}
+.blog-hero-eyebrow{font-size:0.75rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold-text);margin-bottom:1rem;display:block}
+.blog-hero h1{font-family:"Playfair Display",serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;line-height:1.2;margin-bottom:1rem}
+.blog-hero p{font-size:1.05rem;color:var(--ink-soft);font-weight:300;max-width:50ch;margin:0 auto}
+.filter-bar{padding:1.25rem 6vw;background:var(--cream);border-bottom:1px solid var(--border);display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center}
+.filter-label{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-soft);margin-right:0.25rem;font-weight:500}
+.filter-btn{font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.3rem 0.85rem;border:1px solid var(--border);background:transparent;color:var(--ink-soft);cursor:pointer;transition:all 0.2s;font-family:"DM Sans",sans-serif}
+.filter-btn:hover,.filter-btn.active{background:var(--gold-text);color:white;border-color:var(--gold-text)}
+.posts-section{padding:4rem 6vw 6rem}
+.featured-post{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1000px;margin:0 auto 4rem;padding-bottom:4rem;border-bottom:1px solid var(--border)}
+.featured-badge{font-size:0.7rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.75rem;background:var(--gold-pale);color:var(--gold-text);display:inline-block;margin-bottom:1rem}
+.featured-pillar{font-size:0.72rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-text);margin-bottom:0.75rem;display:block}
+.featured-post h2{font-family:"Playfair Display",serif;font-size:1.9rem;font-weight:700;line-height:1.25;margin-bottom:1rem}
+.featured-post .fp{font-size:0.95rem;color:var(--ink-soft);line-height:1.8;margin-bottom:1.5rem}
+.featured-meta{font-size:0.78rem;color:var(--ink-soft);margin-bottom:1.5rem}
+.btn-primary{display:inline-block;background:var(--gold-btn);color:white;text-decoration:none;padding:0.85rem 1.75rem;font-size:0.85rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;border:2px solid var(--gold-btn);transition:all 0.25s}
+.btn-primary:hover{background:var(--gold-btn-hover);border-color:var(--gold-btn-hover)}
+.featured-visual{background:var(--gold-pale);border:1px solid var(--border);padding:3rem 2.5rem;position:relative}
+.featured-visual::before{content:"";position:absolute;top:-6px;left:-6px;right:6px;bottom:6px;border:1px solid var(--gold-light);pointer-events:none;z-index:-1}
+.featured-visual-quote{font-family:"Playfair Display",serif;font-size:1.15rem;font-style:italic;line-height:1.6;color:var(--ink);margin-bottom:1rem}
+.featured-visual-attr{font-size:0.78rem;color:var(--gold-text);font-weight:500;text-transform:uppercase;letter-spacing:0.08em}
+.month-group{max-width:1000px;margin:0 auto 3rem}
+.month-header{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.5rem;padding-bottom:0.75rem;border-bottom:2px solid var(--border)}
+.month-name{font-family:"Playfair Display",serif;font-size:1.1rem;font-weight:700;color:var(--ink)}
+.month-theme{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold-text);font-weight:500}
+.posts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+.post-card{background:var(--warm-white);border:1px solid var(--border);padding:1.5rem;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform 0.2s}
+.post-card:hover{transform:translateY(-4px)}
+.post-card-pillar{font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;display:inline-block;padding:0.2rem 0.6rem}
+.post-card h3{font-family:"Playfair Display",serif;font-size:0.92rem;font-weight:700;line-height:1.4;margin-bottom:0.5rem;color:var(--ink);flex:1}
+.post-card p{font-size:0.8rem;color:var(--ink-soft);line-height:1.6;margin-bottom:0.75rem}
+.post-card-meta{font-size:0.7rem;color:var(--ink-soft);border-top:1px solid var(--border);padding-top:0.6rem;margin-top:auto}
+.read-link{color:var(--gold-text);font-weight:500}
+.tag-def{background:rgba(45,74,110,0.1);color:#2d4a6e}
+.tag-prob{background:rgba(94,50,25,0.1);color:#5e3219}
+.tag-how{background:rgba(30,82,64,0.1);color:#1e5240}
+.tag-comp{background:rgba(74,45,110,0.1);color:#4a2d6e}
+.tag-persp{background:rgba(94,74,25,0.1);color:#5e4a19}
+.tag-case{background:rgba(30,61,82,0.1);color:#1e3d52}
+footer{background:var(--ink);color:rgba(255,255,255,0.4);padding:2rem 6vw;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;flex-wrap:wrap;gap:0.75rem}
+.foot-logo{font-family:"Playfair Display",serif;color:rgba(255,255,255,0.7);font-size:1rem}
+.foot-logo span{color:var(--gold-light)}
+@media(max-width:900px){.featured-post{grid-template-columns:1fr;gap:2rem}.featured-visual{display:none}.posts-grid{grid-template-columns:1fr 1fr}nav .nav-links a:not(.cta-nav){display:none}footer{flex-direction:column;text-align:center}}
+@media(max-width:600px){.posts-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="brand-your-journey.html" class="nav-logo">Brand Your <span>Journey</span></a>
+  <div class="nav-links">
+    <a href="brand-your-journey.html">&#8592; Main Site</a>
+    <a href="blog.html" class="active">The Strategy Room</a>
+    <a href="brand-your-journey.html#contact" class="cta-nav">Free Consultation</a>
+  </div>
+</nav>
+
+<header class="blog-hero">
+  <span class="blog-hero-eyebrow">Brand Your Journey</span>
+  <h1>The Strategy Room</h1>
+  <p>Practical brand thinking for nonprofits, startups, and small businesses. One post at a time.</p>
+</header>
+
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn active" onclick="filterPosts('all',this)">All</button>
+  <button class="filter-btn" onclick="filterPosts('Definition',this)">Definition</button>
+  <button class="filter-btn" onclick="filterPosts('Problem',this)">Problem / Symptom</button>
+  <button class="filter-btn" onclick="filterPosts('How-To',this)">How-To</button>
+  <button class="filter-btn" onclick="filterPosts('Comparison',this)">Comparison</button>
+  <button class="filter-btn" onclick="filterPosts('Perspective',this)">Perspective</button>
+  <button class="filter-btn" onclick="filterPosts('Case Study',this)">Case Study</button>
+</div>
+
+<section class="posts-section">
+
+<div class="featured-post">
+  <div>
+    <span class="featured-badge">Latest Post</span>
+    <span class="featured-pillar">How-To</span>
+    <h2>How to Audit Your Own Brand Strategy in One Afternoon</h2>
+    <p class="featured-meta">April 3, 2026 &nbsp;&middot;&nbsp; 8 min read</p>
+    <p class="fp">You do not need a consultant to find the gaps in your brand strategy. You need the right questions and an honest afternoon. A practical audit framework for any small organization.</p>
+    <a href="blog-post-24.html" class="btn-primary">Read the Post</a>
+  </div>
+  <div class="featured-visual">
+    <p class="featured-visual-quote">"An audience audit requires looking honestly at who you have been attracting versus who you want to attract &mdash; and those two things are often not the same."</p>
+    <p class="featured-visual-attr">From the Post</p>
+  </div>
+</div>
+
+<div style="max-width:1000px;margin:0 auto 3rem;padding:2rem;background:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
+  <div>
+    <p style="font-size:0.72rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.4rem;">Download the full collection</p>
+    <p style="font-family:'Playfair Display',serif;font-size:1.2rem;color:white;font-weight:700;margin-bottom:0.3rem;">All 24 Posts — The Strategy Room</p>
+    <p style="font-size:0.82rem;color:rgba(255,255,255,0.6);">76 pages &nbsp;·&nbsp; PDF &nbsp;·&nbsp; Brand Your Journey</p>
+  </div>
+  <a href="byj-strategy-room.pdf" download style="display:inline-block;background:var(--gold-light);color:var(--ink);text-decoration:none;padding:0.85rem 1.75rem;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;flex-shrink:0;">Download PDF</a>
+</div>
+
+<div class="month-group">
+<div class="month-header"><span class="month-name">October 2025</span><span class="month-theme">Foundation: Define the Territory</span></div>
+<div class="posts-grid">
+<a class="post-card" href="blog-post-1.html" data-pillar="Definition">
+  <span class="post-card-pillar tag-def">Definition</span>
+  <h3>What Is Brand Strategy? A Plain-English Guide for Nonprofits and Small Businesses</h3>
+  <p>Brand strategy is not a logo, a color palette, or a tagline. Here is what it actually is.</p>
+  <div class="post-card-meta">Oct 3, 2025 &nbsp;&middot;&nbsp; 8 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-2.html" data-pillar="Problem">
+  <span class="post-card-pillar tag-prob">Problem</span>
+  <h3>5 Signs Your Nonprofit Doesn&#x27;t Have a Brand Strategy Yet</h3>
+  <p>Most nonprofits under $2M are operating without one. Here is how to recognise the signs.</p>
+  <div class="post-card-meta">Oct 10, 2025 &nbsp;&middot;&nbsp; 7 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-3.html" data-pillar="How-To">
+  <span class="post-card-pillar tag-how">How-To</span>
+  <h3>How to Define Your Target Donor in 3 Steps</h3>
+  <p>Knowing your donor is not guesswork. It is a process that starts before your first appeal.</p>
+  <div class="post-card-meta">Oct 17, 2025 &nbsp;&middot;&nbsp; 8 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-4.html" data-pillar="Comparison">
+  <span class="post-card-pillar tag-comp">Comparison</span>
+  <h3>Brand Strategy vs. Marketing Strategy: What&#x27;s the Difference?</h3>
+  <p>Confusing them is one of the most expensive mistakes a small organization can make.</p>
+  <div class="post-card-meta">Oct 24, 2025 &nbsp;&middot;&nbsp; 7 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+</div>
+</div>
+
+<div class="month-group">
+<div class="month-header"><span class="month-name">November 2025</span><span class="month-theme">Clarity: Audience &amp; Positioning</span></div>
+<div class="posts-grid">
+<a class="post-card" href="blog-post-5.html" data-pillar="Perspective">
+  <span class="post-card-pillar tag-persp">Perspective</span>
+  <h3>Why Most Nonprofits Under $2M Treat Branding as a Luxury &mdash; And Why That&#x27;s Backwards</h3>
+  <p>The organizations that need clarity most are the ones who avoid it.</p>
+  <div class="post-card-meta">Nov 1, 2025 &nbsp;&middot;&nbsp; 6 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-6.html" data-pillar="How-To">
+  <span class="post-card-pillar tag-how">How-To</span>
+  <h3>How to Write a Brand Positioning Statement for a Small Business</h3>
+  <p>One of the most powerful tools in brand strategy &mdash; and one of the most misunderstood.</p>
+  <div class="post-card-meta">Nov 8, 2025 &nbsp;&middot;&nbsp; 8 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-7.html" data-pillar="Problem">
+  <span class="post-card-pillar tag-prob">Problem</span>
+  <h3>What Happens When a Startup Skips Brand Strategy and Builds Marketing First</h3>
+  <p>It is one of the most common mistakes early-stage founders make.</p>
+  <div class="post-card-meta">Nov 15, 2025 &nbsp;&middot;&nbsp; 7 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-8.html" data-pillar="Definition">
+  <span class="post-card-pillar tag-def">Definition</span>
+  <h3>What Is Brand Positioning? A Plain-English Guide for Small Organizations</h3>
+  <p>The specific space your organization occupies in the minds of those you most want to reach.</p>
+  <div class="post-card-meta">Nov 22, 2025 &nbsp;&middot;&nbsp; 7 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+</div>
+</div>
+
+<div class="month-group">
+<div class="month-header"><span class="month-name">December 2025</span><span class="month-theme">Identity: Voice, Consistency &amp; Trust</span></div>
+<div class="posts-grid">
+<a class="post-card" href="blog-post-9.html" data-pillar="Comparison">
+  <span class="post-card-pillar tag-comp">Comparison</span>
+  <h3>Mission Statement vs. Brand Positioning: Are They the Same Thing?</h3>
+  <p>Most nonprofits have a mission statement. Far fewer have brand positioning.</p>
+  <div class="post-card-meta">Dec 5, 2025 &nbsp;&middot;&nbsp; 6 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-10.html" data-pillar="How-To">
+  <span class="post-card-pillar tag-how">How-To</span>
+  <h3>How to Find Your Brand Voice When You&#x27;re a One-Person Operation</h3>
+  <p>For solo operators, brand voice is your single most powerful differentiator.</p>
+  <div class="post-card-meta">Dec 12, 2025 &nbsp;&middot;&nbsp; 7 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-11.html" data-pillar="Case Study">
+  <span class="post-card-pillar tag-case">Case Study</span>
+  <h3>What Changed When This Small Business Stopped Trying to Speak to Everyone</h3>
+  <p>When you narrow your focus, you do not shrink your audience &mdash; you sharpen it.</p>
+  <div class="post-card-meta">Dec 19, 2025 &nbsp;&middot;&nbsp; 8 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-12.html" data-pillar="Perspective">
+  <span class="post-card-pillar tag-persp">Perspective</span>
+  <h3>The Hidden Cost of Skipping Brand Strategy in Your First Year</h3>
+  <p>The cost rarely shows as a line item. It shows as wasted spend and wrong customers.</p>
+  <div class="post-card-meta">Dec 26, 2025 &nbsp;&middot;&nbsp; 6 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+</div>
+</div>
+
+<div class="month-group">
+<div class="month-header"><span class="month-name">January 2026</span><span class="month-theme">Depth: Nonprofit Focus</span></div>
+<div class="posts-grid">
+<a class="post-card" href="blog-post-13.html" data-pillar="Comparison">
+  <span class="post-card-pillar tag-comp">Comparison</span>
+  <h3>Nonprofit Branding vs. For-Profit Branding: What&#x27;s Actually Different?</h3>
+  <p>Shared foundations, different context. Here is how to apply brand principles correctly.</p>
+  <div class="post-card-meta">Jan 9, 2026 &nbsp;&middot;&nbsp; 7 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-14.html" data-pillar="How-To">
+  <span class="post-card-pillar tag-how">How-To</span>
+  <h3>How to Write a Donor-Facing Brand Message That Actually Converts</h3>
+  <p>The most effective donor messaging makes the donor the hero of the story.</p>
+  <div class="post-card-meta">Jan 16, 2026 &nbsp;&middot;&nbsp; 8 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-15.html" data-pillar="Case Study">
+  <span class="post-card-pillar tag-case">Case Study</span>
+  <h3>How One Nonprofit Clarified Its Brand and Increased Donor Retention in One Cycle</h3>
+  <p>When the brand strategy was clear, the fundraising results told the story.</p>
+  <div class="post-card-meta">Jan 23, 2026 &nbsp;&middot;&nbsp; 8 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-16.html" data-pillar="Problem">
+  <span class="post-card-pillar tag-prob">Problem</span>
+  <h3>Why Your Nonprofit Keeps Attracting One-Time Donors Instead of Recurring Supporters</h3>
+  <p>One-time donor rates are a brand problem, not a fundraising problem.</p>
+  <div class="post-card-meta">Jan 30, 2026 &nbsp;&middot;&nbsp; 7 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+</div>
+</div>
+
+<div class="month-group">
+<div class="month-header"><span class="month-name">February 2026</span><span class="month-theme">Depth: Startup &amp; Small Business Focus</span></div>
+<div class="posts-grid">
+<a class="post-card" href="blog-post-17.html" data-pillar="Definition">
+  <span class="post-card-pillar tag-def">Definition</span>
+  <h3>What Is a Brand Promise? And How Do You Write One You Can Actually Keep?</h3>
+  <p>The commitment your organization makes to every person it serves.</p>
+  <div class="post-card-meta">Feb 6, 2026 &nbsp;&middot;&nbsp; 6 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-18.html" data-pillar="Perspective">
+  <span class="post-card-pillar tag-persp">Perspective</span>
+  <h3>What a Strong Brand Actually Does for a Startup With No Marketing Budget</h3>
+  <p>Brand strategy is the most powerful low-cost growth tool for an early-stage company.</p>
+  <div class="post-card-meta">Feb 13, 2026 &nbsp;&middot;&nbsp; 6 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-19.html" data-pillar="How-To">
+  <span class="post-card-pillar tag-how">How-To</span>
+  <h3>How to Build a Brand Strategy Document in a Weekend (For Small Teams)</h3>
+  <p>A focused two-day process can produce a foundation that lasts for years.</p>
+  <div class="post-card-meta">Feb 20, 2026 &nbsp;&middot;&nbsp; 9 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-20.html" data-pillar="Problem">
+  <span class="post-card-pillar tag-prob">Problem</span>
+  <h3>Why Your Small Business Keeps Attracting the Wrong Customers</h3>
+  <p>If your pipeline is full of people who are not right, the problem is your positioning.</p>
+  <div class="post-card-meta">Feb 27, 2026 &nbsp;&middot;&nbsp; 7 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+</div>
+</div>
+
+<div class="month-group">
+<div class="month-header"><span class="month-name">March–April 2026</span><span class="month-theme">Authority: Proof &amp; Perspective</span></div>
+<div class="posts-grid">
+<a class="post-card" href="blog-post-21.html" data-pillar="Case Study">
+  <span class="post-card-pillar tag-case">Case Study</span>
+  <h3>Three Organizations That Transformed Their Growth by Getting Their Brand Right</h3>
+  <p>A nonprofit, a startup, and a small business. Three paths to the same conclusion.</p>
+  <div class="post-card-meta">Mar 6, 2026 &nbsp;&middot;&nbsp; 9 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-22.html" data-pillar="Comparison">
+  <span class="post-card-pillar tag-comp">Comparison</span>
+  <h3>DIY Brand Strategy vs. Working With a Strategist: Honest Pros and Cons</h3>
+  <p>You can do brand strategy yourself &mdash; and sometimes you should.</p>
+  <div class="post-card-meta">Mar 13, 2026 &nbsp;&middot;&nbsp; 7 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-23.html" data-pillar="Perspective">
+  <span class="post-card-pillar tag-persp">Perspective</span>
+  <h3>What Six Months of Brand Strategy Work Taught Us About How Small Organizations Actually Grow</h3>
+  <p>After six months of consistent work, certain patterns become unmistakable.</p>
+  <div class="post-card-meta">Mar 20, 2026 &nbsp;&middot;&nbsp; 7 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+<a class="post-card" href="blog-post-24.html" data-pillar="How-To">
+  <span class="post-card-pillar tag-how">How-To</span>
+  <h3>How to Audit Your Own Brand Strategy in One Afternoon</h3>
+  <p>You need the right questions and an honest afternoon. Here is the framework.</p>
+  <div class="post-card-meta">Apr 3, 2026 &nbsp;&middot;&nbsp; 8 min &nbsp;&middot;&nbsp; <span class="read-link">Read &#8594;</span></div>
+</a>
+</div>
+</div>
+</section>
+
+<footer>
+  <span class="foot-logo">Brand Your <span>Journey</span></span>
+  <span>Brand Strategy for Nonprofits, Startups &amp; Small Businesses</span>
+  <span>&#169; 2026 BrandYourJourney.com</span>
+</footer>
+
+<script>
+function filterPosts(pillar, btn) {
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  document.querySelectorAll(".post-card").forEach(card => {
+    if (pillar === "all") { card.style.display = ""; }
+    else { card.style.display = card.getAttribute("data-pillar").includes(pillar) ? "" : "none"; }
+  });
+  document.querySelectorAll(".month-group").forEach(group => {
+    if (pillar === "all") { group.style.display = ""; }
+    else {
+      const vis = Array.from(group.querySelectorAll(".post-card")).some(c => c.style.display !== "none");
+      group.style.display = vis ? "" : "none";
+    }
+  });
+}
+</script>
+</body>
+</html>
